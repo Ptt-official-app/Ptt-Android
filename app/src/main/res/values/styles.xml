@@ -1,0 +1,77 @@
+<resources>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">#171717</item>
+        <item name="colorPrimaryDark">#171717</item>
+        <item name="colorAccent">#171717</item>
+        <item name="android:windowBackground">@drawable/splash_drawable</item>
+    </style>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--item name="colorOnSurface">@color/colorAccent</item-->
+        <item name="tangerine">@color/tangerine</item>
+        <item name="slateGrey">@color/slateGrey</item>
+        <item name="realblack">@color/realblack</item>
+        <item name="black">@color/black</item>
+        <item name="darkGrey">@color/darkGrey</item>
+        <item name="blueGrey">@color/blueGrey</item>
+        <item name="paleGrey">@color/paleGrey</item>
+        <item name="lightBlueGrey">@color/lightBlueGrey</item>
+        <item name="lightBlueGrey2">@color/lightBlueGrey2</item>
+        <item name="darkGreyTwo">@color/darkGreyTwo</item>
+        <item name="charcoalGrey">@color/charcoalGrey</item>
+        <item name="charcoalGrey2">@color/charcoalGrey2</item>
+        <item name="palePurple">@color/palePurple</item>
+        <item name="paleLilac">@color/paleLilac</item>
+        <item name="deepSkyBlue">@color/deepSkyBlue</item>
+        <item name="darkMint">@color/darkMint</item>
+        <item name="darkPeriwinkle">@color/darkPeriwinkle</item>
+        <item name="coral">@color/coral</item>
+        <item name="robinSEgg">@color/robinSEgg</item>
+        <item name="reddishPink">@color/reddishPink</item>
+        <item name="brightLilac">@color/brightLilac</item>
+        <item name="dandelion">@color/dandelion</item>
+        <item name="article_header">@color/article_header</item>
+
+    </style>
+
+    <style name="AppLightTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--item name="colorOnSurface">@color/colorAccent</item-->
+        <item name="tangerine">@color/tangerine_light</item>
+        <item name="slateGrey">@color/slateGrey_light</item>
+        <item name="realblack">@color/realblack_light</item>
+        <item name="black">@color/black_light</item>
+        <item name="darkGrey">@color/darkGrey_light</item>
+        <item name="blueGrey">@color/blueGrey_light</item>
+        <item name="paleGrey">@color/paleGrey_light</item>
+        <item name="lightBlueGrey">@color/lightBlueGrey_light</item>
+        <item name="lightBlueGrey2">@color/lightBlueGrey2_light</item>
+        <item name="darkGreyTwo">@color/darkGreyTwo_light</item>
+        <item name="charcoalGrey">@color/charcoalGrey_light</item>
+        <item name="charcoalGrey2">@color/charcoalGrey2_light</item>
+        <item name="palePurple">@color/palePurple_light</item>
+        <item name="paleLilac">@color/paleLilac_light</item>
+        <item name="deepSkyBlue">@color/deepSkyBlue_light</item>
+        <item name="darkMint">@color/darkMint_light</item>
+        <item name="darkPeriwinkle">@color/darkPeriwinkle_light</item>
+        <item name="coral">@color/coral_light</item>
+        <item name="robinSEgg">@color/robinSEgg_light</item>
+        <item name="reddishPink">@color/reddishPink_light</item>
+        <item name="brightLilac">@color/brightLilac_light</item>
+        <item name="dandelion">@color/dandelion_light</item>
+        <item name="article_header">@color/article_header_light</item>
+
+    </style>
+
+
+
+</resources>

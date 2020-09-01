@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/darkGreyTwo"
+    android:orientation="vertical">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/article_read_fragment_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="?attr/black">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/article_read_fragment_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/darkGreyTwo" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/black"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="15sp"
+        android:paddingTop="10sp"
+        android:paddingEnd="15sp"
+        android:paddingBottom="10sp">
+
+        <LinearLayout
+            android:id="@+id/article_read_item_linearlayout_org_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/article_read_item_imageButton_like"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/article_list_item_imageButton_like"
+                android:padding="5sp"
+                android:scaleType="centerInside"
+                android:tint="?attr/slateGrey"
+                app:srcCompat="@drawable/up" />
+
+            <Space
+                android:layout_width="10sp"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:id="@+id/article_read_item_textView_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.1k"
+                android:textColor="?attr/lightBlueGrey"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/article_read_item_linearlayout_reply_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/article_read_item_imageButton_hide_reply"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="5sp"
+                android:scaleType="centerInside"
+                android:tint="?attr/slateGrey"
+                app:srcCompat="@drawable/ic_keyboard_arrow_right_black_24dp"
+                android:contentDescription="@string/hibe_button" />
+
+            <Space
+                android:layout_width="10sp"
+                android:layout_height="wrap_content" />
+
+
+            <ImageButton
+                android:id="@+id/article_read_item_imageButton_upload"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="5sp"
+                android:scaleType="centerInside"
+                android:tint="?attr/slateGrey"
+                android:contentDescription="@string/post_article_navigation_item_insert_image"
+                app:srcCompat="@drawable/ic_image_black_24dp" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="15sp"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/article_read_item_editText_reply"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@drawable/edit_bar_background"
+            android:ems="10"
+            android:gravity="start|top"
+            android:hint="Aa"
+            android:inputType="textMultiLine"
+            android:paddingLeft="15sp"
+            android:paddingTop="5sp"
+            android:paddingRight="15sp"
+            android:paddingBottom="5sp"
+            android:importantForAutofill="no" />
+
+        <Space
+            android:layout_width="15sp"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/article_read_item_linearlayout_reply_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/article_read_item_imageButton_reply_send"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="center"
+                android:tint="?attr/slateGrey"
+                app:srcCompat="@drawable/ic_send_black_24dp"
+                android:contentDescription="@string/submit_button" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/article_read_item_linearlayout_org_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+
+            <ImageButton
+                android:id="@+id/article_read_item_imageButton_reply"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="center"
+                android:tint="?attr/slateGrey"
+                app:srcCompat="@drawable/ic_reply_black_24dp"
+                android:contentDescription="@string/reply_button" />
+
+            <Space
+                android:layout_width="10sp"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/article_read_item_imageButton_share"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="center"
+                android:tint="?attr/slateGrey"
+                app:srcCompat="@drawable/ic_share_black_24dp"
+                android:contentDescription="@string/share_button" />
+
+            <Space
+                android:layout_width="10sp"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/article_read_item_imageButton_more"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="5sp"
+                android:scaleType="centerInside"
+                android:tint="?attr/slateGrey"
+                app:srcCompat="@drawable/more"
+                android:contentDescription="@string/more_button"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/article_read_item_commit_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/article_header"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    android:paddingLeft="20sp"
+    android:paddingTop="10sp"
+    android:paddingRight="20sp">
+
+    <TextView
+        android:id="@+id/article_read_item_commit_textview_auth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="hu7592"
+        android:textColor="?attr/lightBlueGrey" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="5sp" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/article_read_item_commit_textView_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="24sp"
+        android:lineSpacingMultiplier="0"
+        android:text="他當下會選擇自殺就代表自殺是他最舒服的方式了 沒憂鬱症的人當然不懂 而你們本來就救不了他 要救他的人只有他自己 放過自己不等於痊癒 別天真了 "
+        android:textColor="?attr/paleGrey"
+        android:textIsSelectable="true"
+        android:textSize="17sp"
+        android:textStyle="normal" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="2.5sp" />
+
+</LinearLayout>

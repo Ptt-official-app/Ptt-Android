@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/post_article_rank_like"
+        android:title="like"
+        />
+    <item
+        android:id="@+id/post_article_rank_non"
+        android:title="non"
+        />
+    <item
+        android:id="@+id/post_article_rank_dislike"
+        android:title="dislike"
+        />
+
+</menu>

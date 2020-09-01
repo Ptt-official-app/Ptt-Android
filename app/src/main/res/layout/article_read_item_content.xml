@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/darkGreyTwo"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:paddingLeft="20sp"
+    android:paddingRight="20sp">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/article_read_item_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="24sp"
+        android:lineSpacingMultiplier="0"
+        android:text="簡單來說，時下的繁體中文字型大多符合台灣和香港教育部門標準，但台灣教育部制定的漢字標準仍是以手寫為基礎，有較多不平行、不對稱筆畫，視覺上也會較為雜亂。這也是為什麼台灣香港的平面設計很常套用日文字型的原因，因為日文字型在設計上以印刷體骨架為基礎，而這類骨架又非常適合繁體中文。"
+        android:textColor="?attr/paleGrey"
+        android:textIsSelectable="true"
+        android:textSize="17sp"
+        android:textStyle="normal" />
+</LinearLayout>

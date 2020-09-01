@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/article_list_navigation_item_hide"
+        android:icon="@drawable/ic_replay_24px__1_"
+        android:title="@string/article_list_navigation_item_refresh"
+        android:enabled="false"
+        android:visible="false"
+        android:checkable="false"/>
+    <item
+        android:id="@+id/article_list_search__navigation_item_cross"
+        android:icon="@drawable/ic_close_black_24dp"
+        android:title="@string/clen_buttom"
+        android:enabled="true"
+        android:checkable="false"/>
+
+    <item
+        android:id="@+id/article_list_search__navigation_item_sure"
+        android:icon="@drawable/ic_check_black_24dp"
+        android:title="@string/article_list_navigation_item_search"
+        android:enabled="true"
+        android:checkable="false"/>
+
+
+</menu>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/post_article_navigation_item_load_demo"
+        android:icon="@drawable/ic_post_add_24px"
+        android:title="@string/post_article_navigation_item_load_demo"
+        android:enabled="false"
+        android:visible="false"
+        android:checkable="false"/>
+
+    <item
+        android:id="@+id/post_article_navigation_item_delete"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="@string/post_article_navigation_item_delete"
+        android:checkable="false"/>
+    <item
+        android:id="@+id/post_article_navigation_item_load_draft"
+        android:icon="@drawable/edit2"
+        android:title="@string/post_article_navigation_item_load_draft"
+        android:checkable="false"/>
+    <item
+        android:id="@+id/post_article_navigation_item_insert_image"
+        android:icon="@drawable/ic_image_black_24dp"
+        android:title="@string/post_article_navigation_item_insert_image"
+        android:visible="false"
+        android:checkable="false"/>
+    <item
+        android:id="@+id/post_article_navigation_item_save"
+        android:icon="@drawable/ic_save_black_24dp"
+        android:title="@string/post_article_navigation_item_save"
+        android:checkable="false"/>
+    <item
+        android:id="@+id/post_article_navigation_item_post"
+        android:icon="@drawable/ic_send_black_24dp"
+        android:title="@string/post_article_navigation_item_post"
+        android:checkable="false"/>
+    <item
+        android:id="@+id/post_article_navigation_item_hide_keyboard"
+        android:icon="@drawable/ic_keyboard_hide_black_24dp"
+        android:title="@string/post_article_navigation_item_hide_keyboard"
+        android:checkable="false"/>
+
+</menu>

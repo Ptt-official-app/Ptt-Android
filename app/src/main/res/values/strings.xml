@@ -1,0 +1,92 @@
+<resources>
+    <string name="app_name">Ptt</string>
+    <string name="home_bottom_navigation_item_hot_boards">熱門看板</string>
+    <string name="home_bottom_navigation_item_favorite_boards">最愛看板</string>
+    <string name="home_bottom_navigation_item_hot_articles">熱門文章</string>
+    <string name="home_bottom_navigation_item_user_page">個人頁面</string>
+    <string name="home_bottom_navigation_item_more_action">更多功能</string>
+    <string name="todo"></string>
+    <string name="board_list_subtitle_default">[八卦] 我想不到板標</string>
+    <string name="board_list_title_default">Gossiping</string>
+    <string name="board_list_title_empty">無板名資訊</string>
+    <string name="board_list_subtitle_empty">無板標資訊</string>
+    <string name="board_list_online_default">10000</string>
+    <string name="article_list_navigation_item_refresh">重整</string>
+    <string name="article_list_navigation_item_search">搜尋</string>
+    <string name="article_list_navigation_item_post">發文</string>
+    <string name="article_list_navigation_item_info">看板資訊</string>
+    <string name="article_already_delete">本文已被刪除</string>
+    <string name="not_at_debug_time">已過期，請安裝新版！</string>
+    <string name="setting_theme">設定主題</string>
+    <string name="setting_data_source">Environment</string>
+    <string name="clen_buttom">取消</string>
+    <string name="press_again_to_leave">再按一次返回鍵離開</string>
+    <string name="setting_search_item_style">搜尋看板樣式</string>
+    <string name="setting_post_bottom_style">編輯文章底部工具列樣式</string>
+    <string name="attion_close_edit_mode">請先關閉編輯模式</string>
+    <string name="back_button">返回上一頁</string>
+    <string name="more_button">更多</string>
+    <string name="reply_button">回覆</string>
+    <string name="hibe_button">收折</string>
+    <string name="share_button">分享</string>
+    <string name="sort_button">排序方式</string>
+    <string name="submit_button">送出</string>
+    <string name="article_list_imageButton_class">分類</string>
+    <string name="article_list_imageButton_date">時間</string>
+    <string name="hot_boards_online_imageButton_person">作者</string>
+    <string name="article_list_item_imageButton_like">推薦</string>
+    <string name="article_list_imageButton_commit">回應</string>
+    <string name="search_bar">搜尋看板</string>
+    <string name="hot_boards_fragment_edit">編輯最愛</string>
+    <string name="post_article_fragment_textView_title">編輯文章</string>
+    <string name="choose_category">分類選擇</string>
+    <string name="input_title">請輸入文章標題</string>
+    <string name="input_content">請輸入文章內容</string>
+    <string name="post_article_navigation_item_refresh">empty</string>
+    <string name="post_article_navigation_item_load_demo">載入範本</string>
+    <string name="post_article_navigation_item_load_draft">載入草稿</string>
+    <string name="post_article_navigation_item_insert_image">插入圖片</string>
+    <string name="post_article_navigation_item_hide_keyboard">收起鍵盤</string>
+    <string name="post_article_navigation_item_delete">刪除文章</string>
+    <string name="post_article_navigation_item_save">儲存檔案</string>
+    <string name="post_article_navigation_item_post">發布文章</string>
+    <string name="ptt_policy">Ptt使用者條款</string>
+    <string name="set_ptt_id">設定PTT ID</string>
+    <string name="most_people_like">最高評價</string>
+    <string name="save_button">儲存</string>
+    <string name="delete_button">刪除</string>
+    <string name="send_button">送出</string>
+    <string name="agree_policy">同意</string>
+    <string name="disagree_policy">不同意</string>
+    <string name="push_number">推文數</string>
+    <string name="like_number">評價數</string>
+    <string name="search_title">標題</string>
+    <string name="search_auth">作者</string>>
+    <string name="persion_page_tabs_info">個人資訊</string>
+    <string name="persion_page_tabs_articles">歷史文章</string>
+    <string name="persion_page_tabs_comments">歷史留言</string>
+    <string name="login_page_user_id">User ID</string>
+    <string name="login_page_password">Password</string>
+    <string name="login_page_title">批踢踢實業坊\nPtt.cc</string>
+    <string-array name="setting_post_bottom_style_array">
+        <item>含標籤</item>
+        <item>僅圖示</item>
+    </string-array>
+    <string-array name="setting_search_item_style_array">
+        <item>僅板名</item>
+        <item>含板標</item>
+    </string-array>
+    <string-array name="setting_data_source_array">
+        <item>ptt web</item>
+        <item>api</item>
+    </string-array>
+    <string-array name="setting_theme_array">
+        <item>固定深色</item>
+        <item>固定淺色</item>
+        <item>跟隨系統</item>
+    </string-array>
+    <string-array name="setting_theme_array_low_p">
+        <item>固定深色</item>
+        <item>固定淺色</item>
+    </string-array>
+</resources>

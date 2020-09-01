@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/home_bottom_navigation_item_hot_boards"
+        android:enabled="true"
+        android:icon="@drawable/rectangle2"
+        android:title="@string/home_bottom_navigation_item_hot_boards" />
+
+    <item
+        android:id="@+id/home_bottom_navigation_item_favorite_boards"
+        android:icon="@drawable/ic_home_fragment_item_favorite_24dp"
+        android:title="@string/home_bottom_navigation_item_favorite_boards"
+        android:enabled="true"/>
+
+    <item
+        android:id="@+id/home_bottom_navigation_item_hot_articles"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_whatshot_24"
+        android:title="@string/home_bottom_navigation_item_hot_articles" />
+    <item
+        android:id="@+id/home_bottom_navigation_item_user_page"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/home_bottom_navigation_item_user_page" />
+    <item
+        android:id="@+id/home_bottom_navigation_item_more_action"
+        android:enabled="true"
+        android:icon="@drawable/ic_more_horiz_black_24dp"
+        android:title="@string/home_bottom_navigation_item_more_action" />
+
+</menu>

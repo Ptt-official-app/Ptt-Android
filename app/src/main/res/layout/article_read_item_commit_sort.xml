@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/darkGreyTwo"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:paddingLeft="20sp"
+    android:paddingRight="20sp">
+
+    <TextView
+        android:id="@+id/article_read_item_commit_sort_textView_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="最高評價"
+        android:tint="?attr/lightBlueGrey" />
+
+    <ImageButton
+        android:id="@+id/article_read_item_commit_sort_textView_imageButton"
+        android:layout_width="20sp"
+        android:layout_height="20sp"
+        android:adjustViewBounds="false"
+        android:background="@drawable/botton_background_selector"
+        android:clickable="false"
+        android:padding="5sp"
+        android:scaleType="centerInside"
+        android:tint="?attr/lightBlueGrey"
+        app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+</LinearLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#171717</color>
+    <color name="colorPrimaryDark">#171717</color>
+    <color name="colorAccent">#FF9F0A</color>
+    <!--  custom -->
+    <color name="tangerine">#FF9F0A</color>
+    <color name="slateGrey">#5E5E66</color>
+    <color name="realblack">#000000</color>
+    <color name="black">#171717</color>
+    <color name="darkGrey">#2A2A2E</color>
+    <color name="blueGrey">#888894</color>
+    <color name="paleGrey">#F0F0F7</color>
+    <color name="lightBlueGrey">#CBCBD6</color>
+    <color name="lightBlueGrey2">#c2c2cc</color>
+    <color name="darkGreyTwo">#1C1C1F</color>
+    <color name="charcoalGrey">#38383D</color>
+    <color name="charcoalGrey2">#44444a</color>
+    <color name="palePurple">#aaaab3</color>
+    <color name="paleLilac">#e4e4eb</color>
+    <color name="deepSkyBlue">#0a84ff</color>
+    <color name="darkMint">#30d158</color>
+    <color name="darkPeriwinkle">#5e5ce6</color>
+    <color name="coral">#ff453a</color>
+    <color name="robinSEgg">#64d2ff</color>
+    <color name="reddishPink">#ff375f</color>
+    <color name="brightLilac">#bf5af2</color>
+    <color name="dandelion">#ffd60a</color>
+    <color name="article_header">#131314</color>
+    <!--  custom light -->
+    <color name="tangerine_light">#FF9F0A</color>
+    <color name="slateGrey_light">#747474</color>
+    <color name="realblack_light">#C2C2C2</color>
+    <color name="black_light">#FFFFFF</color>
+    <color name="darkGrey_light">#B9B9B9</color>
+    <color name="blueGrey_light">#888888</color>
+    <color name="paleGrey_light">#161616</color>
+    <color name="lightBlueGrey_light">#ACACAC</color>
+    <color name="lightBlueGrey2_light">#c2c2cc</color>
+    <color name="darkGreyTwo_light">#ECECEC</color>
+    <color name="charcoalGrey_light">#A0A0A0</color>
+    <color name="charcoalGrey2_light">#44444a</color>
+    <color name="palePurple_light">#CECECE</color>
+    <color name="paleLilac_light">#e4e4eb</color>
+    <color name="deepSkyBlue_light">#0a84ff</color>
+    <color name="darkMint_light">#30d158</color>
+    <color name="darkPeriwinkle_light">#5e5ce6</color>
+    <color name="coral_light">#ff453a</color>
+    <color name="robinSEgg_light">#64d2ff</color>
+    <color name="reddishPink_light">#ff375f</color>
+    <color name="brightLilac_light">#bf5af2</color>
+    <color name="dandelion_light">#ffd60a</color>
+    <color name="article_header_light">#F3F3F3</color>
+</resources>

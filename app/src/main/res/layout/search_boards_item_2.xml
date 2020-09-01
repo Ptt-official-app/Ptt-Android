@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingLeft="20sp"
+    android:paddingTop="8sp"
+    android:paddingRight="5sp"
+    android:paddingBottom="8sp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_hot_boards_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5sp"
+            android:text="@string/board_list_title_default"
+            android:textColor="?attr/paleGrey"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/textView_hot_boards_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/board_list_subtitle_default"
+            android:textColor="?attr/blueGrey"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/search_boards_item_imageView_like"
+        android:layout_width="50sp"
+        android:layout_height="50sp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="15sp"
+        android:background="@drawable/botton_background_selector"
+        android:contentDescription="@string/todo"
+        android:padding="15sp"
+        android:tint="?attr/slateGrey"
+        app:srcCompat="@drawable/ic_home_fragment_item_favorite_24dp" />
+</LinearLayout>

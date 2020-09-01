@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/black"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/ppst_article_fragment_appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/black"
+        android:elevation="0dp"
+        app:elevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10sp"
+            android:layout_marginTop="12sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginBottom="12sp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/article_read_item_header_imageView_back"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:layout_marginEnd="10sp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/back_button"
+                android:tint="?attr/paleGrey"
+                app:srcCompat="@drawable/ic_chevron_left_black_24dp" />
+
+            <TextView
+                android:id="@+id/ppst_article_fragment_textView_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/post_article_fragment_textView_title"
+                android:textColor="?attr/paleGrey"
+                android:textSize="18sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="?attr/darkGreyTwo">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="10sp"
+            android:paddingEnd="10sp">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="29sp" />
+
+            <TextView
+                android:id="@+id/post_article_fragment_textView_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/choose_category"
+                android:textColor="?attr/paleGrey"
+                android:textSize="16sp"
+                tools:ignore="UnusedAttribute" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20sp" />
+
+            <EditText
+                android:id="@+id/post_article_fragment_edittext_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?attr/slateGrey"
+                android:ems="10"
+                android:hint="@string/input_title"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName"
+                android:textColor="?attr/paleGrey"
+                android:textColorHint="?attr/slateGrey"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20sp" />
+
+            <EditText
+                android:id="@+id/post_article_fragment_edittext_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#00000000"
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/input_content"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:textColor="?attr/paleGrey"
+                android:textColorHint="?attr/slateGrey"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/post_article_fragment_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?attr/black"
+        app:itemIconTint="?attr/blueGrey"
+        app:itemTextColor="?attr/blueGrey"
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/post_article_bottom_navigation_menu2" />
+
+
+</LinearLayout>

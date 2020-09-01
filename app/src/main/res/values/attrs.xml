@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <attr name="tangerine" format="color"></attr>
+    <attr name="slateGrey" format="color"></attr>
+    <attr name="realblack" format="color"></attr>
+    <attr name="black" format="color"></attr>
+    <attr name="darkGrey" format="color"></attr>
+    <attr name="blueGrey" format="color"></attr>
+    <attr name="paleGrey" format="color"></attr>
+    <attr name="lightBlueGrey" format="color"></attr>
+    <attr name="lightBlueGrey2" format="color"></attr>
+    <attr name="darkGreyTwo" format="color"></attr>
+    <attr name="charcoalGrey" format="color"></attr>
+    <attr name="charcoalGrey2" format="color"></attr>
+    <attr name="palePurple" format="color"></attr>
+    <attr name="paleLilac" format="color"></attr>
+    <attr name="deepSkyBlue" format="color"></attr>
+    <attr name="darkMint" format="color"></attr>
+    <attr name="darkPeriwinkle" format="color"></attr>
+    <attr name="coral" format="color"></attr>
+    <attr name="robinSEgg" format="color"></attr>
+    <attr name="reddishPink" format="color"></attr>
+    <attr name="brightLilac" format="color"></attr>
+    <attr name="dandelion" format="color"></attr>
+    <attr name="article_header" format="color"></attr>
+
+</resources>

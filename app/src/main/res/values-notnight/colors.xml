@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#171717</color>
+    <color name="colorPrimaryDark">#171717</color>
+    <color name="colorAccent">#FF9F0A</color>
+    <!--  custom -->
+    <color name="tangerine">#FF9F0A</color>
+    <color name="slateGrey">#747474</color>
+    <color name="realblack">#C2C2C2</color>
+    <color name="black">#FFFFFF</color>
+    <color name="darkGrey">#B9B9B9</color>
+    <color name="blueGrey">#888888</color>
+    <color name="paleGrey">#161616</color>
+    <color name="lightBlueGrey">#ACACAC</color>
+    <color name="lightBlueGrey2">#c2c2cc</color>
+    <color name="darkGreyTwo">#ECECEC</color>
+    <color name="charcoalGrey">#A0A0A0</color>
+    <color name="charcoalGrey2">#44444a</color>
+    <color name="palePurple">#CECECE</color>
+    <color name="paleLilac">#e4e4eb</color>
+    <color name="deepSkyBlue">#0a84ff</color>
+    <color name="darkMint">#30d158</color>
+    <color name="darkPeriwinkle">#5e5ce6</color>
+    <color name="coral">#ff453a</color>
+    <color name="robinSEgg">#64d2ff</color>
+    <color name="reddishPink">#ff375f</color>
+    <color name="brightLilac">#bf5af2</color>
+    <color name="dandelion">#ffd60a</color>
+    <color name="article_header">#F3F3F3</color>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/article_list_item_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/black"
+    android:baselineAligned="false"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:paddingLeft="20sp"
+    android:paddingTop="15sp"
+    android:paddingRight="20sp"
+    android:paddingBottom="15sp">
+
+    <TextView
+        android:id="@+id/article_list_item_textView_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:contentDescription="@string/todo"
+        android:text="@string/board_list_title_default"
+        android:textColor="?attr/paleGrey"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <ImageButton
+        android:id="@+id/article_list_item_imageButton_more"
+        android:layout_width="35sp"
+        android:layout_height="35sp"
+        android:adjustViewBounds="true"
+        android:background="?selectableItemBackgroundBorderless"
+        android:contentDescription="@string/hibe_button"
+        android:rotation="180"
+        android:scaleType="fitCenter"
+        android:tint="?attr/paleGrey"
+        app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+
+</LinearLayout>

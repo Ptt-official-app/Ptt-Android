@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/article_list_item_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/darkGreyTwo"
+    android:baselineAligned="false"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:orientation="vertical"
+    android:paddingLeft="20sp"
+    android:paddingTop="10sp"
+    android:paddingRight="20sp"
+    android:paddingBottom="10sp">
+
+
+    <TextView
+        android:id="@+id/article_list_item_textView_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:contentDescription="@string/todo"
+        android:gravity="center_horizontal"
+        android:text="本文已被刪除 - hu7592"
+        android:textColor="?attr/slateGrey"
+        android:textSize="14sp" />
+
+
+</LinearLayout>

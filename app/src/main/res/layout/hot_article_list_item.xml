@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/article_list_item_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/black"
+    android:paddingTop="3sp"
+    android:paddingBottom="3sp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/darkGreyTwo"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:orientation="vertical"
+        android:paddingLeft="20sp"
+        android:paddingTop="10sp"
+        android:paddingRight="20sp"
+        android:paddingBottom="10sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5sp"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/article_list_imageButton_class"
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/botton_background"
+                    android:clickable="false"
+                    android:contentDescription="@string/article_list_imageButton_class"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/rectangle2" />
+
+                <Space
+                    android:layout_width="3sp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/article_list_item_textView_class"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="3sp"
+                    android:contentDescription="@string/todo"
+                    android:singleLine="true"
+                    android:text="Gossiping / 爆卦"
+                    android:textColor="?attr/lightBlueGrey"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|right"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/article_list_imageButton_date"
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/botton_background"
+                    android:clickable="false"
+                    android:contentDescription="@string/article_list_imageButton_date"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/clock" />
+
+                <Space
+                    android:layout_width="3sp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/article_list_item_textView_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="3sp"
+                    android:contentDescription="@string/todo"
+                    android:text="02-02"
+                    android:textColor="?attr/blueGrey" />
+
+                <ImageButton
+                    android:id="@+id/hot_boards_online_imageButton_person"
+                    android:layout_width="20sp"
+                    android:layout_height="20sp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/botton_background"
+                    android:clickable="false"
+                    android:contentDescription="@string/hot_boards_online_imageButton_person"
+                    android:padding="2sp"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/component_10_3" />
+
+                <Space
+                    android:layout_width="3sp"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/article_list_item_textView_auth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/todo"
+                    android:text="hu7592"
+                    android:textColor="?attr/blueGrey" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5sp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/article_list_item_textView_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/todo"
+                        android:lineSpacingExtra="22sp"
+                        android:lineSpacingMultiplier="0"
+                        android:text="Re：香港校園變戰場 台灣學生發起「一方有難八方支援」連署"
+                        android:textColor="?attr/paleGrey"
+                        android:textSize="17sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/article_list_item_imageButton_like"
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/botton_background"
+                        android:clickable="false"
+                        android:contentDescription="@string/article_list_item_imageButton_like"
+                        android:scaleType="centerInside"
+                        android:tint="?attr/charcoalGrey"
+                        app:srcCompat="@drawable/up" />
+
+                    <TextView
+                        android:id="@+id/article_list_item_textView_like"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5sp"
+                        android:layout_marginRight="5sp"
+                        android:text="100" />
+
+                    <ImageButton
+                        android:id="@+id/article_list_item_imageButton_dislike"
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/botton_background"
+                        android:clickable="false"
+                        android:scaleType="centerInside"
+                        android:visibility="gone"
+                        app:srcCompat="@drawable/down" />
+
+                    <Space
+                        android:layout_width="20sp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageButton
+                        android:id="@+id/article_list_imageButton_commit"
+                        android:layout_width="20sp"
+                        android:layout_height="20sp"
+                        android:adjustViewBounds="true"
+                        android:background="@drawable/botton_background"
+                        android:clickable="false"
+                        android:contentDescription="@string/article_list_imageButton_commit"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/commit" />
+
+                    <Space
+                        android:layout_width="8sp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/article_list_item_textView_commit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="100" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/article_list_item_picture"
+                android:layout_width="60sp"
+                android:layout_height="60sp"
+                android:layout_gravity="center"
+                android:layout_marginStart="3sp"
+                fresco:fadeDuration="1"
+                fresco:roundAsCircle="true"
+                fresco:roundingBorderColor="?attr/colorAccent"
+                fresco:roundingBorderWidth="2dp" />
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

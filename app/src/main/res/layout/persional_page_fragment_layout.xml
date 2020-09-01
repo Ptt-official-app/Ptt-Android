@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/tools"
+    android:background="?attr/black">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager_person_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        </androidx.viewpager2.widget.ViewPager2>
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout_person_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/black"
+            android:elevation="0dp"
+            app:elevation="0dp"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_person_page_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <ImageButton
+                    android:id="@+id/imageButton_persion_page_edit"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginStart="20sp"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginEnd="20sp"
+                    android:layout_marginBottom="20sp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:padding="5sp"
+                    android:scaleType="centerInside"
+                    android:tint="?attr/blueGrey"
+                    app:srcCompat="@drawable/ic_edit_24px" />
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/person_page_picture"
+                    android:layout_width="70sp"
+                    android:layout_height="70sp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="20sp"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginEnd="20sp"
+                    android:layout_marginBottom="20sp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_launcher"
+                    app:roundAsCircle="true"
+                    fresco:fadeDuration="1"
+                    fresco:roundWithOverlayColor="?attr/black"
+                    fresco:roundedCornerRadius="5dp"
+                    fresco:src="@drawable/ic_launcher" />
+
+                <TextView
+                    android:id="@+id/textView_persion_page_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/person_page_picture"
+                    android:layout_centerHorizontal="true"
+                    android:text="WeGoYuSheng"
+                    android:textColor="?attr/paleGrey"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/textView_persion_page_nick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView_persion_page_id"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="8sp"
+                    android:text="艾倫戴爾皇家空軍總司令"
+                    android:textColor="?attr/paleGrey"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_person_page_like_bar"
+                android:layout_width="match_parent"
+                android:layout_height="60sp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="25sp"
+                        android:layout_height="25sp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerInside"
+                        android:tint="?attr/slateGrey"
+                        app:srcCompat="@drawable/up" />
+
+                    <Space
+                        android:layout_width="12sp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/textView_persional_like"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1.8k"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/page_tabs"
+                android:layout_width="match_parent"
+                android:layout_height="35sp"
+                android:layout_marginStart="20sp"
+                android:layout_marginEnd="20sp"
+                android:background="@drawable/tab_state_unselect"
+
+                app:tabBackground="@android:color/transparent"
+                app:tabGravity="fill"
+                app:tabIndicator="@drawable/tab_state_select"
+                app:tabIndicatorColor="?attr/blueGrey"
+                app:tabIndicatorGravity="center"
+                app:tabIndicatorHeight="35sp"
+                app:tabMaxWidth="0dp"
+                app:tabRippleColor="@android:color/transparent"
+                app:tabSelectedTextColor="?attr/paleGrey"
+                app:tabTextAppearance="@style/TextAppearance.AppCompat.Display4"
+                app:tabTextColor="?attr/blueGrey" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout_person_page_header_mini"
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:background="?attr/black"
+        android:gravity="center_vertical"
+        android:translationY="-60sp">
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/person_page_picture_mini"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:layout_centerHorizontal="true"
+
+                android:layout_marginTop="20sp"
+
+                android:layout_marginBottom="20sp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_launcher"
+                app:roundAsCircle="true"
+                fresco:fadeDuration="1"
+                fresco:roundWithOverlayColor="?attr/black"
+                fresco:roundedCornerRadius="5dp"
+                fresco:src="@drawable/ic_launcher" />
+
+            <Space
+                android:layout_width="10sp"
+                android:layout_height="wrap_content"
+                />
+
+            <TextView
+                android:id="@+id/textView_person_page_id_mini"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/person_page_picture"
+                android:layout_centerHorizontal="true"
+                android:text="WeGoYuSheng"
+                android:textColor="?attr/paleGrey"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/imageButton_person_page_edit_mini"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+
+            android:layout_marginEnd="20sp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:padding="5sp"
+            android:scaleType="centerInside"
+            android:tint="?attr/blueGrey"
+            app:srcCompat="@drawable/ic_edit_24px" />
+    </RelativeLayout>
+</RelativeLayout>

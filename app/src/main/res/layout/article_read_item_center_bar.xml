@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/darkGreyTwo"
+    android:baselineAligned="false"
+   >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5sp"
+        android:layout_marginBottom="5sp"
+        android:layout_weight="1"
+        android:background="?attr/article_header"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="15sp"
+        android:paddingTop="5sp"
+        android:paddingRight="15sp"
+        android:paddingBottom="5sp">
+
+        <ImageButton
+            android:id="@+id/article_read_item_centerbar_imageButton_like"
+            android:layout_width="35sp"
+            android:layout_height="35sp"
+            android:adjustViewBounds="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/article_list_imageButton_date"
+            android:padding="5sp"
+            android:scaleType="centerInside"
+            android:tint="?attr/slateGrey"
+            app:srcCompat="@drawable/up" />
+
+        <Space
+            android:layout_width="10sp"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:id="@+id/article_read_item_centerbar_textView_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1.1k"
+            android:textColor="?attr/lightBlueGrey"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="30sp"
+            android:layout_height="wrap_content" />
+
+        <ImageButton
+            android:id="@+id/article_read_item_centerbar_imageButton_commit"
+            android:layout_width="35sp"
+            android:layout_height="35sp"
+            android:adjustViewBounds="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/article_list_imageButton_commit"
+            android:padding="5sp"
+            android:scaleType="centerInside"
+            android:tint="?attr/slateGrey"
+            app:srcCompat="@drawable/commit" />
+
+        <Space
+            android:layout_width="10sp"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/article_read_item_centerbar_textView_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1.1k"
+            android:textColor="?attr/lightBlueGrey"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:gravity="center_vertical|end"
+            android:orientation="horizontal"
+            android:padding="5sp"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/article_read_item_commit_sort_textView_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/most_people_like"
+                android:tint="?attr/lightBlueGrey" />
+
+            <ImageButton
+                android:id="@+id/article_read_item_commit_sort_textView_imageButton"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:adjustViewBounds="false"
+                android:background="@drawable/botton_background"
+                android:clickable="false"
+                android:contentDescription="@string/sort_button"
+                android:padding="5sp"
+                android:scaleType="centerInside"
+                android:tint="?attr/lightBlueGrey"
+                app:srcCompat="@drawable/ic_expand_more_black_24dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

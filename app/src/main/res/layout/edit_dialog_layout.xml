@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20sp">
+
+    <EditText
+        android:id="@+id/edit_dialog_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_bar_background"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:paddingTop="8sp"
+        android:paddingStart="16sp"
+        android:paddingEnd="16sp"
+        android:paddingBottom="8sp"/>
+</RelativeLayout>

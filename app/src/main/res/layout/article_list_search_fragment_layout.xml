@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/black"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/article_list_fragment_appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/black"
+        android:elevation="0dp"
+        app:elevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10sp"
+            android:layout_marginTop="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_marginBottom="10sp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/article_read_item_header_imageView_back"
+                android:layout_width="35sp"
+                android:layout_height="35sp"
+                android:layout_marginEnd="10sp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/back_button"
+                android:tint="?attr/paleGrey"
+                app:srcCompat="@drawable/ic_chevron_left_black_24dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/article_list_fragment_textView_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2sp"
+                    android:layout_marginBottom="5sp"
+                    android:text="@string/board_list_title_default"
+                    android:textColor="?attr/paleGrey"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/article_list_fragment_textView_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/board_list_subtitle_default"
+                    android:textColor="?attr/lightBlueGrey"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="40sp"
+            android:paddingRight="40sp">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15sp"
+                android:text="@string/search_title"
+                android:textColor="?attr/paleGrey"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/editText_article_search_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:background="@drawable/article_list_search_bar_background"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:paddingStart="15sp"
+                android:paddingTop="5sp"
+                android:paddingEnd="15sp"
+                android:paddingBottom="5sp"
+                android:textColor="@color/colorAccent"
+                android:textSize="16sp" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15sp"
+                android:text="@string/search_auth"
+                android:textColor="?attr/paleGrey"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editText_article_search_auth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/article_list_search_bar_background"
+                    android:ems="10"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="15sp"
+                    android:paddingTop="5sp"
+                    android:paddingEnd="15sp"
+                    android:paddingBottom="5sp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15sp"
+                android:text="@string/push_number"
+                android:textColor="?attr/paleGrey"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editText_article_search_push"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/article_list_search_bar_background"
+                    android:ems="10"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:paddingStart="15sp"
+                    android:paddingTop="5sp"
+                    android:paddingEnd="15sp"
+                    android:paddingBottom="5sp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20sp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="15sp"
+                android:text="@string/like_number"
+                android:textColor="?attr/paleGrey"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/editText_article_search_like"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5sp"
+                    android:layout_weight="1"
+                    android:background="@drawable/article_list_search_bar_background"
+                    android:ems="10"
+                    android:inputType="numberSigned|numberDecimal"
+                    android:paddingStart="15sp"
+                    android:paddingTop="5sp"
+                    android:paddingEnd="15sp"
+                    android:paddingBottom="5sp"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="16sp" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/article_list_fragment_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="?attr/black"
+        app:itemIconTint="?attr/blueGrey"
+        app:itemTextColor="?attr/blueGrey"
+        app:labelVisibilityMode="unlabeled"
+        app:menu="@menu/article_list_search_bottom_navigation_menu" />
+
+</LinearLayout>

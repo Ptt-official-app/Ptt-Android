@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/article_read_item_commit_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/article_header"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    android:paddingLeft="15sp"
+    android:paddingRight="15sp"
+    android:paddingBottom="10sp">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="2.5sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/article_read_item_commit_imageButton_like"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/article_list_item_imageButton_like"
+                android:padding="5sp"
+                android:scaleType="centerInside"
+                android:tint="?attr/slateGrey"
+                app:srcCompat="@drawable/up" />
+
+            <Space
+                android:layout_width="5sp"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:id="@+id/aarticle_read_item_commit_textView_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1.1k"
+                android:textColor="?attr/lightBlueGrey"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="15sp"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/article_read_item_commit_imageButton_dislike"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:padding="5sp"
+                android:scaleType="centerInside"
+                android:tint="?attr/slateGrey"
+                android:visibility="gone"
+                app:srcCompat="@drawable/up"
+                tools:visibility="gone" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/article_read_item_commit_imageButton_more"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:adjustViewBounds="true"
+                android:background="?selectableItemBackgroundBorderless"
+                android:contentDescription="@string/more_button"
+                android:padding="5sp"
+                android:scaleType="centerInside"
+                android:tint="?attr/slateGrey"
+                app:srcCompat="@drawable/ic_more_horiz_black_24dp" />
+
+            <Space
+                android:layout_width="15sp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/article_read_item_commit_textView_floor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8F"
+                android:textColor="?attr/lightBlueGrey" />
+
+            <Space
+                android:layout_width="15sp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/article_read_item_commit_textView_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text="   09/07 09:34"
+                android:textColor="?attr/lightBlueGrey" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>
