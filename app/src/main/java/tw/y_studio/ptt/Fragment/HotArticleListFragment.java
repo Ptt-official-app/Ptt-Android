@@ -44,6 +44,7 @@ import tw.y_studio.ptt.BuildConfig;
 import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.Ptt.AidConverter;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.RecyclerItemClickListener;
@@ -55,7 +56,7 @@ import tw.y_studio.ptt.Utils.StringUtils;
 
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
-public class HotArticleListFragment extends Fragment {
+public class HotArticleListFragment extends BaseFragment {
     private View Mainview=null;
     public static HotArticleListFragment newInstance() {
         Bundle args = new Bundle();
@@ -106,7 +107,7 @@ public class HotArticleListFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("Title",title_+"/");
 
-                ((MainActivity)getActivity()).loadFragment(ArticleListFragment.newInstance(bundle), boardListFragment.this);
+                ((MainActivity)getThisActivity()).loadFragment(ArticleListFragment.newInstance(bundle), boardListFragment.this);
             }
         });*/
 
@@ -121,7 +122,7 @@ public class HotArticleListFragment extends Fragment {
                 .setIcon(ContextCompat.getDrawable(activity, R.drawable.ic_reserve_normal));
         changeMenuItemCheckedStateColor(mBottomNavigation, getUnCheckedColor(), getUnCheckedColor());*/
 
-        mAdapter = new HotArticleListAdapter(getActivity(),data);
+        mAdapter = new HotArticleListAdapter(getThisActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -244,8 +245,11 @@ public class HotArticleListFragment extends Fragment {
                 }
             }
         });
-        loadData();
+
         return view;
+    }
+    protected void onAnimOver() {
+        loadData();
     }
 
     public void scrollToTop(){
@@ -278,7 +282,7 @@ public class HotArticleListFragment extends Fragment {
 
         r1 = new Runnable() {
             public void run() {
-                getActivity().runOnUiThread (new Thread(new Runnable() {
+                getThisActivity().runOnUiThread (new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
                     }
@@ -420,7 +424,7 @@ public class HotArticleListFragment extends Fragment {
                     }
 
 
-                    getActivity().runOnUiThread (new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
                         public void run() {
                             data.addAll(data_temp);
                             mAdapter.notifyDataSetChanged();
@@ -440,7 +444,7 @@ public class HotArticleListFragment extends Fragment {
                     if(getContext()!=null)
                         ((Activity)getContext()).runOnUiThread (new Thread(new Runnable() {
                             public void run() {
-                                Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
 
                             }

@@ -33,6 +33,7 @@ import tw.y_studio.ptt.Adapter.FavoriteBoardsListAdapter;
 import tw.y_studio.ptt.DataBase.FavoriteDBHelper;
 import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.DragItemMove.ItemMoveCallback;
@@ -42,7 +43,7 @@ import tw.y_studio.ptt.Utils.StringUtils;
 
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
-public class FavoriteBoardsFragment extends Fragment {
+public class FavoriteBoardsFragment extends BaseFragment {
     private View Mainview=null;
     public static FavoriteBoardsFragment newInstance() {
         Bundle args = new Bundle();
@@ -111,9 +112,9 @@ public class FavoriteBoardsFragment extends Fragment {
                 mAdapter.setEditMode(editMode);
                 mAdapter.notifyDataSetChanged();
                 if(editMode){
-                    edit.setColorFilter(getActivity().getResources().getColor(R.color.tangerine));
+                    edit.setColorFilter(getThisActivity().getResources().getColor(R.color.tangerine));
                 }else {
-                    edit.setColorFilter(getActivity().getResources().getColor(R.color.slateGrey));
+                    edit.setColorFilter(getThisActivity().getResources().getColor(R.color.slateGrey));
                 }
                 if(!editMode){
                     UpdateBoardSort();
@@ -128,7 +129,7 @@ public class FavoriteBoardsFragment extends Fragment {
             }
         };
         
-        mAdapter = new FavoriteBoardsListAdapter(getActivity(),data,mStartDragListener);
+        mAdapter = new FavoriteBoardsListAdapter(getThisActivity(),data,mStartDragListener);
         //mAdapter.setEditMode(true);
         ItemTouchHelper.Callback callback =
                 new ItemMoveCallback(mAdapter);
@@ -192,10 +193,13 @@ public class FavoriteBoardsFragment extends Fragment {
         });
 
 
-        loadData();
+
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
                 new IntentFilter("ptt-favorite-change"));
         return view;
+    }
+    protected void onAnimOver() {
+        loadData();
     }
     private void dealDataChange(){
         if(GattingData) return;
@@ -212,7 +216,7 @@ public class FavoriteBoardsFragment extends Fragment {
     private void dealDataChangeFromDataBase(){
         r1 = new Runnable() {
             public void run() {
-                getActivity().runOnUiThread (new Thread(new Runnable() {
+                getThisActivity().runOnUiThread (new Thread(new Runnable() {
                     public void run() {
 
                         mSwipeRefreshLayout.setRefreshing(true);
@@ -233,11 +237,11 @@ public class FavoriteBoardsFragment extends Fragment {
                 GattingData=true;
                 data_temp.clear();
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
 
                 try {
                     data_temp.addAll(mDBHelper.getAll());
-                    getActivity().runOnUiThread (new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
                         public void run() {
                             data.addAll(data_temp);
                             mAdapter.notifyDataSetChanged();
@@ -250,9 +254,9 @@ public class FavoriteBoardsFragment extends Fragment {
 
                 }catch (final Exception e){
                     DebugUtils.Log("onHotBoards","Error "+e.toString());
-                    getActivity().runOnUiThread (new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
                         public void run() {
-                            Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                             mSwipeRefreshLayout.setRefreshing(false);
 
                         }
@@ -323,7 +327,7 @@ public class FavoriteBoardsFragment extends Fragment {
     private void UpdateBoardSort(){
         r3 = new Runnable() {
             public void run() {
-                getActivity().runOnUiThread(new Thread(new Runnable() {
+                getThisActivity().runOnUiThread(new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
 
@@ -332,7 +336,7 @@ public class FavoriteBoardsFragment extends Fragment {
                 GattingData=true;
 
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
                 try {
 
 
@@ -362,7 +366,7 @@ public class FavoriteBoardsFragment extends Fragment {
                     //mDBHelper.delebyBoard(board);
 
 
-                    getActivity().runOnUiThread(new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
                         public void run() {
                             //data.remove(position);
                             //mAdapter.notifyItemRemoved(position);
@@ -372,10 +376,10 @@ public class FavoriteBoardsFragment extends Fragment {
                     }));
                     //DebugUtils.Log("onAL", board+" delete over");
                 }catch (final Exception e){
-                    if(getActivity()!=null)
-                        getActivity().runOnUiThread (new Thread(new Runnable() {
+                    if(getThisActivity()!=null)
+                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
                             public void run() {
-                                Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
 
                             }
@@ -400,7 +404,7 @@ public class FavoriteBoardsFragment extends Fragment {
     private void deleteBoard(final String board,final int position){
         r3 = new Runnable() {
             public void run() {
-                getActivity().runOnUiThread(new Thread(new Runnable() {
+                getThisActivity().runOnUiThread(new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
 
@@ -409,7 +413,7 @@ public class FavoriteBoardsFragment extends Fragment {
                 GattingData=true;
 
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
                 try {
 
 
@@ -418,7 +422,7 @@ public class FavoriteBoardsFragment extends Fragment {
                     mDBHelper.delebyBoard(board);
 
 
-                    getActivity().runOnUiThread(new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
                         public void run() {
                             data.remove(position);
                             mAdapter.notifyItemRemoved(position);
@@ -428,10 +432,10 @@ public class FavoriteBoardsFragment extends Fragment {
                     }));
                     DebugUtils.Log("onAL", board+" delete over");
                 }catch (final Exception e){
-                    if(getActivity()!=null)
-                        getActivity().runOnUiThread (new Thread(new Runnable() {
+                    if(getThisActivity()!=null)
+                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
                             public void run() {
-                                Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
 
                             }
@@ -457,7 +461,7 @@ public class FavoriteBoardsFragment extends Fragment {
 
         r1 = new Runnable() {
             public void run() {
-                getActivity().runOnUiThread (new Thread(new Runnable() {
+                getThisActivity().runOnUiThread (new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
 
@@ -466,11 +470,11 @@ public class FavoriteBoardsFragment extends Fragment {
                 GattingData=true;
                 data_temp.clear();
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
 
                 try {
                     data_temp.addAll(mDBHelper.getAll());
-                    getActivity().runOnUiThread (new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
                         public void run() {
                             data.addAll(data_temp);
                             mAdapter.notifyDataSetChanged();
@@ -483,9 +487,9 @@ public class FavoriteBoardsFragment extends Fragment {
 
                 }catch (final Exception e){
                     DebugUtils.Log("onHotBoards","Error "+e.toString());
-                    getActivity().runOnUiThread (new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
                         public void run() {
-                            Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                             mSwipeRefreshLayout.setRefreshing(false);
 
                         }

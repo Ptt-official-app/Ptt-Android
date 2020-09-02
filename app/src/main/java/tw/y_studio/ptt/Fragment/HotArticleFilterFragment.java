@@ -24,12 +24,13 @@ import java.util.Map;
 
 import tw.y_studio.ptt.Adapter.HotArticleFilterAdapter;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.RecyclerItemClickListener;
 import tw.y_studio.ptt.UI.StickyHeader.StickyHeaderItemDecorator;
 import tw.y_studio.ptt.Utils.StringUtils;
 
-public class HotArticleFilterFragment extends Fragment {
+public class HotArticleFilterFragment extends BaseFragment {
     private View Mainview=null;
     public static HotArticleFilterFragment newInstance() {
         Bundle args = new Bundle();
@@ -68,7 +69,7 @@ public class HotArticleFilterFragment extends Fragment {
 
         mRecyclerView = Mainview.findViewById(R.id.article_list_fragment_recyclerView);
 
-        mAdapter = new HotArticleFilterAdapter(getActivity(),data);
+        mAdapter = new HotArticleFilterAdapter(getThisActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -133,10 +134,10 @@ public class HotArticleFilterFragment extends Fragment {
                                 LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                             }
 
-                            getActivity().onBackPressed();
+                            getThisActivity().onBackPressed();
 
                         }else {
-                            getActivity().onBackPressed();
+                            getThisActivity().onBackPressed();
                         }
                     }
 
@@ -151,14 +152,17 @@ public class HotArticleFilterFragment extends Fragment {
         mAdapter.setMoreClickListen(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed();
+                getThisActivity().onBackPressed();
             }
         });
 
-        loadData();
+
         return view;
     }
 
+    protected void onAnimOver() {
+        loadData();
+    }
 
     private boolean GattingData = false;
     private void loadData(){

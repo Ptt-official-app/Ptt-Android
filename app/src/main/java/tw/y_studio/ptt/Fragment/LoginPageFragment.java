@@ -36,12 +36,13 @@ import java.util.Map;
 
 import tw.y_studio.ptt.Adapter.SimpleAdapter;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.Utils.StringUtils;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class LoginPageFragment extends Fragment {
+public class LoginPageFragment extends BaseFragment {
     private View Mainview=null;
     public static LoginPageFragment newInstance() {
         Bundle args = new Bundle();
@@ -83,7 +84,7 @@ public class LoginPageFragment extends Fragment {
         content.setSpan(new UnderlineSpan(), 0, forgetTVText.length(), 0);
         forgetTV.setText(content);
 
-        String id = getActivity().getSharedPreferences(
+        String id = getThisActivity().getSharedPreferences(
                 "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
         accountET.setText(id);
 
@@ -100,13 +101,13 @@ public class LoginPageFragment extends Fragment {
                     return;
                 }
 
-                SharedPreferences preference = getActivity().getSharedPreferences(
+                SharedPreferences preference = getThisActivity().getSharedPreferences(
                         "MainSetting", MODE_PRIVATE);
                 SharedPreferences.Editor editor = preference.edit();
                 editor.putString(StringUtils.notNullImageString("APIPTTID"),text);
                 editor.apply();
                 editor.commit();
-                getActivity().onBackPressed();
+                getThisActivity().onBackPressed();
             }
         });
 
@@ -140,11 +141,14 @@ public class LoginPageFragment extends Fragment {
         return view;
     }
 
+    protected void onAnimOver() {
+
+    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager = (InputMethodManager)  getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(Mainview.getWindowToken(), 0);
         }catch (Exception e){
 

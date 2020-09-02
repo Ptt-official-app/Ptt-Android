@@ -18,10 +18,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import tw.y_studio.ptt.API.PostListAPIHelper;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 
 
-public class ArticleListSearchFragment extends Fragment {
+public class ArticleListSearchFragment extends BaseFragment {
 
     private View Mainview=null;
     public static ArticleListSearchFragment newInstance() {
@@ -71,7 +72,7 @@ public class ArticleListSearchFragment extends Fragment {
         Go2Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed();
+                getThisActivity().onBackPressed();
             }
         });
 
@@ -82,7 +83,7 @@ public class ArticleListSearchFragment extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.article_list_search__navigation_item_cross:
-                        getActivity().onBackPressed();
+                        getThisActivity().onBackPressed();
                         return false;
                     case R.id.article_list_search__navigation_item_sure:
                     default:
@@ -94,9 +95,10 @@ public class ArticleListSearchFragment extends Fragment {
         };
         navigation = (BottomNavigationView) Mainview.findViewById(R.id.article_list_fragment_bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        loadData();
+
         return view;
     }
+
 
     private void getDataFromApi(){
 
@@ -116,7 +118,7 @@ public class ArticleListSearchFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager = (InputMethodManager) getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(Mainview.getWindowToken(), 0);
         } catch (Exception e) {
 

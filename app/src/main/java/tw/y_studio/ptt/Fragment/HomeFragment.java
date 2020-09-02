@@ -15,9 +15,10 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
     private View Mainview=null;
     public static HomeFragment newInstance() {
         Bundle args = new Bundle();
@@ -99,7 +100,7 @@ public class HomeFragment extends Fragment {
         navigation = (BottomNavigationView) Mainview.findViewById(R.id.home_bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
-        onAnimOver();
+
         return view;
     }
 
@@ -200,6 +201,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void showFragment(Fragment toFragment) {
+
         if(preFragment==null) {
             getChildFragmentManager()
                     .beginTransaction()

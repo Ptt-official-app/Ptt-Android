@@ -30,6 +30,7 @@ import java.util.Map;
 import tw.y_studio.ptt.Adapter.SimpleAdapter;
 import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.StaticValue;
@@ -39,7 +40,7 @@ import tw.y_studio.ptt.Utils.WebUtils;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class SettingFragment extends Fragment {
+public class SettingFragment extends BaseFragment {
     private View Mainview=null;
     public static SettingFragment newInstance() {
         Bundle args = new Bundle();
@@ -82,7 +83,7 @@ public class SettingFragment extends Fragment {
 
         mRecyclerView = Mainview.findViewById(R.id.article_list_fragment_recyclerView);
 
-        mAdapter = new SimpleAdapter(getActivity(),data);
+        mAdapter = new SimpleAdapter(getThisActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -133,7 +134,7 @@ public class SettingFragment extends Fragment {
             @Override
             public void onItemClick(View view,final int position) {
                 if(mClickFix.isFastDoubleClick()) return;
-                SharedPreferences preference2 = getActivity().getSharedPreferences(
+                SharedPreferences preference2 = getThisActivity().getSharedPreferences(
                         "MainSetting", MODE_PRIVATE);
                 if(StringUtils.notNullString(data.get(position).get("type")).equals("int")){
                     androidx.appcompat.app.AlertDialog.Builder builder25 = new androidx.appcompat.app.AlertDialog.Builder(getContext()); // 創建訊息方塊
@@ -145,7 +146,7 @@ public class SettingFragment extends Fragment {
 
                             dialog.dismiss();
 
-                            SharedPreferences preference = getActivity().getSharedPreferences(
+                            SharedPreferences preference = getThisActivity().getSharedPreferences(
                                     "MainSetting", MODE_PRIVATE);
                             SharedPreferences.Editor editor = preference.edit();
                             editor.putInt(StringUtils.notNullImageString(data.get(position).get("key")),which);
@@ -208,7 +209,7 @@ public class SettingFragment extends Fragment {
                     androidx.appcompat.app.AlertDialog.Builder builder25 = new androidx.appcompat.app.AlertDialog.Builder(getContext()); // 創建訊息方塊
                     builder25.setTitle((int)data.get(position).get("titleKey"));
                     //builder25.setMessage("input password");
-                    editBox.setText(getActivity().getSharedPreferences(
+                    editBox.setText(getThisActivity().getSharedPreferences(
                             "MainSetting", MODE_PRIVATE).getString(StringUtils.notNullImageString(data.get(position).get("key")),""));
 
                     if(((int)data.get(position).get("position"))==5){
@@ -229,7 +230,7 @@ public class SettingFragment extends Fragment {
                                     return;
                                 }
                             }
-                            SharedPreferences preference = getActivity().getSharedPreferences(
+                            SharedPreferences preference = getThisActivity().getSharedPreferences(
                                     "MainSetting", MODE_PRIVATE);
                             SharedPreferences.Editor editor = preference.edit();
                             editor.putString(StringUtils.notNullImageString(data.get(position).get("key")),editBox.getText().toString());
@@ -254,10 +255,12 @@ public class SettingFragment extends Fragment {
             }
         });
 
-        loadData();
         return view;
     }
 
+    protected void onAnimOver() {
+        loadData();
+    }
 
 
     private void showPolicy(){
@@ -272,7 +275,7 @@ public class SettingFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             Map<String,Object> datt=new HashMap<>();
-            datt.put("title",getActivity().getString(R.string.setting_theme));
+            datt.put("title",getThisActivity().getString(R.string.setting_theme));
             datt.put("position",0);
             datt.put("type","int");
             datt.put("key","THEME");
@@ -284,7 +287,7 @@ public class SettingFragment extends Fragment {
 
         if(true){
             Map<String,Object> datt=new HashMap<>();
-            datt.put("title",getActivity().getString(R.string.setting_search_item_style));
+            datt.put("title",getThisActivity().getString(R.string.setting_search_item_style));
             datt.put("position",2);
             datt.put("type","int");
             datt.put("key","SEARCHSTYLE");
@@ -295,7 +298,7 @@ public class SettingFragment extends Fragment {
         }
         if(true){
             Map<String,Object> datt=new HashMap<>();
-            datt.put("title",getActivity().getString(R.string.setting_post_bottom_style));
+            datt.put("title",getThisActivity().getString(R.string.setting_post_bottom_style));
             datt.put("position",5);
             datt.put("type","int");
             datt.put("key","POSTBOTTOMSTYLE");
@@ -306,13 +309,13 @@ public class SettingFragment extends Fragment {
         }
          if(true){
             Map<String,Object> datt=new HashMap<>();
-            datt.put("title",getActivity().getString(R.string.ptt_policy));
+            datt.put("title",getThisActivity().getString(R.string.ptt_policy));
             datt.put("position",4);
             data.add(datt);
         }
         if(true){
             Map<String,Object> datt=new HashMap<>();
-            datt.put("title",getActivity().getString(R.string.set_ptt_id));
+            datt.put("title",getThisActivity().getString(R.string.set_ptt_id));
             datt.put("position",5);
             datt.put("type","string");
             datt.put("key","APIPTTID");

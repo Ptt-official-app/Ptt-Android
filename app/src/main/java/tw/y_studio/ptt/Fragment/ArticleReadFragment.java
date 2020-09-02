@@ -49,6 +49,7 @@ import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.Ptt.AidBean;
 import tw.y_studio.ptt.Ptt.AidConverter;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 
 import tw.y_studio.ptt.Utils.DebugUtils;
@@ -58,7 +59,7 @@ import tw.y_studio.ptt.Utils.UIUtils;
 import static android.content.Context.MODE_PRIVATE;
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
-public class ArticleReadFragment extends Fragment {
+public class ArticleReadFragment extends BaseFragment {
     private View Mainview=null;
     public static ArticleReadFragment newInstance() {
         Bundle args = new Bundle();
@@ -115,7 +116,7 @@ public class ArticleReadFragment extends Fragment {
         Resources.Theme theme = getContext().getTheme();
         theme.resolveAttribute(R.attr.article_header, typedValue, true);
         @ColorInt int color = typedValue.data;
-        Window window = getActivity().getWindow();
+        Window window = getThisActivity().getWindow();
         window.setStatusBarColor(color);
 
         article_read_item_textView_like = Mainview.findViewById(R.id.article_read_item_textView_like);
@@ -139,7 +140,7 @@ public class ArticleReadFragment extends Fragment {
             }
         });
 
-        mAdapter = new ArticleReadAdapter(getActivity(),data);
+        mAdapter = new ArticleReadAdapter(getThisActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -230,10 +231,12 @@ public class ArticleReadFragment extends Fragment {
             }
         });
 
-        loadData();
         return view;
     }
 
+    protected void onAnimOver() {
+        loadData();
+    }
     
 
     private Handler mUI_Handler = new Handler();
@@ -278,7 +281,7 @@ public class ArticleReadFragment extends Fragment {
 
         r1 = new Runnable() {
             public void run() {
-                getActivity().runOnUiThread(new Thread(new Runnable() {
+                getThisActivity().runOnUiThread(new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
 
@@ -384,7 +387,7 @@ public class ArticleReadFragment extends Fragment {
 
 
 
-                    getActivity().runOnUiThread(new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
                         public void run() {
                             data.clear();
                             //mAdapter.notifyDataSetChanged();
@@ -399,10 +402,10 @@ public class ArticleReadFragment extends Fragment {
                     DebugUtils.Log("onAL", "get data from web over");
                 }catch (final Exception e){
                     DebugUtils.Log("onAL", "Error : "+e.toString());
-                    if(getActivity()!=null)
-                        getActivity().runOnUiThread (new Thread(new Runnable() {
+                    if(getThisActivity()!=null)
+                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
                             public void run() {
-                                Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
 
                             }
@@ -449,7 +452,7 @@ public class ArticleReadFragment extends Fragment {
         if(!(haveApi&&useApi)){
             return;
         }
-        String id = getActivity().getSharedPreferences(
+        String id = getThisActivity().getSharedPreferences(
                 "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
         if(id.isEmpty()){
             try {
@@ -460,7 +463,7 @@ public class ArticleReadFragment extends Fragment {
             return;
         }
 
-        PopupMenu popupMenu = new PopupMenu(getActivity(), view);
+        PopupMenu popupMenu = new PopupMenu(getThisActivity(), view);
         popupMenu.getMenuInflater().inflate(R.menu.post_article_rank_menu, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -505,7 +508,7 @@ public class ArticleReadFragment extends Fragment {
 
         r1 = new Runnable() {
             public void run() {
-                getActivity().runOnUiThread(new Thread(new Runnable() {
+                getThisActivity().runOnUiThread(new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
 
@@ -552,7 +555,7 @@ public class ArticleReadFragment extends Fragment {
 
 
 
-                    getActivity().runOnUiThread(new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
                         public void run() {
                             mSwipeRefreshLayout.setRefreshing(false);
                             mAdapter.notifyDataSetChanged();
@@ -563,10 +566,10 @@ public class ArticleReadFragment extends Fragment {
                     DebugUtils.Log("onAL", "get data from web over");
                 }catch (final Exception e){
                     DebugUtils.Log("onAL", "Error : "+e.toString());
-                    if(getActivity()!=null)
-                        getActivity().runOnUiThread (new Thread(new Runnable() {
+                    if(getThisActivity()!=null)
+                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
                             public void run() {
-                                Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
 
                             }
@@ -588,7 +591,7 @@ public class ArticleReadFragment extends Fragment {
     }
     private ProgressDialog mDialog = null;
     private void setRank(final SetPostRankAPIHelper.iRank rank_){
-        mDialog = ProgressDialog.show(getActivity(), "", "please wait");
+        mDialog = ProgressDialog.show(getThisActivity(), "", "please wait");
         mDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
 
         new Thread() {
@@ -605,17 +608,17 @@ public class ArticleReadFragment extends Fragment {
                         throw new Exception("error");
                         //DebugUtils.Log("onAR", "not match");
                     }
-                    String id = getActivity().getSharedPreferences(
+                    String id = getThisActivity().getSharedPreferences(
                             "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
                     if(id.length()==0){
                         throw new Exception("No Ptt id");
                     }
                     setPostRankAPI.get(id,rank_);
-                    if(getActivity()!=null){
-                        getActivity().runOnUiThread(new Thread(new Runnable() {
+                    if(getThisActivity()!=null){
+                        getThisActivity().runOnUiThread(new Thread(new Runnable() {
                             public void run() {
                                 mDialog.dismiss();
-                                //Toast.makeText(getActivity(),"success",Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getThisActivity(),"success",Toast.LENGTH_SHORT).show();
                                 //loadData();
                                 rehreshRank();
 
@@ -624,11 +627,11 @@ public class ArticleReadFragment extends Fragment {
                     }
 
                 }catch (Exception e){
-                    if(getActivity()!=null){
-                        getActivity().runOnUiThread(new Thread(new Runnable() {
+                    if(getThisActivity()!=null){
+                        getThisActivity().runOnUiThread(new Thread(new Runnable() {
                             public void run() {
                                 mDialog.dismiss();
-                                Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 //loadData();
 
                             }
@@ -647,7 +650,7 @@ public class ArticleReadFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager = (InputMethodManager)  getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(Mainview.getWindowToken(), 0);
         }catch (Exception e){
 
@@ -673,10 +676,10 @@ public class ArticleReadFragment extends Fragment {
         }
 
         TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = getActivity().getTheme();
+        Resources.Theme theme = getThisActivity().getTheme();
         theme.resolveAttribute(R.attr.black, typedValue, true);
         @ColorInt int color = typedValue.data;
-        Window window = getActivity().getWindow();
+        Window window = getThisActivity().getWindow();
         window.setStatusBarColor(color);
 
     }

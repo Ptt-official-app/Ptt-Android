@@ -15,9 +15,10 @@ import java.util.Map;
 
 import tw.y_studio.ptt.Adapter.SearchBoardsAdapter;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 
-public class PersonInfoFragment extends Fragment {
+public class PersonInfoFragment extends BaseFragment {
     private View Mainview=null;
     public static PersonInfoFragment newInstance() {
         Bundle args = new Bundle();
@@ -46,7 +47,7 @@ public class PersonInfoFragment extends Fragment {
 
         recyclerView = Mainview.findViewById(R.id.persion_info_fragment_recyclerView);
 
-        mdapter = new SearchBoardsAdapter(getActivity(),data);
+        mdapter = new SearchBoardsAdapter(getThisActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -57,6 +58,9 @@ public class PersonInfoFragment extends Fragment {
 
 
         return view;
+    }
+    protected void onAnimOver() {
+
     }
 
 }

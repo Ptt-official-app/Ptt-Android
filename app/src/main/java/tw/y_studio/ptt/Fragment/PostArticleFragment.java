@@ -30,12 +30,13 @@ import java.util.Map;
 
 import tw.y_studio.ptt.API.PostListAPIHelper;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.StaticValue;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class PostArticleFragment extends Fragment {
+public class PostArticleFragment extends BaseFragment {
     private View Mainview=null;
     public static PostArticleFragment newInstance() {
         Bundle args = new Bundle();
@@ -78,7 +79,7 @@ public class PostArticleFragment extends Fragment {
         Go2Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed();
+                getThisActivity().onBackPressed();
             }
         });
 
@@ -129,7 +130,6 @@ public class PostArticleFragment extends Fragment {
         navigation.inflateMenu(R.menu.post_article_bottom_navigation_menu2);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        onAnimOver();
         return view;
     }
 

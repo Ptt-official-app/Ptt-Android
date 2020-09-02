@@ -1,5 +1,6 @@
 package tw.y_studio.ptt.Fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -29,6 +30,7 @@ import tw.y_studio.ptt.Adapter.HotBoardsListAdapter;
 import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.Ptt.WebUtils;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.StaticValue;
@@ -37,7 +39,7 @@ import tw.y_studio.ptt.Utils.StringUtils;
 
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
-public class HotBoardsFragment extends Fragment {
+public class HotBoardsFragment extends BaseFragment {
     private View Mainview=null;
     public static HotBoardsFragment newInstance() {
         Bundle args = new Bundle();
@@ -84,7 +86,7 @@ public class HotBoardsFragment extends Fragment {
         });
         mRecyclerView = Mainview.findViewById(R.id.hot_boards_fragment_recyclerView);
 
-        mHotBoardsListAdapter = new HotBoardsListAdapter(getActivity(),data);
+        mHotBoardsListAdapter = new HotBoardsListAdapter(getThisActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -128,10 +130,13 @@ public class HotBoardsFragment extends Fragment {
             }
         });
 
-
-        loadData();
         return view;
     }
+
+    protected void onAnimOver() {
+        loadData();
+    }
+
     private Handler mUI_Handler = new Handler();
     private Handler mThreadHandler;
     private HandlerThread mThread;
@@ -156,7 +161,7 @@ public class HotBoardsFragment extends Fragment {
 
         r1 = new Runnable() {
             public void run() {
-                getActivity().runOnUiThread (new Thread(new Runnable() {
+                getThisActivity().runOnUiThread (new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
 
@@ -170,7 +175,7 @@ public class HotBoardsFragment extends Fragment {
                     //PopularBoardListAPIHelper api = new PopularBoardListAPIHelper(this)
                     data_temp.addAll(popularBoardListAPI.get(1,128).getData());
 
-                    getActivity().runOnUiThread (new Thread(new Runnable() {
+                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
                         public void run() {
                             data.addAll(data_temp);
                             mHotBoardsListAdapter.notifyDataSetChanged();
@@ -183,12 +188,13 @@ public class HotBoardsFragment extends Fragment {
 
                 }catch (final Exception e){
                     DebugUtils.Log("onHotBoards","Error : "+e.toString());
-                    if(getActivity() != null){
-                        getActivity().runOnUiThread (new Thread(new Runnable() {
+                    final Activity thisActivity = getThisActivity();
+                    if(thisActivity != null){
+                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
                             public void run() {
-                                Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
+                                Toast.makeText(thisActivity,"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
 
+                                mSwipeRefreshLayout.setRefreshing(false);
                             }
                         }));
                     }

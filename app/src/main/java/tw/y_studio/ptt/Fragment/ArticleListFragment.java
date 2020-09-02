@@ -38,6 +38,7 @@ import tw.y_studio.ptt.API.PostListAPIHelper;
 import tw.y_studio.ptt.Adapter.ArticleListAdapter;
 import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.Utils.DebugUtils;
@@ -45,7 +46,7 @@ import tw.y_studio.ptt.Utils.StringUtils;
 
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
-public class ArticleListFragment extends Fragment {
+public class ArticleListFragment extends BaseFragment {
     public static enum Type {
         Normal,Search
     }
@@ -105,7 +106,7 @@ public class ArticleListFragment extends Fragment {
         Go2Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed();
+                getThisActivity().onBackPressed();
             }
         });
 
@@ -149,7 +150,7 @@ public class ArticleListFragment extends Fragment {
         navigation = (BottomNavigationView) Mainview.findViewById(R.id.article_list_fragment_bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mArticleListAdapter = new ArticleListAdapter(getActivity(),data);
+        mArticleListAdapter = new ArticleListAdapter(getThisActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -224,10 +225,12 @@ public class ArticleListFragment extends Fragment {
             }
         });
 
-        loadData();
         return view;
     }
 
+    protected void onAnimOver() {
+        loadData();
+    }
 
 
     private Handler mUI_Handler = new Handler();
@@ -244,8 +247,8 @@ public class ArticleListFragment extends Fragment {
         }
         r1 = new Runnable() {
             public void run() {
-                if(getActivity()!=null)
-                getActivity().runOnUiThread (new Thread(new Runnable() {
+                if(getThisActivity()!=null)
+                getThisActivity().runOnUiThread (new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
 
@@ -271,8 +274,8 @@ public class ArticleListFragment extends Fragment {
 
 
 
-                    if(getActivity()!=null)
-                    getActivity().runOnUiThread (new Thread(new Runnable() {
+                    if(getThisActivity()!=null)
+                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
                         public void run() {
                             data.addAll(data_temp);
                             mArticleListAdapter.notifyDataSetChanged();
@@ -290,7 +293,7 @@ public class ArticleListFragment extends Fragment {
                     if(getContext()!=null)
                         ((Activity)getContext()).runOnUiThread (new Thread(new Runnable() {
                             public void run() {
-                                Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
 
                             }

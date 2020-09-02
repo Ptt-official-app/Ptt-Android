@@ -33,12 +33,13 @@ import java.util.ArrayList;
 
 import tw.y_studio.ptt.Adapter.GeneralFragmentStatePagerAdapter;
 import tw.y_studio.ptt.R;
+import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ImageLoadingDrawable;
 import tw.y_studio.ptt.Utils.DebugUtils;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class PersonalPageFragment extends Fragment {
+public class PersonalPageFragment extends BaseFragment {
     private View Mainview=null;
     public static PersonalPageFragment newInstance() {
         Bundle args = new Bundle();
@@ -158,7 +159,7 @@ public class PersonalPageFragment extends Fragment {
         setImageView(persionPicture,"asset:///List-Of-Android-R-Features.jpeg");
         setImageView(persionPictureMini,"asset:///List-Of-Android-R-Features.jpeg");
 
-        String id = getActivity().getSharedPreferences(
+        String id = getThisActivity().getSharedPreferences(
                 "MainSetting", MODE_PRIVATE).getString("APIPTTID","Guest");
         personIDTextView.setText(id);
         personIDTextViewMini.setText(id);
