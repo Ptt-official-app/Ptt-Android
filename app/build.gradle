@@ -9,6 +9,8 @@ android {
         targetSdkVersion 30
         versionCode 43
         versionName "0.0.14_build2"
+        buildConfigField "String", "API_Domain", '"'+apiDomain()+'"'
+        buildConfigField "String", "demo_hot_article_url", '"'+demoHotArticleUrl()+'"'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a' , 'x86', 'x86_64'
@@ -19,9 +21,6 @@ android {
 
         release {
             minifyEnabled true
-            buildConfigField "String", "API_Domain", '"'+apiDomain()+'"'
-            buildConfigField "String", "Build_time", '"'+getDate()+'"'
-            buildConfigField "String", "demo_hot_article_url", '"'+demoHotArticleUrl()+'"'
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             shrinkResources true
             zipAlignEnabled true
@@ -29,9 +28,6 @@ android {
         }
 
         debug {
-            buildConfigField "String", "API_Domain", '"'+apiDomain()+'"'
-            buildConfigField "String", "Build_time", '"'+getDate()+'"'
-            buildConfigField "String", "demo_hot_article_url", '"'+demoHotArticleUrl()+'"'
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -51,11 +47,7 @@ def apiDomain(){
 def demoHotArticleUrl(){
     return ""
 }
-def getDate() {
-    def date = new Date()
-    def formattedDate = date.format('yyyyMMddHHmmss')
-    return formattedDate
-}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

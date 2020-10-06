@@ -9,15 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import tw.y_studio.ptt.Ptt.WebUtils;
-import tw.y_studio.ptt.Utils.StringUtils;
 
 public class PopularBoardListAPIHelper extends BaseAPIHelper {
     public PopularBoardListAPIHelper(Context context){

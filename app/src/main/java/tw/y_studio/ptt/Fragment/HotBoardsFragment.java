@@ -11,33 +11,22 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import tw.y_studio.ptt.API.PopularBoardListAPIHelper;
 import tw.y_studio.ptt.Adapter.HotBoardsListAdapter;
 import tw.y_studio.ptt.HomeActivity;
-import tw.y_studio.ptt.Ptt.WebUtils;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
-import tw.y_studio.ptt.UI.StaticValue;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
-
-import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
 public class HotBoardsFragment extends BaseFragment {
     private View Mainview=null;
