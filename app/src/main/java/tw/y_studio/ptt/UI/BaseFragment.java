@@ -2,6 +2,7 @@ package tw.y_studio.ptt.UI;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -11,6 +12,7 @@ public class BaseFragment extends Fragment {
 
     protected Context mContext = null;
     protected Activity mActivity = null;
+    protected View mMainView = null;
 
     public void setActivity(Activity activity){
         this.mActivity = activity;
@@ -22,7 +24,16 @@ public class BaseFragment extends Fragment {
 
     }
 
-    protected void onAnimOver() {
+
+    protected void onAnimOver(){
+
+    }
+
+    protected void setMainView(View view){
+        this.mMainView = view;
+    }
+    protected View getMainView(){
+        return this.mMainView;
     }
 
     private boolean isFirstStart = false;
@@ -74,6 +85,7 @@ public class BaseFragment extends Fragment {
         super.onDetach();
         this.mContext = null;
         this.mActivity = null;
+        this.mMainView = null;
 
     }
 
