@@ -25,6 +25,9 @@ public class BaseFragment extends Fragment {
 
     }
 
+    public <T extends View> T findViewById(int id){
+       return (T) mMainView.findViewById(id);
+    }
 
     protected void onAnimOver(){
 

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,16 +48,18 @@ import tw.y_studio.ptt.Utils.StringUtils;
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
 public class ArticleListFragment extends BaseFragment {
-    public static enum Type {
+
+    public enum Type {
         Normal,Search
     }
-    private View Mainview=null;
+
     public static ArticleListFragment newInstance() {
         Bundle args = new Bundle();
         ArticleListFragment fragment = new ArticleListFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     public static ArticleListFragment newInstance(Bundle args) {
         ArticleListFragment fragment = new ArticleListFragment();
         fragment.setArguments(args);
@@ -67,7 +70,7 @@ public class ArticleListFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ArticleListAdapter mArticleListAdapter;
 
-    private List<Map<String, Object>> data;
+    private List<Map<String, Object>> data = new ArrayList<>();
 
     private Type PageType = Type.Normal;
 
@@ -75,34 +78,27 @@ public class ArticleListFragment extends BaseFragment {
     private String BoardSubName = "";
     private TextView mTextView_BoardName;
     private TextView mTextView_BoardSubName;
-    private AppCompatImageButton Go2Back;
+    private ImageButton Go2Back;
 
     private BottomNavigationView navigation;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener;
 
     private ClickFix mClickFix = new ClickFix();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.article_list_fragment_layout, container, false);
 
+        setMainView(view);
 
+        mTextView_BoardName = findViewById(R.id.article_list_fragment_textView_title);
+        mTextView_BoardSubName = findViewById(R.id.article_list_fragment_textView_subtitle);
+        Go2Back = findViewById(R.id.article_read_item_header_imageView_back);
+        mRecyclerView = findViewById(R.id.article_list_fragment_recyclerView);
+        navigation = findViewById(R.id.article_list_fragment_bottom_navigation);
+        mSwipeRefreshLayout= findViewById(R.id.article_list_fragment_refresh_layout);
 
-        Mainview=view;
-
-        data = new ArrayList<>();
-        Bundle bundle = getArguments();//取得Bundle
-        BoardName=bundle.getString("title",getString(R.string.board_list_title_empty));
-        BoardSubName=bundle.getString("subtitle",getString(R.string.board_list_subtitle_empty));
-        PageType = (Type) bundle.get("PageType");
-        if(PageType == null ){
-            PageType = Type.Normal;
-        }
-        mTextView_BoardName = Mainview.findViewById(R.id.article_list_fragment_textView_title);
-        mTextView_BoardSubName = Mainview.findViewById(R.id.article_list_fragment_textView_subtitle);
-        mTextView_BoardName.setText(BoardName);
-        mTextView_BoardSubName.setText(BoardSubName);
-        Go2Back = Mainview.findViewById(R.id.article_read_item_header_imageView_back);
         Go2Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,16 +106,11 @@ public class ArticleListFragment extends BaseFragment {
             }
         });
 
-        mRecyclerView = Mainview.findViewById(R.id.article_list_fragment_recyclerView);
-
         mOnNavigationItemSelectedListener
                 = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
-
-
                     case R.id.article_list_navigation_item_refresh:
                         loadData();
                         return false;
@@ -136,18 +127,13 @@ public class ArticleListFragment extends BaseFragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-
                     case R.id.article_list_navigation_item_info:
                     default:
-
-
                 }
                 return false;
             }
-
         };
-        navigation = (BottomNavigationView) Mainview.findViewById(R.id.article_list_fragment_bottom_navigation);
+
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         mArticleListAdapter = new ArticleListAdapter(getThisActivity(),data);
@@ -158,11 +144,6 @@ public class ArticleListFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mArticleListAdapter);
 
-
-
-
-        mSwipeRefreshLayout= Mainview.findViewById(R.id.article_list_fragment_refresh_layout);
-        //mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_light,
                 android.R.color.holo_blue_light,
@@ -171,14 +152,10 @@ public class ArticleListFragment extends BaseFragment {
 
         mSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
-
                     @Override
                     public void onRefresh() {
-
                         loadData();
-
                     }
-
                 });
 
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -187,14 +164,10 @@ public class ArticleListFragment extends BaseFragment {
                 super.onScrolled(recyclerView, dx, dy);
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
                 int totalItemCount = layoutManager.getItemCount();
-
-
                 if(!GattingData)
                 if (lastVisibleItem >= totalItemCount - 30 ) {
                     loadNextData();
                 }
-
-
             }
         });
 
@@ -225,6 +198,18 @@ public class ArticleListFragment extends BaseFragment {
             }
         });
 
+        Bundle bundle = getArguments();//取得Bundle
+        BoardName=bundle.getString("title",getString(R.string.board_list_title_empty));
+        BoardSubName=bundle.getString("subtitle",getString(R.string.board_list_subtitle_empty));
+        PageType = (Type) bundle.get("PageType");
+
+        if(PageType==null){
+            PageType = Type.Normal;
+        }
+
+        mTextView_BoardName.setText(BoardName);
+        mTextView_BoardSubName.setText(BoardSubName);
+
         return view;
     }
 
@@ -232,8 +217,6 @@ public class ArticleListFragment extends BaseFragment {
         loadData();
     }
 
-
-    private Handler mUI_Handler = new Handler();
     private Handler mThreadHandler;
     private HandlerThread mThread;
     private Runnable r1;
@@ -245,21 +228,19 @@ public class ArticleListFragment extends BaseFragment {
         if(postListAPI==null){
             postListAPI = new PostListAPIHelper(getContext(),BoardName);
         }
+
         r1 = new Runnable() {
             public void run() {
                 if(getThisActivity()!=null)
                 getThisActivity().runOnUiThread (new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
-
                     }
                 }));
                 GattingData=true;
                 data_temp.clear();
                 DebugUtils.Log("onAL","get data from web start");
-
                 try {
-
                     for(int i=0;i<3;i++){
                         try{
                             data_temp.addAll(postListAPI.get(NowApiNum).getData());
@@ -268,11 +249,8 @@ public class ArticleListFragment extends BaseFragment {
                                 throw e;
                             }
                         }
-
                         NowApiNum++;
                     }
-
-
 
                     if(getThisActivity()!=null)
                     getThisActivity().runOnUiThread (new Thread(new Runnable() {
@@ -284,24 +262,20 @@ public class ArticleListFragment extends BaseFragment {
 
                         }
                     }));
-                    DebugUtils.Log("onAL","get data from web over");
-
-
+                    DebugUtils.Log("ArticleListFragment","get data from web success");
                 } catch (final Exception e) {
                     e.printStackTrace();
-                    DebugUtils.Log("onHALF","Error : "+e.toString());
+                    DebugUtils.Log("ArticleListFragment","Error : "+e.toString());
                     if(getContext()!=null)
                         ((Activity)getContext()).runOnUiThread (new Thread(new Runnable() {
                             public void run() {
                                 Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
-
                             }
                         }));
                 }
                 GattingData=false;
             }
-
         };
 
         mThread = new HandlerThread("name");
@@ -315,8 +289,9 @@ public class ArticleListFragment extends BaseFragment {
         if(GattingData) return;
         getDataFromApi();
     }
-    private boolean haveApi = true;
+
     private boolean GattingData = false;
+
     private void loadData(){
         if(GattingData) return;
 
@@ -332,7 +307,6 @@ public class ArticleListFragment extends BaseFragment {
         super.onDestroy();
         if(data!=null)
         data.clear();
-
         if(postListAPI!=null){
             postListAPI.close();
         }
