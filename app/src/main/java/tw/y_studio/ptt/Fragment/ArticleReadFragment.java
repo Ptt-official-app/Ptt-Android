@@ -14,28 +14,19 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Entities;
-import org.jsoup.nodes.Node;
-import org.jsoup.select.Elements;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -60,13 +51,14 @@ import static android.content.Context.MODE_PRIVATE;
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
 public class ArticleReadFragment extends BaseFragment {
-    private View Mainview=null;
+    
     public static ArticleReadFragment newInstance() {
         Bundle args = new Bundle();
         ArticleReadFragment fragment = new ArticleReadFragment();
         fragment.setArguments(args);
         return fragment;
     }
+    
     public static ArticleReadFragment newInstance(Bundle args) {
         ArticleReadFragment fragment = new ArticleReadFragment();
         fragment.setArguments(args);
@@ -77,7 +69,7 @@ public class ArticleReadFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private ArticleReadAdapter mAdapter;
 
-    private List<Map<String, Object>> data;
+    private List<Map<String, Object>> data = new ArrayList<>();
 
     private String articleTitle = "";
     private String articleBoard = "";
@@ -92,26 +84,29 @@ public class ArticleReadFragment extends BaseFragment {
     private LinearLayout reply_left;
     private LinearLayout reply_right;
 
-    private AppCompatImageButton reply_hide;
-    private AppCompatImageButton likeBT;
-    private AppCompatImageButton shareArticleBT;
+    private ImageButton reply_hide;
+    private ImageButton likeBT;
+    private ImageButton shareArticleBT;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.article_read_fragment_layout, container, false);
 
-        Mainview=view;
-        data = new ArrayList<>();
-        Bundle bundle = getArguments();//取得Bundle
-        orgUrl=bundle.getString("url","");
-        articleBoard=bundle.getString("board","");
-        articleTitle=bundle.getString("title","");
-        articleAuth=bundle.getString("auth","");
-        articleClass=bundle.getString("class","");
-        articleTime=bundle.getString("date","");
-        putDefaultHeader();
-        /*change noit bar color*/
+        setMainView(view);
+
+        reply_edittext = findViewById(R.id.article_read_item_editText_reply);
+        org_left = findViewById(R.id.article_read_item_linearlayout_org_left);
+        org_right = findViewById(R.id.article_read_item_linearlayout_org_right);
+        reply_left = findViewById(R.id.article_read_item_linearlayout_reply_left);
+        reply_right = findViewById(R.id.article_read_item_linearlayout_reply_right);
+        reply_hide = findViewById(R.id.article_read_item_imageButton_hide_reply);
+        article_read_item_textView_like = findViewById(R.id.article_read_item_textView_like);
+        mRecyclerView = findViewById(R.id.article_read_fragment_recyclerView);
+        likeBT = findViewById(R.id.article_read_item_imageButton_like);
+        shareArticleBT = findViewById(R.id.article_read_item_imageButton_share);
+        mSwipeRefreshLayout = findViewById(R.id.article_read_fragment_refresh_layout);
+
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = getContext().getTheme();
         theme.resolveAttribute(R.attr.article_header, typedValue, true);
@@ -119,12 +114,6 @@ public class ArticleReadFragment extends BaseFragment {
         Window window = getThisActivity().getWindow();
         window.setStatusBarColor(color);
 
-        article_read_item_textView_like = Mainview.findViewById(R.id.article_read_item_textView_like);
-        article_read_item_textView_like.setText("0");
-        mRecyclerView = Mainview.findViewById(R.id.article_read_fragment_recyclerView);
-
-
-        likeBT = Mainview.findViewById(R.id.article_read_item_imageButton_like);
         likeBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +121,6 @@ public class ArticleReadFragment extends BaseFragment {
             }
         });
 
-        shareArticleBT = Mainview.findViewById(R.id.article_read_item_imageButton_share);
         shareArticleBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -147,8 +135,6 @@ public class ArticleReadFragment extends BaseFragment {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
-
-        mSwipeRefreshLayout= Mainview.findViewById(R.id.article_read_fragment_refresh_layout);
 
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_light,
@@ -170,14 +156,10 @@ public class ArticleReadFragment extends BaseFragment {
                 super.onScrolled(recyclerView, dx, dy);
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
                 int totalItemCount = layoutManager.getItemCount();
-
-
                 if(!GattingData)
                     if (lastVisibleItem >= totalItemCount - 30 ) {
                         //loadNextData();
                     }
-
-
             }
         });
 
@@ -185,28 +167,17 @@ public class ArticleReadFragment extends BaseFragment {
             @Override
             public void onItemClick(View view, int position) {
 
-
-
             }
         });
 
-        reply_edittext = Mainview.findViewById(R.id.article_read_item_editText_reply);
-        org_left = Mainview.findViewById(R.id.article_read_item_linearlayout_org_left);
-        org_right = Mainview.findViewById(R.id.article_read_item_linearlayout_org_right);
-        reply_left = Mainview.findViewById(R.id.article_read_item_linearlayout_reply_left);
-        reply_right = Mainview.findViewById(R.id.article_read_item_linearlayout_reply_right);
-
-        reply_hide = Mainview.findViewById(R.id.article_read_item_imageButton_hide_reply);
         reply_hide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 reply_edittext.clearFocus();
-
                 org_left.setVisibility(View.VISIBLE);
                 org_right.setVisibility(View.VISIBLE);
                 reply_left.setVisibility(View.GONE);
                 reply_right.setVisibility(View.GONE);
-
                 reply_edittext.setSingleLine(true);
             }
         });
@@ -216,20 +187,27 @@ public class ArticleReadFragment extends BaseFragment {
             public void onFocusChange(View v, boolean hasFocus) {
 
                 if (hasFocus) {
-
                     org_left.setVisibility(View.GONE);
                     org_right.setVisibility(View.GONE);
                     reply_left.setVisibility(View.VISIBLE);
                     reply_right.setVisibility(View.VISIBLE);
-
                     reply_edittext.setSingleLine(false);
                     reply_edittext.setMaxLines(5);
-
                 }else {
 
                 }
             }
         });
+
+        Bundle bundle = getArguments();//取得Bundle
+        orgUrl=bundle.getString("url","");
+        articleBoard=bundle.getString("board","");
+        articleTitle=bundle.getString("title","");
+        articleAuth=bundle.getString("auth","");
+        articleClass=bundle.getString("class","");
+        articleTime=bundle.getString("date","");
+        putDefaultHeader();
+        article_read_item_textView_like.setText("0");
 
         return view;
     }
@@ -237,9 +215,7 @@ public class ArticleReadFragment extends BaseFragment {
     protected void onAnimOver() {
         loadData();
     }
-    
 
-    private Handler mUI_Handler = new Handler();
     private Handler mThreadHandler;
     private HandlerThread mThread;
     private Runnable r1;
@@ -291,15 +267,11 @@ public class ArticleReadFragment extends BaseFragment {
                 data_temp.clear();
                 DebugUtils.Log("onAR", "get data from web start");
 
-
                 try {
-
                     postAPI.get();
                     getPostRankAPI.get();
-                    //pushCount = postAPI.getPushCount();
                     pushCount = getPostRankAPI.getLike();
                     floorNum = postAPI.getFloorNum();
-
 
                     originalArticleTitle = postAPI.getTitle();
                     if(true){
@@ -343,16 +315,12 @@ public class ArticleReadFragment extends BaseFragment {
                                 }
                             }
 
-
                         }else {
                             contentTemp.append(cmd);
                             if(i<contents.length-1){
                                 contentTemp.append("\n");
                             }
                         }
-
-
-
                     }
                     if(contentTemp.toString().length()>0){
                         Map<String, Object> item = new HashMap<>();
@@ -362,30 +330,15 @@ public class ArticleReadFragment extends BaseFragment {
                         contentTemp = new StringBuilder();
                     }
 
-
                     if(true){
                         Map<String, Object> item = new HashMap<>();
                         item.put("type","center_bar");
                         item.put("like",pushCount+"");
                         item.put("floor",floorNum+"");
                         data_temp.add(item);
+                    }
 
-                    }
-                    if(gettedUrl){
-                        //Map<String, Object> item = new HashMap<>();
-                        //item.put("type","commit_sort");
-                        //item.put("text",ttempp);
-                        //data_temp.add(item);
-                    }
                     data_temp.addAll(postAPI.getPushData());
-
-
-
-
-
-
-
-
 
                     getThisActivity().runOnUiThread(new Thread(new Runnable() {
                         public void run() {
@@ -412,8 +365,6 @@ public class ArticleReadFragment extends BaseFragment {
                         }));
                 }
 
-
-
                 GattingData=false;
             }
 
@@ -424,10 +375,10 @@ public class ArticleReadFragment extends BaseFragment {
         mThreadHandler = new Handler(mThread.getLooper());
         mThreadHandler.post(r1);
 
-
     }
 
     private boolean haveApi = true;
+
     private void putDefaultHeader(){
         Map<String, Object> item = new HashMap<>();
         item.put("type","header");
@@ -438,7 +389,9 @@ public class ArticleReadFragment extends BaseFragment {
         item.put("board",articleBoard);
         data.add(item);
     }
+
     private boolean GattingData = false;
+
     private void loadData(){
         if(GattingData) return;
 
@@ -446,8 +399,8 @@ public class ArticleReadFragment extends BaseFragment {
         putDefaultHeader();
         mAdapter.notifyDataSetChanged();
         getDataFromApi();
-
     }
+
     private void setRankMenu(View view){
         if(!(haveApi&&useApi)){
             return;
@@ -465,7 +418,6 @@ public class ArticleReadFragment extends BaseFragment {
 
         PopupMenu popupMenu = new PopupMenu(getThisActivity(), view);
         popupMenu.getMenuInflater().inflate(R.menu.post_article_rank_menu, popupMenu.getMenu());
-
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -483,17 +435,13 @@ public class ArticleReadFragment extends BaseFragment {
                 }
                 setRank(rank);
                 return true;
-
-
             }
         });
 
         popupMenu.show();
 
-
-
-
     }
+
     private void rehreshRank(){
         if(getPostRankAPI==null){
             final Pattern p = Pattern.compile("www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
@@ -511,24 +459,14 @@ public class ArticleReadFragment extends BaseFragment {
                 getThisActivity().runOnUiThread(new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
-
                     }
                 }));
+
                 GattingData = true;
 
-
-
                 try {
-
-
                     getPostRankAPI.get();
-                    //pushCount = postAPI.getPushCount();
                     pushCount = getPostRankAPI.getLike();
-
-
-
-
-
                     int center_bar_index = -1;
 
                     for(int i = 0 ; i < data.size() ; i++){
@@ -546,15 +484,6 @@ public class ArticleReadFragment extends BaseFragment {
 
                     }
 
-
-
-
-
-
-
-
-
-
                     getThisActivity().runOnUiThread(new Thread(new Runnable() {
                         public void run() {
                             mSwipeRefreshLayout.setRefreshing(false);
@@ -571,13 +500,9 @@ public class ArticleReadFragment extends BaseFragment {
                             public void run() {
                                 Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
-
                             }
                         }));
                 }
-
-
-
                 GattingData=false;
             }
 
@@ -589,9 +514,12 @@ public class ArticleReadFragment extends BaseFragment {
         mThreadHandler.post(r1);
 
     }
+
     private ProgressDialog mDialog = null;
+
     private void setRank(final SetPostRankAPIHelper.iRank rank_){
-        mDialog = ProgressDialog.show(getThisActivity(), "", "please wait");
+
+        mDialog = ProgressDialog.show(getThisActivity(), "", "Please wait.");
         mDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
 
         new Thread() {
@@ -618,31 +546,23 @@ public class ArticleReadFragment extends BaseFragment {
                         getThisActivity().runOnUiThread(new Thread(new Runnable() {
                             public void run() {
                                 mDialog.dismiss();
-                                //Toast.makeText(getThisActivity(),"success",Toast.LENGTH_SHORT).show();
-                                //loadData();
                                 rehreshRank();
-
                             }
                         }));
                     }
-
                 }catch (Exception e){
                     if(getThisActivity()!=null){
                         getThisActivity().runOnUiThread(new Thread(new Runnable() {
                             public void run() {
                                 mDialog.dismiss();
                                 Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                //loadData();
-
                             }
                         }));
                     }
                 }
 
-
             }
         }.start();
-
 
     }
 
@@ -651,14 +571,11 @@ public class ArticleReadFragment extends BaseFragment {
         super.onDestroyView();
         try {
             InputMethodManager inputMethodManager = (InputMethodManager)  getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(Mainview.getWindowToken(), 0);
+            inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
         }catch (Exception e){
 
         }
-
-        Mainview=null;
     }
-
 
     @Override
     public void onDestroy() {
