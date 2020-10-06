@@ -29,7 +29,7 @@ import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 
 public class HotBoardsFragment extends BaseFragment {
-    private View Mainview=null;
+
     public static HotBoardsFragment newInstance() {
         Bundle args = new Bundle();
         HotBoardsFragment fragment = new HotBoardsFragment();
@@ -51,18 +51,20 @@ public class HotBoardsFragment extends BaseFragment {
 
     private LinearLayout search_bar;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hot_boards_fragment_layout, container, false);
 
-        Mainview=view;
+        setMainView(view);
 
         data = new ArrayList<>();
-        Bundle bundle = getArguments();//取得Bundle
+        Bundle bundle = getArguments();
 
-        search_bar = Mainview.findViewById(R.id.hot_boards_fragment_search);
+        search_bar = getMainView().findViewById(R.id.hot_boards_fragment_search);
+        mRecyclerView = getMainView().findViewById(R.id.hot_boards_fragment_recyclerView);
+        mSwipeRefreshLayout= getMainView().findViewById(R.id.hot_boards_fragment_refresh_layout);
+
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +75,6 @@ public class HotBoardsFragment extends BaseFragment {
                 }
             }
         });
-        mRecyclerView = Mainview.findViewById(R.id.hot_boards_fragment_recyclerView);
 
         mHotBoardsListAdapter = new HotBoardsListAdapter(getThisActivity(),data);
 
@@ -83,9 +84,6 @@ public class HotBoardsFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mHotBoardsListAdapter);
 
-
-        mSwipeRefreshLayout= Mainview.findViewById(R.id.hot_boards_fragment_refresh_layout);
-        //mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_light,
                 android.R.color.holo_blue_light,
@@ -94,14 +92,10 @@ public class HotBoardsFragment extends BaseFragment {
 
         mSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
-
                     @Override
                     public void onRefresh() {
-
                         loadData();
-
                     }
-
                 });
 
         mHotBoardsListAdapter.setOnItemClickListener(new HotBoardsListAdapter.OnItemClickListener() {
@@ -126,7 +120,6 @@ public class HotBoardsFragment extends BaseFragment {
         loadData();
     }
 
-    private Handler mUI_Handler = new Handler();
     private Handler mThreadHandler;
     private HandlerThread mThread;
     private Runnable r1;
@@ -143,78 +136,73 @@ public class HotBoardsFragment extends BaseFragment {
 
     private List<Map<String, Object>> data_temp = new ArrayList<>();
     private PopularBoardListAPIHelper popularBoardListAPI;
+
     private void getDataFromApi(){
-        if (popularBoardListAPI == null) {
+        if(popularBoardListAPI == null){
             popularBoardListAPI =  new PopularBoardListAPIHelper(getContext());
         }
-
         r1 = new Runnable() {
             public void run() {
                 getThisActivity().runOnUiThread (new Thread(new Runnable() {
                     public void run() {
                         mSwipeRefreshLayout.setRefreshing(true);
-
                     }
                 }));
+
                 GattingData=true;
                 data_temp.clear();
 
                 try {
-
-                    //PopularBoardListAPIHelper api = new PopularBoardListAPIHelper(this)
                     data_temp.addAll(popularBoardListAPI.get(1,128).getData());
-
                     getThisActivity().runOnUiThread (new Thread(new Runnable() {
                         public void run() {
                             data.addAll(data_temp);
                             mHotBoardsListAdapter.notifyDataSetChanged();
                             data_temp.clear();
                             mSwipeRefreshLayout.setRefreshing(false);
-
                         }
                     }));
-                    DebugUtils.Log("onHotBoards","get data from web over");
-
+                    DebugUtils.Log("HotBoardsFragment","get data from web success");
                 }catch (final Exception e){
-                    DebugUtils.Log("onHotBoards","Error : "+e.toString());
+                    DebugUtils.Log("HotBoardsFragment","Error : "+e.toString());
                     final Activity thisActivity = getThisActivity();
                     if(thisActivity != null){
                         getThisActivity().runOnUiThread (new Thread(new Runnable() {
                             public void run() {
                                 Toast.makeText(thisActivity,"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-
                                 mSwipeRefreshLayout.setRefreshing(false);
                             }
                         }));
                     }
-
                 }
-
                 GattingData=false;
             }
-
         };
 
         mThread = new HandlerThread("name");
         mThread.start();
         mThreadHandler = new Handler(mThread.getLooper());
         mThreadHandler.post(r1);
+
     }
+
     private boolean GattingData = false;
+
     private void loadData(){
         if(GattingData) return;
         GattingData = true;
         data.clear();
         mHotBoardsListAdapter.notifyDataSetChanged();
         getDataFromApi();
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(data!=null)
-        data.clear();
+
+        if(data!=null){
+            data.clear();
+        }
         // 移除工作
         if (mThreadHandler != null) {
             mThreadHandler.removeCallbacks(r1);

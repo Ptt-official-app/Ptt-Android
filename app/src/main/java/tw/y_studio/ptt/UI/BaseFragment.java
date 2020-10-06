@@ -22,6 +22,7 @@ public class BaseFragment extends Fragment {
         super.onAttach(activity);
         this.mActivity = activity;
 
+
     }
 
 
