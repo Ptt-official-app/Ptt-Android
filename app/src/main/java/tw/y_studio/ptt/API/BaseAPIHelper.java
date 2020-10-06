@@ -18,6 +18,9 @@ public class BaseAPIHelper {
     }
 
     public void close(){
+        if(mOkHttpClient!=null){
+            mOkHttpClient.dispatcher().cancelAll();
+        }
         mOkHttpClient = null;
     }
 }
