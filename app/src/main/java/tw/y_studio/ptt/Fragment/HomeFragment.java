@@ -159,7 +159,7 @@ public class HomeFragment extends BaseFragment {
         }else {
             fragment = homeFragmentMap.get(key);
         }
-        if(fragment!=preFragment){
+        if(fragment != preFragment){
             showFragment(homeFragmentMap.get(key));
         }
 
@@ -171,7 +171,7 @@ public class HomeFragment extends BaseFragment {
     }
 
     public void showFragment(Fragment toFragment) {
-        if(preFragment==null) {
+        if(preFragment == null) {
             getChildFragmentManager()
                     .beginTransaction()
                     .add(R.id.framelayout_home, toFragment, toFragment.getClass().getSimpleName())

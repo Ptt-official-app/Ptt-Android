@@ -22,14 +22,10 @@ public class SimpleAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private TextView tv11;
         private TextView tv12;
 
-
-
         public ViewHolder(View convertView) {
             super(convertView);
             tv11 = (TextView) convertView.findViewById(R.id.textView);
             tv12 = (TextView) convertView.findViewById(R.id.textView2);
-
-
         }
     }
     private LayoutInflater inflater;

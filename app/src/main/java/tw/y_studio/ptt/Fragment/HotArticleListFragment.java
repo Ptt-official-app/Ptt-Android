@@ -1,6 +1,5 @@
 package tw.y_studio.ptt.Fragment;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,14 +7,12 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -41,7 +38,6 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import tw.y_studio.ptt.Adapter.HotArticleListAdapter;
 import tw.y_studio.ptt.BuildConfig;
-import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.Ptt.AidConverter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
@@ -57,13 +53,14 @@ import tw.y_studio.ptt.Utils.StringUtils;
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
 public class HotArticleListFragment extends BaseFragment {
-    private View Mainview=null;
+
     public static HotArticleListFragment newInstance() {
         Bundle args = new Bundle();
         HotArticleListFragment fragment = new HotArticleListFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     public static HotArticleListFragment newInstance(Bundle args) {
         HotArticleListFragment fragment = new HotArticleListFragment();
         fragment.setArguments(args);
@@ -74,17 +71,7 @@ public class HotArticleListFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private HotArticleListAdapter mAdapter;
 
-    private List<Map<String, Object>> data;
-
-
-    //private String BoardName = "";
-    //private String BoardSubName = "";
-    //private TextView mTextView_BoardName;
-    //private TextView mTextView_BoardSubName;
-    //private AppCompatImageView Go2Back;
-
-    //private BottomNavigationView navigation;
-    //private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener;
+    private List<Map<String, Object>> data = new ArrayList<>();
 
     private ClickFix mClickFix = new ClickFix();
     @Nullable
@@ -92,37 +79,16 @@ public class HotArticleListFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hot_article_list_fragment_layout, container, false);
 
+        setMainView(view);
 
+        mRecyclerView = findViewById(R.id.article_list_fragment_recyclerView);
+        mSwipeRefreshLayout= findViewById(R.id.article_list_fragment_refresh_layout);
 
-        Mainview=view;
-
-        data = new ArrayList<>();
         Bundle bundle = getArguments();//取得Bundle
 
 
-        /*button = Mainview.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("Title",title_+"/");
 
-                ((MainActivity)getThisActivity()).loadFragment(ArticleListFragment.newInstance(bundle), boardListFragment.this);
-            }
-        });*/
-
-
-        //setSupportActionBar(toolbar);
-
-        mRecyclerView = Mainview.findViewById(R.id.article_list_fragment_recyclerView);
-
-
-
-        /*mBottomNavigation.getMenu().getItem(0)
-                .setIcon(ContextCompat.getDrawable(activity, R.drawable.ic_reserve_normal));
-        changeMenuItemCheckedStateColor(mBottomNavigation, getUnCheckedColor(), getUnCheckedColor());*/
-
-        mAdapter = new HotArticleListAdapter(getThisActivity(),data);
+        mAdapter = new HotArticleListAdapter(getCurrentActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -130,11 +96,10 @@ public class HotArticleListFragment extends BaseFragment {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
 
-        //mRecyclerView.addItemDecoration(new StickHeaderItemDecoration(mAdapter));
         StickyHeaderItemDecorator decorator = new StickyHeaderItemDecorator(mAdapter);
         decorator.attachToRecyclerView(mRecyclerView);
 
-        mSwipeRefreshLayout= Mainview.findViewById(R.id.article_list_fragment_refresh_layout);
+
         //mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_light,
@@ -170,6 +135,7 @@ public class HotArticleListFragment extends BaseFragment {
 
             }
         });
+
         RecyclerItemClickListener recyclerItemClickListener = new RecyclerItemClickListener(mRecyclerView,
                 new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
@@ -190,22 +156,16 @@ public class HotArticleListFragment extends BaseFragment {
                             bundle.putString("board", StringUtils.notNullString(data.get(position).get("board")));
                             bundle.putString("url",StringUtils.notNullString(data.get(position).get("url")));
 
-                            try {
-                                ((HomeActivity)getContext()).loadFragment(ArticleReadFragment.newInstance(bundle),getParentFragment());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            loadFragment(ArticleReadFragment.newInstance(bundle),getCurrentFragment());
+
                         }else {
                             Bundle bundle = new Bundle();
                             bundle.putString("title", StringUtils.notNullString(data.get(0).get("title")));
                             bundle.putStringArrayList("BoardList",(ArrayList<String>) board_list);
                             //Log.d("onHot","size = "+board_list.size());
 
-                            try {
-                                ((HomeActivity)getContext()).loadFragmentNoAnim(HotArticleFilterFragment.newInstance(bundle),getParentFragment());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            loadFragmentNoAnim(HotArticleFilterFragment.newInstance(bundle),getCurrentFragment());
+
                         }
                     }
 
@@ -214,21 +174,13 @@ public class HotArticleListFragment extends BaseFragment {
                         //System.out.println("onItemLongClick " + position);
                     }
                 });
+
         recyclerItemClickListener.setDecorator(decorator);
         mRecyclerView.addOnItemTouchListener(recyclerItemClickListener);
 
-        /*mAdapter.setOnItemClickListener(new HotArticleListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-
-
-
-            }
-        });*/
-
-
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
                 new IntentFilter("puty-hot-article-change"));
+
         mAdapter.setMoreClickListen(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -236,18 +188,14 @@ public class HotArticleListFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("title", StringUtils.notNullString(data.get(0).get("title")));
                 bundle.putStringArrayList("BoardList",(ArrayList<String>) board_list);
-                Log.d("onHot","size = "+board_list.size());
-
-                try {
-                    ((HomeActivity)getContext()).loadFragmentNoAnim(HotArticleFilterFragment.newInstance(bundle),getParentFragment());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                DebugUtils.Log("onHot","size = "+board_list.size());
+                loadFragmentNoAnim(HotArticleFilterFragment.newInstance(bundle),getCurrentFragment());
             }
         });
 
         return view;
     }
+
     protected void onAnimOver() {
         loadData();
     }
@@ -255,19 +203,13 @@ public class HotArticleListFragment extends BaseFragment {
     public void scrollToTop(){
         try {
             if(mRecyclerView!=null){
-                //if(items.size()>10)
                 mRecyclerView.scrollToPosition(0);
-                //mListView.smoothScrollToPosition(0);
-                //mListView.scrollToPosition(0);
             }
         }catch (Exception e){
 
         }
-
     }
 
-
-    private Handler mUI_Handler = new Handler();
     private Handler mThreadHandler;
     private HandlerThread mThread;
     private Runnable r1;
@@ -278,15 +220,15 @@ public class HotArticleListFragment extends BaseFragment {
     private final Pattern p2id = Pattern.compile("[-a-zA-Z0-9-_]{2,15}");
     private List<Map<String, Object>> data_temp = new ArrayList<>();
     private List<String> board_list = new ArrayList<String>();
+
     private void getDataFromPttWeb(){
 
         r1 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
-                    }
-                }));
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                });
+
                 GattingData=true;
                 data_temp.clear();
                 DebugUtils.Log("onAL","get data from web start");
@@ -423,16 +365,13 @@ public class HotArticleListFragment extends BaseFragment {
 
                     }
 
+                    runOnUI(()->{
+                        data.addAll(data_temp);
+                        mAdapter.notifyDataSetChanged();
+                        data_temp.clear();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                        public void run() {
-                            data.addAll(data_temp);
-                            mAdapter.notifyDataSetChanged();
-                            data_temp.clear();
-                            mSwipeRefreshLayout.setRefreshing(false);
-
-                        }
-                    }));
                     DebugUtils.Log("onAL","get data from web over");
 
 
@@ -440,27 +379,12 @@ public class HotArticleListFragment extends BaseFragment {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                     DebugUtils.Log("onHALF","Error : "+e.toString());
+                    runOnUI(()->{
+                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                    if(getContext()!=null)
-                        ((Activity)getContext()).runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
-
-                            }
-                        }));
                 }
-
-
-
-
-
-
-
-
-
-
-
 
                 GattingData=false;
             }
@@ -472,23 +396,23 @@ public class HotArticleListFragment extends BaseFragment {
         mThreadHandler = new Handler(mThread.getLooper());
         mThreadHandler.post(r1);
 
-
     }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             String message = intent.getStringExtra("message");
-
             dealDataChange(message);
-
-            Log.d("receiver", "Got message: " + message);
+            DebugUtils.Log("receiver", "Got message: " + message);
         }
     };
+
     private void dealDataChange(String board){
         FieldName = board;
         loadData();
     }
+
     private void getDataFromApi(){
 
 
@@ -496,6 +420,7 @@ public class HotArticleListFragment extends BaseFragment {
 
     private boolean haveApi = false;
     private boolean GattingData = false;
+
     private void loadData(){
         if(GattingData) return;
 
@@ -509,23 +434,18 @@ public class HotArticleListFragment extends BaseFragment {
         if(haveApi&&useApi){
             getDataFromApi();
         }else {
-            //if(false)
             getDataFromPttWeb();
-
-            //mSwipeRefreshLayout.setRefreshing(false);
         }
 
-
-
     }
-    private void initView() throws Exception{
 
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
+
         if(data!=null)
             data.clear();
         // 移除工作

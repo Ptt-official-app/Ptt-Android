@@ -1,6 +1,5 @@
 package tw.y_studio.ptt.Fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -20,7 +19,6 @@ import java.util.Map;
 
 import tw.y_studio.ptt.API.PopularBoardListAPIHelper;
 import tw.y_studio.ptt.Adapter.HotBoardsListAdapter;
-import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
@@ -68,15 +66,11 @@ public class HotBoardsFragment extends BaseFragment {
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    ((HomeActivity)getContext()).loadFragmentNoAnim(SearchBoardsFragment.newInstance(),getParentFragment());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                loadFragmentNoAnim(SearchBoardsFragment.newInstance(),getCurrentFragment());
             }
         });
 
-        mHotBoardsListAdapter = new HotBoardsListAdapter(getThisActivity(),data);
+        mHotBoardsListAdapter = new HotBoardsListAdapter(getCurrentActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -105,11 +99,8 @@ public class HotBoardsFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("title", StringUtils.notNullString(data.get(position).get("title")));
                 bundle.putString("subtitle", StringUtils.notNullString(data.get(position).get("subtitle")));
-                try {
-                    ((HomeActivity)getContext()).loadFragment(ArticleListFragment.newInstance(bundle),getParentFragment());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                loadFragment(ArticleListFragment.newInstance(bundle),getCurrentFragment());
+
             }
         });
 
@@ -143,37 +134,30 @@ public class HotBoardsFragment extends BaseFragment {
         }
         r1 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
-                    }
-                }));
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                });
 
                 GattingData=true;
                 data_temp.clear();
 
                 try {
                     data_temp.addAll(popularBoardListAPI.get(1,128).getData());
-                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                        public void run() {
-                            data.addAll(data_temp);
-                            mHotBoardsListAdapter.notifyDataSetChanged();
-                            data_temp.clear();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }));
+                    runOnUI(()->{
+                        data.addAll(data_temp);
+                        mHotBoardsListAdapter.notifyDataSetChanged();
+                        data_temp.clear();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+
                     DebugUtils.Log("HotBoardsFragment","get data from web success");
                 }catch (final Exception e){
                     DebugUtils.Log("HotBoardsFragment","Error : "+e.toString());
-                    final Activity thisActivity = getThisActivity();
-                    if(thisActivity != null){
-                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(thisActivity,"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
-                            }
-                        }));
-                    }
+                    runOnUI(()->{
+                        Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
+
                 }
                 GattingData=false;
             }

@@ -36,7 +36,6 @@ import tw.y_studio.ptt.API.GetPostRankAPIHelper;
 import tw.y_studio.ptt.API.PostAPIHelper;
 import tw.y_studio.ptt.API.SetPostRankAPIHelper;
 import tw.y_studio.ptt.Adapter.ArticleReadAdapter;
-import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.Ptt.AidBean;
 import tw.y_studio.ptt.Ptt.AidConverter;
 import tw.y_studio.ptt.R;
@@ -111,7 +110,7 @@ public class ArticleReadFragment extends BaseFragment {
         Resources.Theme theme = getContext().getTheme();
         theme.resolveAttribute(R.attr.article_header, typedValue, true);
         @ColorInt int color = typedValue.data;
-        Window window = getThisActivity().getWindow();
+        Window window = getCurrentActivity().getWindow();
         window.setStatusBarColor(color);
 
         likeBT.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +127,7 @@ public class ArticleReadFragment extends BaseFragment {
             }
         });
 
-        mAdapter = new ArticleReadAdapter(getThisActivity(),data);
+        mAdapter = new ArticleReadAdapter(getCurrentActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -257,12 +256,10 @@ public class ArticleReadFragment extends BaseFragment {
 
         r1 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                });
 
-                    }
-                }));
                 GattingData = true;
                 data_temp.clear();
                 DebugUtils.Log("onAR", "get data from web start");
@@ -340,8 +337,7 @@ public class ArticleReadFragment extends BaseFragment {
 
                     data_temp.addAll(postAPI.getPushData());
 
-                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                        public void run() {
+                   runOnUI(()->{
                             data.clear();
                             //mAdapter.notifyDataSetChanged();
                             data.addAll(data_temp);
@@ -349,20 +345,15 @@ public class ArticleReadFragment extends BaseFragment {
                             data_temp.clear();
                             mSwipeRefreshLayout.setRefreshing(false);
                             article_read_item_textView_like.setText(pushCount+"");
-
-                        }
-                    }));
+                    });
                     DebugUtils.Log("onAL", "get data from web over");
                 }catch (final Exception e){
                     DebugUtils.Log("onAL", "Error : "+e.toString());
-                    if(getThisActivity()!=null)
-                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
+                    runOnUI(()->{
+                        Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                            }
-                        }));
                 }
 
                 GattingData=false;
@@ -405,18 +396,14 @@ public class ArticleReadFragment extends BaseFragment {
         if(!(haveApi&&useApi)){
             return;
         }
-        String id = getThisActivity().getSharedPreferences(
+        String id = getCurrentActivity().getSharedPreferences(
                 "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
         if(id.isEmpty()){
-            try {
-                ((HomeActivity)getContext()).loadFragment(LoginPageFragment.newInstance(),getParentFragment());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            loadFragment(LoginPageFragment.newInstance(),getCurrentFragment());
             return;
         }
 
-        PopupMenu popupMenu = new PopupMenu(getThisActivity(), view);
+        PopupMenu popupMenu = new PopupMenu(getCurrentActivity(), view);
         popupMenu.getMenuInflater().inflate(R.menu.post_article_rank_menu, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
@@ -456,11 +443,10 @@ public class ArticleReadFragment extends BaseFragment {
 
         r1 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                    public void run() {
+                runOnUI(()->{
                         mSwipeRefreshLayout.setRefreshing(true);
                     }
-                }));
+               );
 
                 GattingData = true;
 
@@ -484,24 +470,18 @@ public class ArticleReadFragment extends BaseFragment {
 
                     }
 
-                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                        public void run() {
-                            mSwipeRefreshLayout.setRefreshing(false);
+                    runOnUI(()->{
+                        mSwipeRefreshLayout.setRefreshing(false);
                             mAdapter.notifyDataSetChanged();
                             article_read_item_textView_like.setText(pushCount+"");
-
-                        }
-                    }));
+                        });
                     DebugUtils.Log("onAL", "get data from web over");
                 }catch (final Exception e){
                     DebugUtils.Log("onAL", "Error : "+e.toString());
-                    if(getThisActivity()!=null)
-                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                    runOnUI(()->{
+                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
                                 mSwipeRefreshLayout.setRefreshing(false);
-                            }
-                        }));
+                            });
                 }
                 GattingData=false;
             }
@@ -519,7 +499,7 @@ public class ArticleReadFragment extends BaseFragment {
 
     private void setRank(final SetPostRankAPIHelper.iRank rank_){
 
-        mDialog = ProgressDialog.show(getThisActivity(), "", "Please wait.");
+        mDialog = ProgressDialog.show(getCurrentActivity(), "", "Please wait.");
         mDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
 
         new Thread() {
@@ -536,29 +516,23 @@ public class ArticleReadFragment extends BaseFragment {
                         throw new Exception("error");
                         //DebugUtils.Log("onAR", "not match");
                     }
-                    String id = getThisActivity().getSharedPreferences(
+                    String id = getCurrentActivity().getSharedPreferences(
                             "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
                     if(id.length()==0){
                         throw new Exception("No Ptt id");
                     }
                     setPostRankAPI.get(id,rank_);
-                    if(getThisActivity()!=null){
-                        getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                            public void run() {
-                                mDialog.dismiss();
+                    runOnUI(()->{
+                        mDialog.dismiss();
                                 rehreshRank();
-                            }
-                        }));
-                    }
+                            });
+
                 }catch (Exception e){
-                    if(getThisActivity()!=null){
-                        getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                            public void run() {
-                                mDialog.dismiss();
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                            }
-                        }));
-                    }
+                    runOnUI(()-> {
+                        mDialog.dismiss();
+                        Toast.makeText(getCurrentActivity(), "Error : " + e.toString(), Toast.LENGTH_SHORT).show();
+                    });
+
                 }
 
             }
@@ -570,7 +544,7 @@ public class ArticleReadFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
         }catch (Exception e){
 
@@ -580,6 +554,10 @@ public class ArticleReadFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        if(postAPI!=null){
+            postAPI.close();
+        }
 
         if(data!=null)
             data.clear();
@@ -593,10 +571,10 @@ public class ArticleReadFragment extends BaseFragment {
         }
 
         TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = getThisActivity().getTheme();
+        Resources.Theme theme = getCurrentActivity().getTheme();
         theme.resolveAttribute(R.attr.black, typedValue, true);
         @ColorInt int color = typedValue.data;
-        Window window = getThisActivity().getWindow();
+        Window window = getCurrentActivity().getWindow();
         window.setStatusBarColor(color);
 
     }

@@ -1,6 +1,5 @@
 package tw.y_studio.ptt.Fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -14,38 +13,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import tw.y_studio.ptt.API.PostListAPIHelper;
 import tw.y_studio.ptt.Adapter.ArticleListAdapter;
-import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
-
-import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
 public class ArticleListFragment extends BaseFragment {
 
@@ -102,7 +86,7 @@ public class ArticleListFragment extends BaseFragment {
         Go2Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getThisActivity().onBackPressed();
+                getCurrentActivity().onBackPressed();
             }
         });
 
@@ -115,18 +99,10 @@ public class ArticleListFragment extends BaseFragment {
                         loadData();
                         return false;
                     case R.id.article_list_navigation_item_post:
-                        try {
-                            ((HomeActivity)getContext()).loadFragment(PostArticleFragment.newInstance(),getParentFragment());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        loadFragment(PostArticleFragment.newInstance(),getCurrentFragment());
                         return false;
                     case R.id.article_list_navigation_item_search:
-                        try {
-                            ((HomeActivity)getContext()).loadFragment(ArticleListSearchFragment.newInstance(),getParentFragment());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        loadFragment(ArticleListSearchFragment.newInstance(),getCurrentFragment());
                     case R.id.article_list_navigation_item_info:
                     default:
                 }
@@ -136,7 +112,7 @@ public class ArticleListFragment extends BaseFragment {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        mArticleListAdapter = new ArticleListAdapter(getThisActivity(),data);
+        mArticleListAdapter = new ArticleListAdapter(getCurrentActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -189,11 +165,8 @@ public class ArticleListFragment extends BaseFragment {
                 bundle.putString("board", BoardName);
                 bundle.putString("url",StringUtils.notNullString(data.get(position).get("url")));
 
-                try {
-                    ((HomeActivity)getContext()).loadFragment(ArticleReadFragment.newInstance(bundle),getParentFragment());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                loadFragment(ArticleReadFragment.newInstance(bundle),getCurrentFragment());
+
 
             }
         });
@@ -231,12 +204,10 @@ public class ArticleListFragment extends BaseFragment {
 
         r1 = new Runnable() {
             public void run() {
-                if(getThisActivity()!=null)
-                getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                    public void run() {
+                runOnUI(() ->  {
                         mSwipeRefreshLayout.setRefreshing(true);
                     }
-                }));
+                );
                 GattingData=true;
                 data_temp.clear();
                 DebugUtils.Log("onAL","get data from web start");
@@ -252,27 +223,27 @@ public class ArticleListFragment extends BaseFragment {
                         NowApiNum++;
                     }
 
-                    if(getThisActivity()!=null)
-                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                        public void run() {
+                    runOnUI(() -> {
                             data.addAll(data_temp);
                             mArticleListAdapter.notifyDataSetChanged();
                             data_temp.clear();
                             mSwipeRefreshLayout.setRefreshing(false);
 
-                        }
-                    }));
+
+                    });
                     DebugUtils.Log("ArticleListFragment","get data from web success");
                 } catch (final Exception e) {
                     e.printStackTrace();
                     DebugUtils.Log("ArticleListFragment","Error : "+e.toString());
-                    if(getContext()!=null)
-                        ((Activity)getContext()).runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
-                            }
-                        }));
+                    runOnUI(() -> {
+                        try {
+                            Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }catch (Exception e2){
+
+                        }
+                    });
+
                 }
                 GattingData=false;
             }

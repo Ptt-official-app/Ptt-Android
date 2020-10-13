@@ -13,57 +13,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
-import okhttp3.Call;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import tw.y_studio.ptt.API.SearchBoardAPIHelper;
 import tw.y_studio.ptt.Adapter.SearchBoardsAdapter;
 import tw.y_studio.ptt.DataBase.FavoriteDBHelper;
-import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.UiFix;
 import tw.y_studio.ptt.Utils.DebugUtils;
-import tw.y_studio.ptt.Utils.OkHttpUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
 public class SearchBoardsFragment extends BaseFragment {
-    private View Mainview=null;
+
     public static SearchBoardsFragment newInstance() {
         Bundle args = new Bundle();
         SearchBoardsFragment fragment = new SearchBoardsFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     public static SearchBoardsFragment newInstance(Bundle args) {
         SearchBoardsFragment fragment = new SearchBoardsFragment();
         fragment.setArguments(args);
@@ -74,7 +62,7 @@ public class SearchBoardsFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private SearchBoardsAdapter mdapter;
 
-    private List<Map<String, Object>> data;
+    private List<Map<String, Object>> data = new ArrayList<>();
 
     private EditText searchBar;
 
@@ -82,7 +70,7 @@ public class SearchBoardsFragment extends BaseFragment {
 
     private ClickFix mClickFix = new ClickFix();
 
-    private AppCompatImageButton clearButton;
+    private ImageButton clearButton;
     private int changeStep = 0;
 
     @Nullable
@@ -90,29 +78,29 @@ public class SearchBoardsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_boards_fragment_layout, container, false);
 
+        setMainView(view);
 
 
-        Mainview=view;
-
-        data = new ArrayList<>();
         Bundle bundle = getArguments();//取得Bundle
         
-        mRecyclerView = Mainview.findViewById(R.id.search_boards_fragment_recyclerView);
+        mRecyclerView = findViewById(R.id.search_boards_fragment_recyclerView);
+        searchBar = findViewById(R.id.search_boards_fragment_editText_search);
+        clearButton = findViewById(R.id.search_boards_item_imageView_like);
+        mSwipeRefreshLayout = findViewById(R.id.search_boards_fragment_refresh_layout);
+        //mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
 
-        searchBar = Mainview.findViewById(R.id.search_boards_fragment_editText_search);
-        clearButton = Mainview.findViewById(R.id.search_boards_item_imageView_like);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mClickFix.isFastDoubleClick(300)) return;
                 if(searchBar.getText().toString().length()==0){
                     try {
-                        InputMethodManager inputMethodManager = (InputMethodManager)  getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         inputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
                     }catch (Exception e){
 
                     }
-                    getThisActivity().onBackPressed();
+                    getCurrentActivity().onBackPressed();
                 }else {
                     searchBar.getText().clear();
                 }
@@ -120,7 +108,7 @@ public class SearchBoardsFragment extends BaseFragment {
         });
 
 
-        mdapter = new SearchBoardsAdapter(getThisActivity(),data);
+        mdapter = new SearchBoardsAdapter(getCurrentActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -131,9 +119,8 @@ public class SearchBoardsFragment extends BaseFragment {
 
 
 
-        mSwipeRefreshLayout= Mainview.findViewById(R.id.search_boards_fragment_refresh_layout);
-        //mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
-        UiFix.setSwipeRefreshLayoutBackground(mSwipeRefreshLayout,getThisActivity());
+
+        UiFix.setSwipeRefreshLayoutBackground(mSwipeRefreshLayout, getCurrentActivity());
 
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_light,
@@ -214,7 +201,7 @@ public class SearchBoardsFragment extends BaseFragment {
                 if(mClickFix.isFastDoubleClick()) return;
 
                 try {
-                    InputMethodManager inputMethodManager = (InputMethodManager)  getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                     inputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
                 }catch (Exception e){
 
@@ -222,11 +209,9 @@ public class SearchBoardsFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("title", StringUtils.notNullString(data.get(position).get("title")));
                 bundle.putString("subtitle", StringUtils.notNullString(data.get(position).get("subtitle")));
-                try {
-                    ((HomeActivity)getContext()).loadFragment(ArticleListFragment.newInstance(bundle),getParentFragment());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                loadFragment(ArticleListFragment.newInstance(bundle),getCurrentFragment());
+
 
 
             }
@@ -258,42 +243,29 @@ public class SearchBoardsFragment extends BaseFragment {
 
         r3 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                });
 
-                    }
-                }));
                 GattingData=true;
 
-
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
                 try {
-
-
-
-
                     mDBHelper.insertBoard(board,title,category,index+1);
+                    runOnUI(()->{
+                        data.get(position).put("like",true);
+                        mdapter.notifyItemChanged(position);
+                        myBoardIndex++;
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-
-                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                        public void run() {
-                            data.get(position).put("like",true);
-                            mdapter.notifyItemChanged(position);
-                            myBoardIndex++;
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }));
                     DebugUtils.Log("onAL", "insert over");
                 }catch (final Exception e){
-                    if(getThisActivity()!=null)
-                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
+                    runOnUI(()->{
+                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                            }
-                        }));
                 }finally {
                     mDBHelper.close();
                 }
@@ -314,16 +286,14 @@ public class SearchBoardsFragment extends BaseFragment {
 
         r3 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                });
 
-                    }
-                }));
                 GattingData=true;
 
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
                 try {
 
 
@@ -331,25 +301,20 @@ public class SearchBoardsFragment extends BaseFragment {
 
                     mDBHelper.delebyBoard(board);
 
+                    runOnUI(()->{
+                        data.get(position).put("like",false);
+                        mdapter.notifyItemChanged(position);
+                        myBoardIndex--;
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                        public void run() {
-                            data.get(position).put("like",false);
-                            mdapter.notifyItemChanged(position);
-                            myBoardIndex--;
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }));
                     DebugUtils.Log("onAL", board+" delete over");
                 }catch (final Exception e){
-                    if(getThisActivity()!=null)
-                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
+                    runOnUI(()->{
+                        Toast.makeText(getCurrentActivity(),"Error : "+e.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                            }
-                        }));
                 }finally {
                     mDBHelper.close();
                 }
@@ -385,7 +350,7 @@ public class SearchBoardsFragment extends BaseFragment {
     protected void onAnimOver() {
         if(!restroy){
             searchBar.requestFocus();
-            InputMethodManager inputMethodManager = (InputMethodManager)getThisActivity(). getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager = (InputMethodManager) getCurrentActivity(). getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
             restroy=true;
 
@@ -394,25 +359,16 @@ public class SearchBoardsFragment extends BaseFragment {
         loadData();
     }
 
-    private Handler mUI_Handler = new Handler();
     private Handler mThreadHandler;
     private HandlerThread mThread;
     private Runnable r1;
 
-    private Handler mUI_Handler2 = new Handler();
-    private Handler mThreadHandler2;
-    private HandlerThread mThread2;
-    private Runnable r2;
-
-    private Handler mUI_Handler3 = new Handler();
     private Handler mThreadHandler3;
     private HandlerThread mThread3;
     private Runnable r3;
 
     private List<Map<String, Object>> data_temp = new ArrayList<>();
     private OkHttpClient client;
-
-
 
     private Set<String> myBoard = new HashSet<>();
     private int myBoardIndex = 0;
@@ -429,20 +385,15 @@ public class SearchBoardsFragment extends BaseFragment {
 
         r1 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                });
 
-                    }
-                }));
                 GattingData = true;
                 data_temp.clear();
                 myBoard.clear();
 
-
-
-
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
                 List<Map<String, Object>> data_temp2 = new ArrayList<>();
                 DebugUtils.Log("onAL", "get data from web start");
                 try {
@@ -464,36 +415,30 @@ public class SearchBoardsFragment extends BaseFragment {
 
 
 
-
-                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                        public void run() {
-                            data.clear();
-                            data.addAll(data_temp);
-                            mdapter.notifyDataSetChanged();
-                            //data_temp.clear();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                            if(!waitSearchText.isEmpty()){
-                                getDataFromApi(waitSearchText);
-                            }
-                            waitSearchText = "";
-
+                    runOnUI(()->{
+                        data.clear();
+                        data.addAll(data_temp);
+                        mdapter.notifyDataSetChanged();
+                        //data_temp.clear();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        if(!waitSearchText.isEmpty()){
+                            getDataFromApi(waitSearchText);
                         }
-                    }));
+                        waitSearchText = "";
+                    });
+
                     DebugUtils.Log("onAL", "get data from web over");
                 }catch (final Exception e){
                     DebugUtils.Log("onAL", "Error : "+e.toString());
-                    if(getThisActivity()!=null)
-                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
-                                if(!waitSearchText.isEmpty()){
-                                    getDataFromApi(waitSearchText);
-                                }
-                                waitSearchText = "";
+                    runOnUI(()->{
+                       Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        if(!waitSearchText.isEmpty()){
+                            getDataFromApi(waitSearchText);
+                        }
+                        waitSearchText = "";
+                    });
 
-                            }
-                        }));
                 }finally {
                     mDBHelper.close();
                 }
@@ -528,13 +473,12 @@ public class SearchBoardsFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(Mainview.getWindowToken(), 0);
+            InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
         }catch (Exception e){
 
         }
 
-        Mainview=null;
     }
 
     @Override
@@ -556,13 +500,7 @@ public class SearchBoardsFragment extends BaseFragment {
         if (mThread != null) {
             mThread.quit();
         }
-        if (mThreadHandler2 != null) {
-            mThreadHandler2.removeCallbacks(r2);
-        }
-        // (關閉Thread)
-        if (mThread2 != null) {
-            mThread2.quit();
-        }
+
         if (mThreadHandler3 != null) {
             mThreadHandler3.removeCallbacks(r3);
         }

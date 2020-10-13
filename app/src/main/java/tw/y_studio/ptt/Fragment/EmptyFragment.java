@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -19,13 +18,14 @@ import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 
 public class EmptyFragment extends BaseFragment {
-    private View Mainview=null;
+
     public static EmptyFragment newInstance() {
         Bundle args = new Bundle();
         EmptyFragment fragment = new EmptyFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     public static EmptyFragment newInstance(Bundle args) {
         EmptyFragment fragment = new EmptyFragment();
         fragment.setArguments(args);
@@ -35,19 +35,19 @@ public class EmptyFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private SearchBoardsAdapter mdapter;
     private List<Map<String, Object>> data = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.empty_fragment_layout, container, false);
 
-        Mainview=view;
+        setMainView(view);
+
+        recyclerView = findViewById(R.id.recyclerView_empty);
 
         Bundle bundle = getArguments();//取得Bundle
-        final String title_=bundle.getString("Title");
 
-        recyclerView = Mainview.findViewById(R.id.recyclerView_empty);
-
-        mdapter = new SearchBoardsAdapter(getThisActivity(),data);
+        mdapter = new SearchBoardsAdapter(getCurrentActivity(),data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -58,6 +58,7 @@ public class EmptyFragment extends BaseFragment {
 
         return view;
     }
+
     protected void onAnimOver() {
 
     }

@@ -109,7 +109,7 @@ public class MyOkHttpNetworkFetcher extends
                             if (contentLength < 0) {
                                 contentLength = 0;
                             }
-                            if(contentLength>1024*1024*12) throw new Exception("檔案超過12MB限制("+(contentLength/1024/1024)+"MB)"+"\n請自行開啟連結");
+                            //if(contentLength>1024*1024*12) throw new Exception("檔案超過12MB限制("+(contentLength/1024/1024)+"MB)"+"\n請自行開啟連結");
                             callback.onResponse(body.byteStream(), (int) contentLength);
                         } catch (Exception e) {
                             handleException(call, e, callback);
