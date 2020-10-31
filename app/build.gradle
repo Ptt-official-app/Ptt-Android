@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
@@ -51,22 +52,42 @@ static def demoHotArticleUrl(){
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'org.jsoup:jsoup:1.13.1'
-    implementation 'com.facebook.fresco:fresco:2.3.0'
-    implementation 'com.facebook.fresco:animated-gif:2.3.0'
-    implementation 'com.facebook.fresco:imagepipeline-okhttp3:2.3.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
-    implementation 'com.squareup.okio:okio:2.8.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.browser:browser:1.2.0'
-    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    // AndroidX
+    implementation deps.androidX.appcompat
+    implementation deps.androidX.browser
+    implementation deps.androidX.constraintLayout
+    implementation deps.androidX.legacy
+    implementation deps.androidX.lifecycle.extensions
+    implementation deps.androidX.lifecycle.compiler
+    implementation deps.androidX.lifecycle.viewmodelKTX
+    implementation deps.androidX.localBroadcastManager
+    implementation deps.androidX.multidex
+    implementation deps.androidX.swipeRefreshLayout
+
+    // Facebook
+    implementation deps.facebook.fresco.core
+    implementation deps.facebook.fresco.animate
+    implementation deps.facebook.fresco.imagePipeline
+
+    // Google
+    implementation deps.google.material
+
+    // Jsoup
+    implementation deps.jsoup
+
+    // Kotlin
+    implementation deps.kotlin.stdlib.jdk8
+
+    // Square
+    implementation deps.square.okhttp
+    implementation deps.square.okio
+
+    testImplementation deps.junit
+    androidTestImplementation deps.androidX.test.ext.junit
+    androidTestImplementation deps.androidX.test.ext.espresso
+
+    // solved AndroidX conflict: Duplicate class guava listenablefuture
+    // see：https://stackoverflow.com/questions/60472354/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
 }

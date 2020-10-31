@@ -14,7 +14,8 @@ ext.addAllRepos = this.&addAllRepos
 
 def addProjectDependencies(ScriptHandler handler) {
     handler.dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath projectDeps.androidGradlePlugin
+        classpath projectDeps.kotlin.gradlePlugin
     }
 }
 

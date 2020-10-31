@@ -1,0 +1,73 @@
+ext.buildConfig = []
+
+ext.versions = [
+        'androidGradle'             : '4.1.0',
+        'kotlin'                    : '1.4.10',
+        'androidXAppCompat'         : '1.2.0',
+        'androidXBrowser'         : '1.2.0',
+        'androidXConstraintLayout'  : '2.0.4',
+        'androidXLegacy'            : '1.0.0',
+        'androidXLifecycle'         : '2.2.0',
+        'androidXLocalBroadcastManager': '1.0.0',
+        'androidXMultidex': '2.0.1',
+        'androidXSwipeRefreshLayout': '1.1.0',
+        'androidXTextJunit': '1.1.2',
+        'androidXTextEspresso': '3.3.0',
+        'fresco': '2.3.0',
+        'jsoup': '1.13.1',
+        'junit': '4.13',
+        'material': '1.2.1',
+        'okhttp': '4.9.0',
+        'okio': '2.8.0'
+]
+
+ext.projectDeps = [
+        'androidGradlePlugin': "com.android.tools.build:gradle:${versions.androidGradle}",
+        'kotlin'             : [
+                'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        ]
+]
+
+ext.deps = [
+        'kotlin'  : [
+                'stdlib': [
+                        'jdk8': "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+                ]
+        ],
+        'androidX': [
+                'appcompat'         : "androidx.appcompat:appcompat:${versions.androidXAppCompat}",
+                'browser': "androidx.browser:browser:${versions.androidXBrowser}",
+                'constraintLayout'  : "androidx.constraintlayout:constraintlayout:${versions.androidXConstraintLayout}",
+                'legacy'            : "androidx.legacy:legacy-support-v4:${versions.androidXLegacy}",
+                'lifecycle'         : [
+                        'extensions'  : "androidx.lifecycle:lifecycle-extensions:${versions.androidXLifecycle}",
+                        'compiler'    : "androidx.lifecycle:lifecycle-compiler:${versions.androidXLifecycle}",
+                        'viewmodelKTX': "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.androidXLifecycle}"
+                ],
+                'localBroadcastManager': "androidx.localbroadcastmanager:localbroadcastmanager:${versions.androidXLocalBroadcastManager}",
+                'multidex': "androidx.multidex:multidex:${versions.androidXMultidex}",
+                'swipeRefreshLayout': "androidx.swiperefreshlayout:swiperefreshlayout:${versions.androidXSwipeRefreshLayout}",
+                'test': [
+                        'ext': [
+                                'junit': "androidx.test.ext:junit:${versions.androidXTextJunit}",
+                                'espresso': "androidx.test.espresso:espresso-core:${versions.androidXTextEspresso}"
+                        ]
+                ]
+        ],
+        'google': [
+                'material': "com.google.android.material:material:${versions.material}"
+        ],
+        'jsoup': "org.jsoup:jsoup:${versions.jsoup}",
+        'junit': "junit:junit:${versions.junit}",
+        'facebook': [
+                'fresco': [
+                        'core': "com.facebook.fresco:fresco:${versions.fresco}",
+                        'animate': "com.facebook.fresco:animated-gif:${versions.fresco}",
+                        'imagePipeline': "com.facebook.fresco:imagepipeline-okhttp3:${versions.fresco}"
+                ]
+        ],
+        'square': [
+                'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+                'okio': "com.squareup.okio:okio:${versions.okio}"
+        ]
+]
