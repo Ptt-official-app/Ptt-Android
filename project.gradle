@@ -1,0 +1,21 @@
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+}
+
+ext.addRepos = this.&addRepos
+
+def addAllRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+}
+
+ext.addAllRepos = this.&addAllRepos
+
+def addProjectDependencies(ScriptHandler handler) {
+    handler.dependencies {
+        classpath 'com.android.tools.build:gradle:4.0.1'
+    }
+}
+
+ext.addProjectDependencies = this.&addProjectDependencies
