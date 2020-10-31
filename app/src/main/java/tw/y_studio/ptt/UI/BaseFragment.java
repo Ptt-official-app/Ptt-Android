@@ -2,27 +2,56 @@ package tw.y_studio.ptt.UI;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import androidx.fragment.app.Fragment;
 
+import tw.y_studio.ptt.Utils.DebugUtils;
+
 public class BaseFragment extends Fragment {
 
     protected Context mContext = null;
-    protected Activity mActivity = null;
+    protected BaseActivity mActivity = null;
+    protected View mMainView = null;
+    private Handler mUIHandler = new Handler(Looper.getMainLooper());
 
-    public void setActivity(Activity activity){
+    public void setActivity(BaseActivity activity){
         this.mActivity = activity;
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.mActivity = activity;
+        if(activity instanceof BaseActivity){
+            this.mActivity = (BaseActivity)activity;
+        }
+
+
 
     }
 
-    protected void onAnimOver() {
+    public <T extends View> T findViewById(int id){
+       return (T) mMainView.findViewById(id);
+    }
+
+    protected void onAnimOver(){
+
+    }
+
+    protected void runOnUI(Runnable r){
+        mUIHandler.post(r);
+    }
+
+    protected void setMainView(View view){
+        this.mMainView = view;
+    }
+
+    protected View getMainView(){
+        return this.mMainView;
     }
 
     private boolean isFirstStart = false;
@@ -74,7 +103,13 @@ public class BaseFragment extends Fragment {
         super.onDetach();
         this.mContext = null;
         this.mActivity = null;
+        this.mMainView = null;
 
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
     }
 
     @Override
@@ -86,7 +121,7 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    public Activity getThisActivity(){
+    public Activity getCurrentActivity(){
         if(this.mActivity != null){
             return this.mActivity;
         }else if(this.mContext != null){
@@ -94,5 +129,34 @@ public class BaseFragment extends Fragment {
         }else{
             return getActivity();
         }
+    }
+
+    public void closeAllFragment(){
+        mActivity.closeAllFragment();
+    }
+
+    protected Fragment getCurrentFragment(){
+        return (Fragment) this;
+    }
+    public void loadFragment(Fragment toFragment, Fragment thisFragment){
+
+        try {
+            mActivity.loadFragment(toFragment,thisFragment);
+        } catch (Exception e) {
+            e.printStackTrace();
+            DebugUtils.Log("loadFragment","Error : "+e.getLocalizedMessage());
+        }
+
+    }
+
+    public void loadFragmentNoAnim(Fragment toFragment, Fragment thisFragment){
+
+        try {
+            mActivity.loadFragmentNoAnim(toFragment,thisFragment);
+        } catch (Exception e) {
+            e.printStackTrace();
+            DebugUtils.Log("loadFragmentNoAnim","Error : "+e.getLocalizedMessage());
+        }
+
     }
 }

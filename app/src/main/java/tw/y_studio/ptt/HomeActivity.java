@@ -22,11 +22,12 @@ import android.widget.Toast;
 import java.util.Date;
 
 import tw.y_studio.ptt.Fragment.HomeFragment;
+import tw.y_studio.ptt.UI.BaseActivity;
 import tw.y_studio.ptt.UI.StaticValue;
 import tw.y_studio.ptt.Utils.DebugUtils;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
 
     private HomeFragment homeFragment;
     private int themeType = 0;
@@ -90,6 +91,8 @@ public class HomeActivity extends AppCompatActivity {
     }
     private boolean isReadyShowHome = false;
     private boolean isReadyLaunch = false;
+
+    @Override
     public void closeAllFragment(){
         try {
             while(getSupportFragmentManager().getBackStackEntryCount()>0){
@@ -101,13 +104,13 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
     public void loadFragment(Fragment toFragment, Fragment thisFragment) throws Exception{
         if(getSupportFragmentManager().getFragments().size()>0){
 
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right_250,R.anim.slide_out_right_250,R.anim.slide_in_right_250,R.anim.slide_out_right_250)
                     .add(R.id.mainActivity_mainLayout, toFragment, toFragment.getClass().getSimpleName())
-
                     .addToBackStack(toFragment.getClass().getSimpleName())
                     .commitAllowingStateLoss();
         }else {
@@ -117,6 +120,8 @@ public class HomeActivity extends AppCompatActivity {
                     .commitAllowingStateLoss();
         }
     }
+
+    @Override
     public void loadFragmentNoAnim(Fragment toFragment, Fragment thisFragment) throws Exception{
         if(getSupportFragmentManager().getFragments().size()>0){
 

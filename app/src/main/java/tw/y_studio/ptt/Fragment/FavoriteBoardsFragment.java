@@ -13,12 +13,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,7 +30,6 @@ import java.util.Map;
 
 import tw.y_studio.ptt.Adapter.FavoriteBoardsListAdapter;
 import tw.y_studio.ptt.DataBase.FavoriteDBHelper;
-import tw.y_studio.ptt.HomeActivity;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
@@ -44,13 +42,14 @@ import tw.y_studio.ptt.Utils.StringUtils;
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
 public class FavoriteBoardsFragment extends BaseFragment {
-    private View Mainview=null;
+
     public static FavoriteBoardsFragment newInstance() {
         Bundle args = new Bundle();
         FavoriteBoardsFragment fragment = new FavoriteBoardsFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     public static FavoriteBoardsFragment newInstance(Bundle args) {
         FavoriteBoardsFragment fragment = new FavoriteBoardsFragment();
         fragment.setArguments(args);
@@ -61,12 +60,12 @@ public class FavoriteBoardsFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private FavoriteBoardsListAdapter mAdapter;
 
-    private List<Map<String, Object>> data;
+    private List<Map<String, Object>> data = new ArrayList<>();
 
 
     private StartDragListener mStartDragListener;
     private ItemTouchHelper touchHelper;
-    private AppCompatImageButton edit;
+    private ImageButton edit;
     private boolean editMode = false;
     private ClickFix mClickFix = new ClickFix();
 
@@ -76,14 +75,15 @@ public class FavoriteBoardsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.favorite_boards_fragment_layout, container, false);
 
+        setMainView(view);
 
+        search_bar = findViewById(R.id.hot_boards_fragment_search);
+        edit = findViewById(R.id.hot_boards_fragment_edit);
+        mRecyclerView = findViewById(R.id.hot_boards_fragment_recyclerView);
+        mSwipeRefreshLayout= findViewById(R.id.hot_boards_fragment_refresh_layout);
 
-        Mainview=view;
-
-        data = new ArrayList<>();
         Bundle bundle = getArguments();//取得Bundle
 
-        search_bar = Mainview.findViewById(R.id.hot_boards_fragment_search);
         search_bar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,14 +94,14 @@ public class FavoriteBoardsFragment extends BaseFragment {
                     return;
                 }
                 try {
-                    ((HomeActivity)getContext()).loadFragmentNoAnim(SearchBoardsFragment.newInstance(),getParentFragment());
+                    loadFragmentNoAnim(SearchBoardsFragment.newInstance(),getCurrentFragment());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        edit = Mainview.findViewById(R.id.hot_boards_fragment_edit);
+
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,16 +112,17 @@ public class FavoriteBoardsFragment extends BaseFragment {
                 mAdapter.setEditMode(editMode);
                 mAdapter.notifyDataSetChanged();
                 if(editMode){
-                    edit.setColorFilter(getThisActivity().getResources().getColor(R.color.tangerine));
+                    edit.setColorFilter(getCurrentActivity().getResources().getColor(R.color.tangerine));
                 }else {
-                    edit.setColorFilter(getThisActivity().getResources().getColor(R.color.slateGrey));
+                    edit.setColorFilter(getCurrentActivity().getResources().getColor(R.color.slateGrey));
                 }
                 if(!editMode){
                     UpdateBoardSort();
                 }
             }
         });
-        mRecyclerView = Mainview.findViewById(R.id.hot_boards_fragment_recyclerView);
+
+
         mStartDragListener = new StartDragListener() {
             @Override
             public void requestDrag(RecyclerView.ViewHolder viewHolder) {
@@ -129,7 +130,7 @@ public class FavoriteBoardsFragment extends BaseFragment {
             }
         };
         
-        mAdapter = new FavoriteBoardsListAdapter(getThisActivity(),data,mStartDragListener);
+        mAdapter = new FavoriteBoardsListAdapter(getCurrentActivity(),data,mStartDragListener);
         //mAdapter.setEditMode(true);
         ItemTouchHelper.Callback callback =
                 new ItemMoveCallback(mAdapter);
@@ -143,7 +144,7 @@ public class FavoriteBoardsFragment extends BaseFragment {
         mRecyclerView.setAdapter(mAdapter);
 
 
-        mSwipeRefreshLayout= Mainview.findViewById(R.id.hot_boards_fragment_refresh_layout);
+
         //mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_light,
@@ -153,54 +154,48 @@ public class FavoriteBoardsFragment extends BaseFragment {
 
         mSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
-
                     @Override
                     public void onRefresh() {
-
                         loadData();
-
                     }
-
                 });
 
         mAdapter.setOnItemClickListener(new FavoriteBoardsListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //mAdapter.notifyDataSetChanged();
+
                 if(mClickFix.isFastDoubleClick()) return;
                 if(!editMode){
                     Bundle bundle = new Bundle();
                     bundle.putString("title", StringUtils.notNullString(data.get(position).get("title")));
                     bundle.putString("subtitle", StringUtils.notNullString(data.get(position).get("subtitle")));
-                    try {
-                        ((HomeActivity)getContext()).loadFragment(ArticleListFragment.newInstance(bundle),getParentFragment());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
 
+                    loadFragment(ArticleListFragment.newInstance(bundle),getCurrentFragment());
+                }
             }
         });
         mAdapter.setDislikeOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(mClickFix.isFastDoubleClick()) return;
-                //mAdapter.notifyItemRangeChanged(0,mAdapter.getItemCount());
+
                 String board = (String) v.getTag();
-                //Toast.makeText(getContext(),StringUtils.notNullImageString(data.get(position).get("title"))+" / "+position,Toast.LENGTH_SHORT).show();
+
                 deleteBoard(board ,getBoardIndex(board));
             }
         });
 
 
-
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
                 new IntentFilter("ptt-favorite-change"));
+
         return view;
     }
+
     protected void onAnimOver() {
         loadData();
     }
+
     private void dealDataChange(){
         if(GattingData) return;
         if(haveApi&&useApi){
@@ -209,58 +204,58 @@ public class FavoriteBoardsFragment extends BaseFragment {
             dealDataChangeFromDataBase();
         }
     }
+
     private void dealDataChangeFromApi(){
 
     }
+
     private int oreDFloor2 = 0, oreDFloorVector2 = 0;
+
     private void dealDataChangeFromDataBase(){
         r1 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                    public void run() {
-
-                        mSwipeRefreshLayout.setRefreshing(true);
-                        try {
-                            LinearLayoutManager layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
-                            View topView = layoutManager.getChildAt(0);
-                            if(topView != null) {
-                                oreDFloor2 = topView.getTop();
-                                oreDFloorVector2 = layoutManager.getPosition(topView);
-                            }
-                        }catch (Exception e){
-
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                    try {
+                        LinearLayoutManager layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                        View topView = layoutManager.getChildAt(0);
+                        if(topView != null) {
+                            oreDFloor2 = topView.getTop();
+                            oreDFloorVector2 = layoutManager.getPosition(topView);
                         }
-                        data.clear();
-                        mAdapter.notifyDataSetChanged();
+                    }catch (Exception e){
+
                     }
-                }));
+                    data.clear();
+                    mAdapter.notifyDataSetChanged();
+                });
+
                 GattingData=true;
                 data_temp.clear();
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
 
                 try {
                     data_temp.addAll(mDBHelper.getAll());
-                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                        public void run() {
-                            data.addAll(data_temp);
-                            mAdapter.notifyDataSetChanged();
-                            data_temp.clear();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                            ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(oreDFloorVector2,oreDFloor2);
-                        }
-                    }));
+                    runOnUI(()->{
+                        data.addAll(data_temp);
+                        mAdapter.notifyDataSetChanged();
+                        data_temp.clear();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                        ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(oreDFloorVector2,oreDFloor2);
+
+                    });
+
+
                     DebugUtils.Log("onHotBoards","get data from web over");
 
                 }catch (final Exception e){
                     DebugUtils.Log("onHotBoards","Error "+e.toString());
-                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                            mSwipeRefreshLayout.setRefreshing(false);
+                    runOnUI(()->{
+                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                        }
-                    }));
                 }finally {
                     mDBHelper.close();
                 }
@@ -295,10 +290,11 @@ public class FavoriteBoardsFragment extends BaseFragment {
         }
         return -1;
     }
+
     public boolean isEditMode(){
         return editMode;
     }
-    private Handler mUI_Handler = new Handler();
+
     private Handler mThreadHandler;
     private HandlerThread mThread;
     private Runnable r1;
@@ -306,10 +302,7 @@ public class FavoriteBoardsFragment extends BaseFragment {
     public void scrollToTop(){
         try {
             if(mRecyclerView!=null){
-                //if(items.size()>10)
                 mRecyclerView.scrollToPosition(0);
-                //mListView.smoothScrollToPosition(0);
-                //mListView.scrollToPosition(0);
             }
         }catch (Exception e){
 
@@ -317,40 +310,26 @@ public class FavoriteBoardsFragment extends BaseFragment {
 
     }
 
-
-    private Handler mUI_Handler3 = new Handler();
     private Handler mThreadHandler3;
     private HandlerThread mThread3;
     private Runnable r3;
 
-
     private void UpdateBoardSort(){
         r3 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                });
 
-                    }
-                }));
                 GattingData=true;
-
-
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
                 try {
-
 
                     List<ContentValues> items = new ArrayList<>();
 
-
                     for(int i=0;i<data.size();i++){
                         Map<String,Object> mm = data.get(i);
-                        //DebugUtils.Log("onHotBoards",i+" / "+mm.toString());
 
-                        /* mm.put("title",cursor.getString(1));
-                mm.put("number",cursor.getInt(4));
-                mm.put("subtitle",cursor.getString(2));
-                mm.put("class",cursor.getString(3));*/
                         items.add(FavoriteDBHelper.newContentValues(
                                 StringUtils.notNullImageString(mm.get("title"))
                                 ,StringUtils.notNullImageString(mm.get("subtitle"))
@@ -361,34 +340,19 @@ public class FavoriteBoardsFragment extends BaseFragment {
 
                     mDBHelper.deleAll();
                     mDBHelper.insertBoards(items);
+                    runOnUI(()->{
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-
-                    //mDBHelper.delebyBoard(board);
-
-
-                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                        public void run() {
-                            //data.remove(position);
-                            //mAdapter.notifyItemRemoved(position);
-                            //myBoardIndex--;
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }));
-                    //DebugUtils.Log("onAL", board+" delete over");
                 }catch (final Exception e){
-                    if(getThisActivity()!=null)
-                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
+                    runOnUI(()->{
+                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                            }
-                        }));
                 }finally {
                     mDBHelper.close();
                 }
-
-
 
                 GattingData=false;
             }
@@ -404,47 +368,33 @@ public class FavoriteBoardsFragment extends BaseFragment {
     private void deleteBoard(final String board,final int position){
         r3 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
+                runOnUI(()->{
+                    mSwipeRefreshLayout.setRefreshing(true);
+                });
 
-                    }
-                }));
                 GattingData=true;
 
-
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
                 try {
 
-
-
-
                     mDBHelper.delebyBoard(board);
+                    runOnUI(()->{
+                        data.remove(position);
+                        mAdapter.notifyItemRemoved(position);
+                        //myBoardIndex--;
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-
-                    getThisActivity().runOnUiThread(new Thread(new Runnable() {
-                        public void run() {
-                            data.remove(position);
-                            mAdapter.notifyItemRemoved(position);
-                            //myBoardIndex--;
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }));
                     DebugUtils.Log("onAL", board+" delete over");
                 }catch (final Exception e){
-                    if(getThisActivity()!=null)
-                        getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                            public void run() {
-                                Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
+                    runOnUI(()->{
+                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                            }
-                        }));
                 }finally {
                     mDBHelper.close();
                 }
-
-
 
                 GattingData=false;
             }
@@ -456,48 +406,40 @@ public class FavoriteBoardsFragment extends BaseFragment {
         mThreadHandler3 = new Handler(mThread3.getLooper());
         mThreadHandler3.post(r3);
     }
+
     private List<Map<String, Object>> data_temp = new ArrayList<>();
+
     private void getDataFromDataBase(){
 
         r1 = new Runnable() {
             public void run() {
-                getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                    public void run() {
-                        mSwipeRefreshLayout.setRefreshing(true);
+                runOnUI(() -> {mSwipeRefreshLayout.setRefreshing(true);});
 
-                    }
-                }));
                 GattingData=true;
                 data_temp.clear();
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getThisActivity(),"Favorite.db",null,1);
+                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
 
                 try {
                     data_temp.addAll(mDBHelper.getAll());
-                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                        public void run() {
-                            data.addAll(data_temp);
-                            mAdapter.notifyDataSetChanged();
-                            data_temp.clear();
-                            mSwipeRefreshLayout.setRefreshing(false);
+                    runOnUI(() -> {
+                        data.addAll(data_temp);
+                        mAdapter.notifyDataSetChanged();
+                        data_temp.clear();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
 
-                        }
-                    }));
                     DebugUtils.Log("onHotBoards","get data from web over");
 
                 }catch (final Exception e){
                     DebugUtils.Log("onHotBoards","Error "+e.toString());
-                    getThisActivity().runOnUiThread (new Thread(new Runnable() {
-                        public void run() {
-                            Toast.makeText(getThisActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                            mSwipeRefreshLayout.setRefreshing(false);
-
-                        }
-                    }));
+                    runOnUI(() -> {
+                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    });
                 }finally {
                     mDBHelper.close();
                 }
-
                 GattingData=false;
             }
 
@@ -508,13 +450,15 @@ public class FavoriteBoardsFragment extends BaseFragment {
         mThreadHandler = new Handler(mThread.getLooper());
         mThreadHandler.post(r1);
 
-
     }
+
     private void getDataFromApi(){
 
     }
+
     private boolean haveApi = false;
     private boolean GattingData = false;
+
     private void loadData(){
         if(GattingData) return;
 
@@ -526,17 +470,14 @@ public class FavoriteBoardsFragment extends BaseFragment {
             getDataFromDataBase();
         }
 
-
-
-    }
-    private void initView() throws Exception{
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
+
         if(data!=null)
         data.clear();
         // 移除工作
