@@ -1,4 +1,14 @@
-ext.buildConfig = []
+ext.buildConfig = [
+        'appID': 'tw.y_studio.ptt',
+        'compileSDK': 30,
+        'minSDK'    : 21,
+        'targetSDK' : 30,
+        'buildTool' : '30.0.2',
+        'versionCode': 43,
+        'versionName': "0.0.14_build2",
+        'runner': "androidx.test.runner.AndroidJUnitRunner",
+        'jdk': '1.8'
+]
 
 ext.versions = [
         'androidGradle'             : '4.1.0',

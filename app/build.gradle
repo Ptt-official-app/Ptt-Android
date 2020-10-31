@@ -2,17 +2,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '30.0.2'
+    compileSdkVersion buildConfig.compileSDK
+    buildToolsVersion buildConfig.buildTool
     defaultConfig {
-        applicationId "tw.y_studio.ptt"
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 43
-        versionName "0.0.14_build2"
+        applicationId buildConfig.appID
+        minSdkVersion buildConfig.minSDK
+        targetSdkVersion buildConfig.targetSDK
+        versionCode buildConfig.versionCode
+        versionName buildConfig.versionName
         buildConfigField "String", "API_Domain", "\"${apiDomain()}\""
         buildConfigField "String", "demo_hot_article_url", "\"${demoHotArticleUrl()}\""
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner buildConfig.runner
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a' , 'x86', 'x86_64'
         }
@@ -37,8 +37,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+        sourceCompatibility = buildConfig.jdk
+        targetCompatibility = buildConfig.jdk
     }
 }
 
@@ -89,5 +89,4 @@ dependencies {
     // solved AndroidX conflict: Duplicate class guava listenablefuture
     // see：https://stackoverflow.com/questions/60472354/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
-
 }
