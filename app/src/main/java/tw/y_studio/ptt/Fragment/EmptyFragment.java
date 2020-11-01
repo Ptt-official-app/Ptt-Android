@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import tw.y_studio.ptt.Adapter.SearchBoardsAdapter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class EmptyFragment extends BaseFragment {
 
@@ -38,16 +38,19 @@ public class EmptyFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.empty_fragment_layout, container, false);
 
         setMainView(view);
 
         recyclerView = findViewById(R.id.recyclerView_empty);
 
-        Bundle bundle = getArguments();//取得Bundle
+        Bundle bundle = getArguments(); // 取得Bundle
 
-        mdapter = new SearchBoardsAdapter(getCurrentActivity(),data);
+        mdapter = new SearchBoardsAdapter(getCurrentActivity(), data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -55,12 +58,8 @@ public class EmptyFragment extends BaseFragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(mdapter);
 
-
         return view;
     }
 
-    protected void onAnimOver() {
-
-    }
-
+    protected void onAnimOver() {}
 }

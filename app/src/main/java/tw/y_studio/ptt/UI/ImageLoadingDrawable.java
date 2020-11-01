@@ -12,11 +12,7 @@ import androidx.annotation.ColorInt;
 
 import com.facebook.drawee.drawable.DrawableUtils;
 
-
-
-
 public class ImageLoadingDrawable extends Drawable {
-
     private Paint mRingBackgroundPaint;
     private int mRingBackgroundColor;
 
@@ -38,26 +34,29 @@ public class ImageLoadingDrawable extends Drawable {
 
     private int mProgress;
 
-    public ImageLoadingDrawable(){
+    public ImageLoadingDrawable() {
         initAttrs();
     }
-    public ImageLoadingDrawable(@ColorInt int RingBackgroundColor,@ColorInt int RingColor){
+
+    public ImageLoadingDrawable(@ColorInt int RingBackgroundColor, @ColorInt int RingColor) {
         initAttrs();
         mRingBackgroundColor = RingBackgroundColor;
         mRingColor = RingColor;
     }
-    public ImageLoadingDrawable(float size){
-        this.size=size;
+
+    public ImageLoadingDrawable(float size) {
+        this.size = size;
         initAttrs();
     }
-    private float size=1;
+
+    private float size = 1;
 
     private void initAttrs() {
-        mRadius = (int)(StaticValue.widthPixels/30d*size);
-        mStrokeWidth = (int)(mRadius/10);
-        //mRingBackgroundColor = 0xFF4F4F4F;
+        mRadius = (int) (StaticValue.widthPixels / 30d * size);
+        mStrokeWidth = (int) (mRadius / 10);
+        // mRingBackgroundColor = 0xFF4F4F4F;
         mRingBackgroundColor = Color.GRAY;
-        //mRingColor = 0xFF4F4F4F;
+        // mRingColor = 0xFF4F4F4F;
         mRingColor = Color.WHITE;
         mRingRadius = mRadius + mStrokeWidth / 2;
         initVariable();
@@ -79,13 +78,13 @@ public class ImageLoadingDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        drawBar(canvas,mTotalProgress,mRingBackgroundPaint);
-        drawBar(canvas,mProgress,mRingPaint);
+        drawBar(canvas, mTotalProgress, mRingBackgroundPaint);
+        drawBar(canvas, mProgress, mRingPaint);
     }
 
     private void drawBar(Canvas canvas, int level, Paint paint) {
-        if (level >= 0 ) {
-            Rect bound= getBounds();
+        if (level >= 0) {
+            Rect bound = getBounds();
             mXCenter = bound.centerX();
             mYCenter = bound.centerY();
             RectF oval = new RectF();
@@ -99,11 +98,11 @@ public class ImageLoadingDrawable extends Drawable {
 
     @Override
     protected boolean onLevelChange(int level) {
-        mProgress = (int)((double)level/(1));
-        if(level > 0 && level < 10000) {
+        mProgress = (int) ((double) level / (1));
+        if (level > 0 && level < 10000) {
             invalidateSelf();
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -123,4 +122,3 @@ public class ImageLoadingDrawable extends Drawable {
         return DrawableUtils.getOpacityFromColor(this.mRingPaint.getColor());
     }
 }
-

@@ -19,87 +19,89 @@ import tw.y_studio.ptt.Fresco.LolipopBitmapMemoryCacheSupplier;
 import tw.y_studio.ptt.Fresco.MyOkHttpNetworkFetcher;
 import tw.y_studio.ptt.Utils.OkHttpUtils;
 
-
 public class PttApplication extends MultiDexApplication {
-
     private OkHttpClient mOkHttpClient = null;
     private ImagePipelineConfig config = null;
-
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-
-        if( mOkHttpClient == null){
+        if (mOkHttpClient == null) {
             try {
-                mOkHttpClient=new OkHttpUtils().getCacheClient(this);
-            }catch (Exception e){
-
+                mOkHttpClient = new OkHttpUtils().getCacheClient(this);
+            } catch (Exception e) {
             }
         }
 
-        if( config == null ){
-            NoOpMemoryTrimmableRegistry.getInstance().registerMemoryTrimmable(new MemoryTrimmable() {
-                @Override
-                public void trim(MemoryTrimType trimType) {
-                    final double suggestedTrimRatio = trimType.getSuggestedTrimRatio();
+        if (config == null) {
+            NoOpMemoryTrimmableRegistry.getInstance()
+                    .registerMemoryTrimmable(
+                            new MemoryTrimmable() {
 
+                                @Override
+                                public void trim(MemoryTrimType trimType) {
+                                    final double suggestedTrimRatio =
+                                            trimType.getSuggestedTrimRatio();
 
-                    if (MemoryTrimType.OnCloseToDalvikHeapLimit.getSuggestedTrimRatio() == suggestedTrimRatio
-                            || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.getSuggestedTrimRatio() == suggestedTrimRatio
-                            || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.getSuggestedTrimRatio() == suggestedTrimRatio
-                    ) {
-                        ImagePipelineFactory.getInstance().getImagePipeline().clearMemoryCaches();
-                    }
-                }
-            });
+                                    if (MemoryTrimType.OnCloseToDalvikHeapLimit
+                                                            .getSuggestedTrimRatio()
+                                                    == suggestedTrimRatio
+                                            || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground
+                                                            .getSuggestedTrimRatio()
+                                                    == suggestedTrimRatio
+                                            || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground
+                                                            .getSuggestedTrimRatio()
+                                                    == suggestedTrimRatio) {
+                                        ImagePipelineFactory.getInstance()
+                                                .getImagePipeline()
+                                                .clearMemoryCaches();
+                                    }
+                                }
+                            });
 
-            config = OkHttpImagePipelineConfigFactory
-                    .newBuilder(this, mOkHttpClient)
-                    .setMainDiskCacheConfig(DiskCacheConfig.newBuilder(this)
-                            .setBaseDirectoryPath(getCacheDir())
-                            .build())
-                    .setNetworkFetcher(new MyOkHttpNetworkFetcher(mOkHttpClient))
-                    .setDownsampleEnabled(true)
-                    .experiment().setWebpSupportEnabled(false)
-                    .setMemoryTrimmableRegistry(NoOpMemoryTrimmableRegistry.getInstance())
-                    .experiment().setUseDownsampligRatioForResizing(true)
-                    .setBitmapMemoryCacheParamsSupplier(new LolipopBitmapMemoryCacheSupplier((ActivityManager) getSystemService(ACTIVITY_SERVICE)))
-                    .setResizeAndRotateEnabledForNetwork(true)
-                    //.setMemoryChunkType(MemoryChunkType.BUFFER_MEMORY)
-                    //.setImageTranscoderType(ImageTranscoderType.JAVA_TRANSCODER)
-                    //.experiment().setNativeCodeDisabled(true)
-                    .setBitmapsConfig(Bitmap.Config.RGB_565)
-                    .build();
-
+            config =
+                    OkHttpImagePipelineConfigFactory.newBuilder(this, mOkHttpClient)
+                            .setMainDiskCacheConfig(
+                                    DiskCacheConfig.newBuilder(this)
+                                            .setBaseDirectoryPath(getCacheDir())
+                                            .build())
+                            .setNetworkFetcher(new MyOkHttpNetworkFetcher(mOkHttpClient))
+                            .setDownsampleEnabled(true)
+                            .experiment()
+                            .setWebpSupportEnabled(false)
+                            .setMemoryTrimmableRegistry(NoOpMemoryTrimmableRegistry.getInstance())
+                            .experiment()
+                            .setUseDownsampligRatioForResizing(true)
+                            .setBitmapMemoryCacheParamsSupplier(
+                                    new LolipopBitmapMemoryCacheSupplier(
+                                            (ActivityManager) getSystemService(ACTIVITY_SERVICE)))
+                            .setResizeAndRotateEnabledForNetwork(true)
+                            // .setMemoryChunkType(MemoryChunkType.BUFFER_MEMORY)
+                            // .setImageTranscoderType(ImageTranscoderType.JAVA_TRANSCODER)
+                            // .experiment().setNativeCodeDisabled(true)
+                            .setBitmapsConfig(Bitmap.Config.RGB_565)
+                            .build();
         }
 
-
         try {
-            Fresco.initialize(getApplicationContext(),config);
+            Fresco.initialize(getApplicationContext(), config);
         } catch (UnsatisfiedLinkError e) {
             Fresco.shutDown();
         }
-
     }
-
-
-
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         try {
             ImagePipelineFactory.getInstance().getImagePipeline().clearMemoryCaches();
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
     }
+
     @Override
-    public void onTrimMemory(int level){
+    public void onTrimMemory(int level) {
         super.onTrimMemory(level);
     }
-
 }
-

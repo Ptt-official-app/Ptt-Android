@@ -1,5 +1,7 @@
 package tw.y_studio.ptt.Fragment;
 
+import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,12 +25,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import okhttp3.OkHttpClient;
 import tw.y_studio.ptt.API.SearchBoardAPIHelper;
 import tw.y_studio.ptt.Adapter.SearchBoardsAdapter;
@@ -41,7 +37,11 @@ import tw.y_studio.ptt.UI.UiFix;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 
-import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class SearchBoardsFragment extends BaseFragment {
 
@@ -75,50 +75,53 @@ public class SearchBoardsFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_boards_fragment_layout, container, false);
 
         setMainView(view);
 
-
-        Bundle bundle = getArguments();//取得Bundle
+        Bundle bundle = getArguments(); // 取得Bundle
 
         mRecyclerView = findViewById(R.id.search_boards_fragment_recyclerView);
         searchBar = findViewById(R.id.search_boards_fragment_editText_search);
         clearButton = findViewById(R.id.search_boards_item_imageView_like);
         mSwipeRefreshLayout = findViewById(R.id.search_boards_fragment_refresh_layout);
-        //mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
+        // mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
 
-        clearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mClickFix.isFastDoubleClick(300)) return;
-                if(searchBar.getText().toString().length()==0){
-                    try {
-                        InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
-                    }catch (Exception e){
+        clearButton.setOnClickListener(
+                new View.OnClickListener() {
 
+                    @Override
+                    public void onClick(View v) {
+                        if (mClickFix.isFastDoubleClick(300)) return;
+                        if (searchBar.getText().toString().length() == 0) {
+                            try {
+                                InputMethodManager inputMethodManager =
+                                        (InputMethodManager)
+                                                getCurrentActivity()
+                                                        .getSystemService(
+                                                                Context.INPUT_METHOD_SERVICE);
+                                inputMethodManager.hideSoftInputFromWindow(
+                                        searchBar.getWindowToken(), 0);
+                            } catch (Exception e) {
+                            }
+                            getCurrentActivity().onBackPressed();
+                        } else {
+                            searchBar.getText().clear();
+                        }
                     }
-                    getCurrentActivity().onBackPressed();
-                }else {
-                    searchBar.getText().clear();
-                }
-            }
-        });
+                });
 
-
-        mdapter = new SearchBoardsAdapter(getCurrentActivity(),data);
+        mdapter = new SearchBoardsAdapter(getCurrentActivity(), data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mdapter);
-
-
-
-
 
         UiFix.setSwipeRefreshLayoutBackground(mSwipeRefreshLayout, getCurrentActivity());
 
@@ -133,210 +136,216 @@ public class SearchBoardsFragment extends BaseFragment {
 
                     @Override
                     public void onRefresh() {
-
                         loadData();
-
                     }
-
                 });
 
-        searchBar.addTextChangedListener(new TextWatcher(){
+        searchBar.addTextChangedListener(
+                new TextWatcher() {
 
-            @Override
-            public void afterTextChanged(Editable s) {
-
-
-                if(haveApi&&useApi){
-                    if(s.toString().length()==0){
-                        data.clear();
-                        mdapter.notifyDataSetChanged();
-                        data.addAll(data_temp);
-                        mdapter.notifyDataSetChanged();
-                    }else {
-                        if(!GattingData){
-                            getDataFromApi(s.toString());
-                        }else {
-                            waitSearchText = s.toString();
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (haveApi && useApi) {
+                            if (s.toString().length() == 0) {
+                                data.clear();
+                                mdapter.notifyDataSetChanged();
+                                data.addAll(data_temp);
+                                mdapter.notifyDataSetChanged();
+                            } else {
+                                if (!GattingData) {
+                                    getDataFromApi(s.toString());
+                                } else {
+                                    waitSearchText = s.toString();
+                                }
+                            }
+                            // getDataFromApi();
+                        } else {
+                            if (!GattingData) {
+                                if (s.toString().length() == 0) {
+                                    data.clear();
+                                    mdapter.notifyDataSetChanged();
+                                    data.addAll(data_temp);
+                                    mdapter.notifyDataSetChanged();
+                                }
+                            }
                         }
                     }
 
-                    //getDataFromApi();
-                }else {
-                    if(!GattingData){
+                    @Override
+                    public void beforeTextChanged(
+                            CharSequence s, int start, int count, int after) {}
 
-                        if(s.toString().length()==0) {
-                            data.clear();
-                            mdapter.notifyDataSetChanged();
-                            data.addAll(data_temp);
-                            mdapter.notifyDataSetChanged();
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                });
+
+        mdapter.setOnItemClickListener(
+                new SearchBoardsAdapter.OnItemClickListener() {
+
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if (mClickFix.isFastDoubleClick()) return;
+
+                        try {
+                            InputMethodManager inputMethodManager =
+                                    (InputMethodManager)
+                                            getCurrentActivity()
+                                                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+                            inputMethodManager.hideSoftInputFromWindow(
+                                    searchBar.getWindowToken(), 0);
+                        } catch (Exception e) {
                         }
+                        Bundle bundle = new Bundle();
+                        bundle.putString(
+                                "title",
+                                StringUtils.notNullString(data.get(position).get("title")));
+                        bundle.putString(
+                                "subtitle",
+                                StringUtils.notNullString(data.get(position).get("subtitle")));
 
-
+                        loadFragment(ArticleListFragment.newInstance(bundle), getCurrentFragment());
                     }
-                }
+                });
 
+        mdapter.setLikeOnClickListener(
+                new View.OnClickListener() {
 
-            }
+                    @Override
+                    public void onClick(View v) {
+                        if (GattingData || mClickFix.isFastDoubleClick(300)) return;
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-
-            }
-
-        });
-
-
-        mdapter.setOnItemClickListener(new SearchBoardsAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-
-                if(mClickFix.isFastDoubleClick()) return;
-
-                try {
-                    InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(searchBar.getWindowToken(), 0);
-                }catch (Exception e){
-
-                }
-                Bundle bundle = new Bundle();
-                bundle.putString("title", StringUtils.notNullString(data.get(position).get("title")));
-                bundle.putString("subtitle", StringUtils.notNullString(data.get(position).get("subtitle")));
-
-                loadFragment(ArticleListFragment.newInstance(bundle),getCurrentFragment());
-
-
-
-            }
-        });
-
-        mdapter.setLikeOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(GattingData || mClickFix.isFastDoubleClick(300)) return;
-
-                int position = (int)v.getTag();
-                if((Boolean)data.get(position).get("like")){
-                    deleteBoard(StringUtils.notNullString(data.get(position).get("title")),position);
-                }else {
-                    insertBoard(StringUtils.notNullString(data.get(position).get("title")),StringUtils.notNullString(data.get(position).get("subtitle")),StringUtils.notNullString(data.get(position).get("class")),myBoardIndex,position);
-                }
-                changeStep++;
-                //Toast.makeText(getThisActivity(),StringUtils.notNullString(data.get(position).get("title")),Toast.LENGTH_SHORT).show();
-            }
-        });
-
+                        int position = (int) v.getTag();
+                        if ((Boolean) data.get(position).get("like")) {
+                            deleteBoard(
+                                    StringUtils.notNullString(data.get(position).get("title")),
+                                    position);
+                        } else {
+                            insertBoard(
+                                    StringUtils.notNullString(data.get(position).get("title")),
+                                    StringUtils.notNullString(data.get(position).get("subtitle")),
+                                    StringUtils.notNullString(data.get(position).get("class")),
+                                    myBoardIndex,
+                                    position);
+                        }
+                        changeStep++;
+                        // Toast.makeText(getThisActivity(),StringUtils.notNullString(data.get(position).get("title")),Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         return view;
     }
 
+    private void insertBoard(
+            final String board,
+            final String title,
+            final String category,
+            final int index,
+            final int position) {
+        r3 =
+                new Runnable() {
 
+                    public void run() {
+                        runOnUI(
+                                () -> {
+                                    mSwipeRefreshLayout.setRefreshing(true);
+                                });
 
-    private void insertBoard(final String board,final String title,final String category,final int index,final int position){
+                        GattingData = true;
 
-        r3 = new Runnable() {
-            public void run() {
-                runOnUI(()->{
-                    mSwipeRefreshLayout.setRefreshing(true);
-                });
+                        FavoriteDBHelper mDBHelper =
+                                new FavoriteDBHelper(getCurrentActivity(), "Favorite.db", null, 1);
+                        try {
+                            mDBHelper.insertBoard(board, title, category, index + 1);
+                            runOnUI(
+                                    () -> {
+                                        data.get(position).put("like", true);
+                                        mdapter.notifyItemChanged(position);
+                                        myBoardIndex++;
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    });
 
-                GattingData=true;
+                            DebugUtils.Log("onAL", "insert over");
+                        } catch (final Exception e) {
+                            runOnUI(
+                                    () -> {
+                                        Toast.makeText(
+                                                        getCurrentActivity(),
+                                                        "Error : " + e.toString(),
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    });
+                        } finally {
+                            mDBHelper.close();
+                        }
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
-                try {
-                    mDBHelper.insertBoard(board,title,category,index+1);
-                    runOnUI(()->{
-                        data.get(position).put("like",true);
-                        mdapter.notifyItemChanged(position);
-                        myBoardIndex++;
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
-
-                    DebugUtils.Log("onAL", "insert over");
-                }catch (final Exception e){
-                    runOnUI(()->{
-                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
-
-                }finally {
-                    mDBHelper.close();
-                }
-
-
-
-                GattingData=false;
-            }
-
-        };
-
-        mThread3 = new HandlerThread("name");
-        mThread3.start();
-        mThreadHandler3 = new Handler(mThread3.getLooper());
-        mThreadHandler3.post(r3);
-    }
-    private void deleteBoard(final String board,final int position){
-
-        r3 = new Runnable() {
-            public void run() {
-                runOnUI(()->{
-                    mSwipeRefreshLayout.setRefreshing(true);
-                });
-
-                GattingData=true;
-
-
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
-                try {
-
-
-
-
-                    mDBHelper.delebyBoard(board);
-
-                    runOnUI(()->{
-                        data.get(position).put("like",false);
-                        mdapter.notifyItemChanged(position);
-                        myBoardIndex--;
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
-
-                    DebugUtils.Log("onAL", board+" delete over");
-                }catch (final Exception e){
-                    runOnUI(()->{
-                        Toast.makeText(getCurrentActivity(),"Error : "+e.getLocalizedMessage(),Toast.LENGTH_SHORT).show();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
-
-                }finally {
-                    mDBHelper.close();
-                }
-
-
-
-                GattingData=false;
-            }
-
-        };
+                        GattingData = false;
+                    }
+                };
 
         mThread3 = new HandlerThread("name");
         mThread3.start();
         mThreadHandler3 = new Handler(mThread3.getLooper());
         mThreadHandler3.post(r3);
     }
+
+    private void deleteBoard(final String board, final int position) {
+        r3 =
+                new Runnable() {
+
+                    public void run() {
+                        runOnUI(
+                                () -> {
+                                    mSwipeRefreshLayout.setRefreshing(true);
+                                });
+
+                        GattingData = true;
+
+                        FavoriteDBHelper mDBHelper =
+                                new FavoriteDBHelper(getCurrentActivity(), "Favorite.db", null, 1);
+                        try {
+                            mDBHelper.delebyBoard(board);
+
+                            runOnUI(
+                                    () -> {
+                                        data.get(position).put("like", false);
+                                        mdapter.notifyItemChanged(position);
+                                        myBoardIndex--;
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    });
+
+                            DebugUtils.Log("onAL", board + " delete over");
+                        } catch (final Exception e) {
+                            runOnUI(
+                                    () -> {
+                                        Toast.makeText(
+                                                        getCurrentActivity(),
+                                                        "Error : " + e.getLocalizedMessage(),
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    });
+                        } finally {
+                            mDBHelper.close();
+                        }
+
+                        GattingData = false;
+                    }
+                };
+
+        mThread3 = new HandlerThread("name");
+        mThread3.start();
+        mThreadHandler3 = new Handler(mThread3.getLooper());
+        mThreadHandler3.post(r3);
+    }
+
     private boolean restroy = false;
+
     @Override
-    public void onActivityCreated (Bundle savedInstanceState){
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState!=null){
-            restroy=true;
+        if (savedInstanceState != null) {
+            restroy = true;
         }
     }
 
@@ -347,13 +356,15 @@ public class SearchBoardsFragment extends BaseFragment {
         intent.putExtra("message", "change");
         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
     }
-    protected void onAnimOver() {
-        if(!restroy){
-            searchBar.requestFocus();
-            InputMethodManager inputMethodManager = (InputMethodManager) getCurrentActivity(). getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
-            restroy=true;
 
+    protected void onAnimOver() {
+        if (!restroy) {
+            searchBar.requestFocus();
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager)
+                            getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.showSoftInput(searchBar, InputMethodManager.SHOW_FORCED);
+            restroy = true;
         }
 
         loadData();
@@ -374,81 +385,83 @@ public class SearchBoardsFragment extends BaseFragment {
     private int myBoardIndex = 0;
 
     private SearchBoardAPIHelper searchBoardAPI;
-    private void getDataFromApi(String keyboard){
+
+    private void getDataFromApi(String keyboard) {
         nowSearchText = keyboard;
-        if (keyboard.isEmpty()){
+        if (keyboard.isEmpty()) {
             return;
         }
-        if (searchBoardAPI == null){
+        if (searchBoardAPI == null) {
             searchBoardAPI = new SearchBoardAPIHelper(getContext());
         }
 
-        r1 = new Runnable() {
-            public void run() {
-                runOnUI(()->{
-                    mSwipeRefreshLayout.setRefreshing(true);
-                });
+        r1 =
+                new Runnable() {
 
-                GattingData = true;
-                data_temp.clear();
-                myBoard.clear();
+                    public void run() {
+                        runOnUI(
+                                () -> {
+                                    mSwipeRefreshLayout.setRefreshing(true);
+                                });
 
-                FavoriteDBHelper mDBHelper = new FavoriteDBHelper(getCurrentActivity(),"Favorite.db",null,1);
-                List<Map<String, Object>> data_temp2 = new ArrayList<>();
-                DebugUtils.Log("onAL", "get data from web start");
-                try {
+                        GattingData = true;
+                        data_temp.clear();
+                        myBoard.clear();
 
-                    myBoard.addAll(mDBHelper.getAllSet());
-                    myBoardIndex = mDBHelper.getMaxIndex();
+                        FavoriteDBHelper mDBHelper =
+                                new FavoriteDBHelper(getCurrentActivity(), "Favorite.db", null, 1);
+                        List<Map<String, Object>> data_temp2 = new ArrayList<>();
+                        DebugUtils.Log("onAL", "get data from web start");
+                        try {
+                            myBoard.addAll(mDBHelper.getAllSet());
+                            myBoardIndex = mDBHelper.getMaxIndex();
 
+                            data_temp.addAll(searchBoardAPI.get(keyboard).getData());
 
-                    data_temp.addAll(searchBoardAPI.get(keyboard).getData());
+                            for (Map<String, Object> item : data_temp) {
+                                if (myBoard.contains(item.get("title").toString())) {
+                                    item.put("like", true);
+                                } else {
+                                    item.put("like", false);
+                                }
+                            }
 
-                    for (Map<String, Object> item : data_temp) {
+                            runOnUI(
+                                    () -> {
+                                        data.clear();
+                                        data.addAll(data_temp);
+                                        mdapter.notifyDataSetChanged();
+                                        // data_temp.clear();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                        if (!waitSearchText.isEmpty()) {
+                                            getDataFromApi(waitSearchText);
+                                        }
+                                        waitSearchText = "";
+                                    });
 
-                        if(myBoard.contains(item.get("title").toString())){
-                            item.put("like",true);
-                        }else {
-                            item.put("like",false);
+                            DebugUtils.Log("onAL", "get data from web over");
+                        } catch (final Exception e) {
+                            DebugUtils.Log("onAL", "Error : " + e.toString());
+                            runOnUI(
+                                    () -> {
+                                        Toast.makeText(
+                                                        getCurrentActivity(),
+                                                        "Error : " + e.toString(),
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                        if (!waitSearchText.isEmpty()) {
+                                            getDataFromApi(waitSearchText);
+                                        }
+                                        waitSearchText = "";
+                                    });
+                        } finally {
+                            mDBHelper.close();
                         }
+
+                        GattingData = false;
                     }
-
-
-
-                    runOnUI(()->{
-                        data.clear();
-                        data.addAll(data_temp);
-                        mdapter.notifyDataSetChanged();
-                        //data_temp.clear();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        if(!waitSearchText.isEmpty()){
-                            getDataFromApi(waitSearchText);
-                        }
-                        waitSearchText = "";
-                    });
-
-                    DebugUtils.Log("onAL", "get data from web over");
-                }catch (final Exception e){
-                    DebugUtils.Log("onAL", "Error : "+e.toString());
-                    runOnUI(()->{
-                       Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                        if(!waitSearchText.isEmpty()){
-                            getDataFromApi(waitSearchText);
-                        }
-                        waitSearchText = "";
-                    });
-
-                }finally {
-                    mDBHelper.close();
-                }
-
-
-
-                GattingData=false;
-            }
-
-        };
+                };
 
         mThread = new HandlerThread("name");
         mThread.start();
@@ -460,38 +473,37 @@ public class SearchBoardsFragment extends BaseFragment {
     private String waitSearchText = "";
     private boolean haveApi = true;
     private boolean GattingData = false;
-    private void loadData(){
-        if(GattingData) return;
+
+    private void loadData() {
+        if (GattingData) return;
         data.clear();
         mdapter.notifyDataSetChanged();
         getDataFromApi(nowSearchText);
     }
-    private void initView() throws Exception{
 
-    }
+    private void initView() throws Exception {}
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager)
+                            getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(changeStep>0){
+        if (changeStep > 0) {
             sendChangeMessage();
         }
-        if(data!=null)
-        data.clear();
+        if (data != null) data.clear();
 
-        if(data_temp!=null)
-            data_temp.clear();
+        if (data_temp != null) data_temp.clear();
         // 移除工作
         if (mThreadHandler != null) {
             mThreadHandler.removeCallbacks(r1);

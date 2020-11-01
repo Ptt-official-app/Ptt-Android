@@ -1,6 +1,5 @@
 package tw.y_studio.ptt.Adapter;
 
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -10,13 +9,12 @@ import java.util.ArrayList;
 
 public class GeneralFragmentStatePagerAdapter extends FragmentStateAdapter {
     private ArrayList<Fragment> fragmentArrayList;
-    public GeneralFragmentStatePagerAdapter(@NonNull FragmentActivity fm, @NonNull ArrayList<Fragment> fragmentArrayList) {
-        super(fm);
 
+    public GeneralFragmentStatePagerAdapter(
+            @NonNull FragmentActivity fm, @NonNull ArrayList<Fragment> fragmentArrayList) {
+        super(fm);
         this.fragmentArrayList = fragmentArrayList;
     }
-
-
 
     @NonNull
     @Override

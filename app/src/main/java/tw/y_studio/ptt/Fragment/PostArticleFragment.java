@@ -1,5 +1,7 @@
 package tw.y_studio.ptt.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -25,8 +27,6 @@ import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.StaticValue;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class PostArticleFragment extends BaseFragment {
 
@@ -56,7 +56,10 @@ public class PostArticleFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.post_article_fragment_layout, container, false);
 
         setMainView(view);
@@ -68,49 +71,59 @@ public class PostArticleFragment extends BaseFragment {
         content = findViewById(R.id.post_article_fragment_edittext_content);
         title = findViewById(R.id.post_article_fragment_edittext_title);
 
-        navigation = (BottomNavigationView) findViewById(R.id.post_article_fragment_bottom_navigation);
+        navigation =
+                (BottomNavigationView) findViewById(R.id.post_article_fragment_bottom_navigation);
 
-        Bundle bundle = getArguments();//取得Bundle
+        Bundle bundle = getArguments(); // 取得Bundle
 
-        Go2Back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getCurrentActivity().onBackPressed();
-            }
-        });
+        Go2Back.setOnClickListener(
+                new View.OnClickListener() {
 
-        mOnNavigationItemSelectedListener
-                = new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getCurrentActivity().onBackPressed();
+                    }
+                });
 
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.post_article_navigation_item_load_demo:
-                        break;
-                    case R.id.post_article_navigation_item_load_draft:
-                        break;
-                    case R.id.post_article_navigation_item_insert_image:
-                        break;
-                    case R.id.post_article_navigation_item_hide_keyboard:
-                        try {
-                            InputMethodManager inputMethodManager = (InputMethodManager)  getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                            inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
-                            navigation.getMenu().getItem(4).setVisible(false);
-                            Log.d("onPostArticle","navigation.getMenu().getItem(4).setVisible(false);");
-                        }catch (Exception e){
+        mOnNavigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.post_article_navigation_item_load_demo:
+                                break;
+                            case R.id.post_article_navigation_item_load_draft:
+                                break;
+                            case R.id.post_article_navigation_item_insert_image:
+                                break;
+                            case R.id.post_article_navigation_item_hide_keyboard:
+                                try {
+                                    InputMethodManager inputMethodManager =
+                                            (InputMethodManager)
+                                                    getContext()
+                                                            .getSystemService(
+                                                                    Context.INPUT_METHOD_SERVICE);
+                                    inputMethodManager.hideSoftInputFromWindow(
+                                            getMainView().getWindowToken(), 0);
+                                    navigation.getMenu().getItem(4).setVisible(false);
+                                    Log.d(
+                                            "onPostArticle",
+                                            "navigation.getMenu().getItem(4).setVisible(false);");
+                                } catch (Exception e) {
+                                }
+                                break;
                         }
-                        break;
+                        return false;
+                    }
+                };
 
-                }
-                return false;
-            }
-
-        };
-
-        if(getContext().getSharedPreferences("MainSetting", MODE_PRIVATE).getInt("POSTBOTTOMSTYLE",0)==0){
+        if (getContext()
+                        .getSharedPreferences("MainSetting", MODE_PRIVATE)
+                        .getInt("POSTBOTTOMSTYLE", 0)
+                == 0) {
             navigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        }else {
+        } else {
             navigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED);
         }
 
@@ -121,42 +134,65 @@ public class PostArticleFragment extends BaseFragment {
         return view;
     }
 
-    private boolean keyboardMode=false;
+    private boolean keyboardMode = false;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+
     protected void onAnimOver() {
-
-
         loadData();
 
-        getMainView().getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener=new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                if(getMainView()!=null){
-                    Rect r = new Rect();
-                    getMainView().getWindowVisibleDisplayFrame(r);
-                    Log.d("onPost","-- "+(getMainView().getRootView().getHeight() - (r.bottom - r.top)));
-                    if (!keyboardMode&&getMainView().getRootView().getHeight() - (r.bottom - r.top) > Math.min(StaticValue.widthPixels,StaticValue.highPixels)/2) { // if more than 100 pixels, its probably a keyboard...
-                        //navigation.getMenu().getItem(4).setVisible(true);
-                        navigation.getMenu().clear();
-                        navigation.inflateMenu(R.menu.post_article_bottom_navigation_menu3);
-                        keyboardMode=true;
-                    } else if(keyboardMode&&getMainView().getRootView().getHeight() - (r.bottom - r.top) < Math.min(StaticValue.widthPixels,StaticValue.highPixels)/2){
-                        keyboardMode=false;
-                        navigation.getMenu().clear();
-                        navigation.inflateMenu(R.menu.post_article_bottom_navigation_menu2);
+        getMainView()
+                .getViewTreeObserver()
+                .addOnGlobalLayoutListener(
+                        globalLayoutListener =
+                                new ViewTreeObserver.OnGlobalLayoutListener() {
 
-                    }
-                }
-
-            }
-        });
-
+                                    @Override
+                                    public void onGlobalLayout() {
+                                        if (getMainView() != null) {
+                                            Rect r = new Rect();
+                                            getMainView().getWindowVisibleDisplayFrame(r);
+                                            Log.d(
+                                                    "onPost",
+                                                    "-- "
+                                                            + (getMainView()
+                                                                            .getRootView()
+                                                                            .getHeight()
+                                                                    - (r.bottom - r.top)));
+                                            if (!keyboardMode
+                                                    && getMainView().getRootView().getHeight()
+                                                                    - (r.bottom - r.top)
+                                                            > Math.min(
+                                                                            StaticValue.widthPixels,
+                                                                            StaticValue.highPixels)
+                                                                    / 2) { // if more than 100
+                                                // pixels, its probably a
+                                                // keyboard...
+                                                // navigation.getMenu().getItem(4).setVisible(true);
+                                                navigation.getMenu().clear();
+                                                navigation.inflateMenu(
+                                                        R.menu.post_article_bottom_navigation_menu3);
+                                                keyboardMode = true;
+                                            } else if (keyboardMode
+                                                    && getMainView().getRootView().getHeight()
+                                                                    - (r.bottom - r.top)
+                                                            < Math.min(
+                                                                            StaticValue.widthPixels,
+                                                                            StaticValue.highPixels)
+                                                                    / 2) {
+                                                keyboardMode = false;
+                                                navigation.getMenu().clear();
+                                                navigation.inflateMenu(
+                                                        R.menu.post_article_bottom_navigation_menu2);
+                                            }
+                                        }
+                                    }
+                                });
     }
 
     private boolean GattingData = false;
-    private void loadData(){
-        if(GattingData) return;
 
+    private void loadData() {
+        if (GattingData) return;
     }
 
     @Override
@@ -164,19 +200,19 @@ public class PostArticleFragment extends BaseFragment {
         super.onDestroyView();
 
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager)
+                            getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
 
         getMainView().getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
-        globalLayoutListener=null;
+        globalLayoutListener = null;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 }

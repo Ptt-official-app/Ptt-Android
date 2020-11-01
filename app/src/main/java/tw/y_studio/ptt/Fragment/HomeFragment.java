@@ -14,12 +14,11 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeFragment extends BaseFragment {
 
@@ -36,58 +35,64 @@ public class HomeFragment extends BaseFragment {
         return fragment;
     }
 
-    private Map<String,Fragment> homeFragmentMap = new HashMap<>();
+    private Map<String, Fragment> homeFragmentMap = new HashMap<>();
     private Fragment preFragment;
     private BottomNavigationView navigation;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener;
-    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener;
+    private BottomNavigationView.OnNavigationItemReselectedListener
+            mOnNavigationItemReselectedListener;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment_layout, container, false);
 
         setMainView(view);
 
-        mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-               return changeFragnent(item.getItemId());
-            }
-        };
+        mOnNavigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-        mOnNavigationItemReselectedListener = new BottomNavigationView.OnNavigationItemReselectedListener (){
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem item) {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        return changeFragnent(item.getItemId());
+                    }
+                };
 
-                switch (item.getItemId()) {
+        mOnNavigationItemReselectedListener =
+                new BottomNavigationView.OnNavigationItemReselectedListener() {
 
-                    case R.id.home_bottom_navigation_item_hot_boards:
-                        if(homeFragmentMap.containsKey("0")){
-                            ((HotBoardsFragment)homeFragmentMap.get("0")).scrollToTop();
+                    @Override
+                    public void onNavigationItemReselected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.home_bottom_navigation_item_hot_boards:
+                                if (homeFragmentMap.containsKey("0")) {
+                                    ((HotBoardsFragment) homeFragmentMap.get("0")).scrollToTop();
+                                }
+                                break;
+                            case R.id.home_bottom_navigation_item_favorite_boards:
+                                if (homeFragmentMap.containsKey("2")) {
+                                    ((FavoriteBoardsFragment) homeFragmentMap.get("2"))
+                                            .scrollToTop();
+                                }
+                                break;
+                            case R.id.home_bottom_navigation_item_hot_articles:
+                                if (homeFragmentMap.containsKey("4")) {
+                                    ((HotArticleListFragment) homeFragmentMap.get("4"))
+                                            .scrollToTop();
+                                }
+                                break;
+                            case R.id.home_bottom_navigation_item_user_page:
+                                break;
+                            case R.id.home_bottom_navigation_item_more_action:
+                                break;
+                            default:
+                                break;
                         }
-                        break;
-                    case R.id.home_bottom_navigation_item_favorite_boards:
-                        if(homeFragmentMap.containsKey("2")){
-                            ((FavoriteBoardsFragment)homeFragmentMap.get("2")).scrollToTop();
-                        }
-                        break;
-                    case R.id.home_bottom_navigation_item_hot_articles:
-                        if(homeFragmentMap.containsKey("4")){
-                            ((HotArticleListFragment)homeFragmentMap.get("4")).scrollToTop();
-                        }
-                        break;
-                    case R.id.home_bottom_navigation_item_user_page:
-                        break;
-                    case R.id.home_bottom_navigation_item_more_action:
-                        break;
-                    default:
-                        break;
-                }
-
-            }
-
-        };
+                    }
+                };
 
         navigation = (BottomNavigationView) getMainView().findViewById(R.id.home_bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -96,13 +101,18 @@ public class HomeFragment extends BaseFragment {
         return view;
     }
 
-    private boolean changeFragnent(int id){
-        switch (navigation.getSelectedItemId()){
+    private boolean changeFragnent(int id) {
+        switch (navigation.getSelectedItemId()) {
             case R.id.home_bottom_navigation_item_favorite_boards:
-                if(homeFragmentMap.containsKey("2") && homeFragmentMap.get("2") instanceof FavoriteBoardsFragment){
-                    if(((FavoriteBoardsFragment)homeFragmentMap.get("2")).isEditMode()){
-                        Toast mm = Toast.makeText(getContext(),R.string.attion_close_edit_mode,Toast.LENGTH_SHORT);
-                        mm.setGravity(Gravity.CENTER,0,0);
+                if (homeFragmentMap.containsKey("2")
+                        && homeFragmentMap.get("2") instanceof FavoriteBoardsFragment) {
+                    if (((FavoriteBoardsFragment) homeFragmentMap.get("2")).isEditMode()) {
+                        Toast mm =
+                                Toast.makeText(
+                                        getContext(),
+                                        R.string.attion_close_edit_mode,
+                                        Toast.LENGTH_SHORT);
+                        mm.setGravity(Gravity.CENTER, 0, 0);
                         mm.show();
 
                         return false;
@@ -134,7 +144,7 @@ public class HomeFragment extends BaseFragment {
                 break;
         }
 
-        if(!homeFragmentMap.containsKey(key)){
+        if (!homeFragmentMap.containsKey(key)) {
             switch (id) {
                 case R.id.home_bottom_navigation_item_hot_boards:
                     fragment = HotBoardsFragment.newInstance(new Bundle());
@@ -155,11 +165,11 @@ public class HomeFragment extends BaseFragment {
                     fragment = EmptyFragment.newInstance(new Bundle());
                     break;
             }
-            homeFragmentMap.put(key,fragment);
-        }else {
+            homeFragmentMap.put(key, fragment);
+        } else {
             fragment = homeFragmentMap.get(key);
         }
-        if(fragment != preFragment){
+        if (fragment != preFragment) {
             showFragment(homeFragmentMap.get(key));
         }
 
@@ -171,23 +181,26 @@ public class HomeFragment extends BaseFragment {
     }
 
     public void showFragment(Fragment toFragment) {
-        if(preFragment == null) {
+        if (preFragment == null) {
             getChildFragmentManager()
                     .beginTransaction()
                     .add(R.id.framelayout_home, toFragment, toFragment.getClass().getSimpleName())
                     .show(toFragment)
                     .commit();
-        }else {
-            if(toFragment.isAdded()) {
+        } else {
+            if (toFragment.isAdded()) {
                 getChildFragmentManager()
                         .beginTransaction()
                         .hide(preFragment)
                         .show(toFragment)
                         .commit();
-            }else {
+            } else {
                 getChildFragmentManager()
                         .beginTransaction()
-                        .add(R.id.framelayout_home, toFragment, toFragment.getClass().getSimpleName())
+                        .add(
+                                R.id.framelayout_home,
+                                toFragment,
+                                toFragment.getClass().getSimpleName())
                         .hide(preFragment)
                         .show(toFragment)
                         .commit();
@@ -196,13 +209,14 @@ public class HomeFragment extends BaseFragment {
         preFragment = toFragment;
     }
 
-    public void closeFragment(){
-        for(Fragment fr : getChildFragmentManager().getFragments()){
+    public void closeFragment() {
+        for (Fragment fr : getChildFragmentManager().getFragments()) {
             getChildFragmentManager().beginTransaction().remove(fr).commitAllowingStateLoss();
         }
     }
+
     @Override
-    public void onActivityCreated (Bundle savedInstanceState){
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
 

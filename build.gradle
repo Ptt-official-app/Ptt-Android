@@ -29,11 +29,12 @@ subprojects {
         }
         java {
             target "src/*/java/**/*.java"
+            googleJavaFormat("1.7").aosp()
             // 移除沒用到的 Import
             removeUnusedImports()
             // 刪除多餘的空白
             trimTrailingWhitespace()
-            indentWithSpaces()
+            importOrder('android', 'androidx', 'com', 'junit', 'net', 'org', 'java', 'javax')
         }
     }
 }

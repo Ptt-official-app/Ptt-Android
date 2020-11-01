@@ -5,13 +5,9 @@ import androidx.fragment.app.Fragment;
 
 public class BaseActivity extends AppCompatActivity {
 
-    public void closeAllFragment(){
+    public void closeAllFragment() {}
 
-    }
-    public void loadFragment(Fragment toFragment, Fragment thisFragment) throws Exception{
+    public void loadFragment(Fragment toFragment, Fragment thisFragment) throws Exception {}
 
-    }
-    public void loadFragmentNoAnim(Fragment toFragment, Fragment thisFragment) throws Exception{
-
-    }
+    public void loadFragmentNoAnim(Fragment toFragment, Fragment thisFragment) throws Exception {}
 }
