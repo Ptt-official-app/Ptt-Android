@@ -12,7 +12,6 @@ import androidx.annotation.ColorInt;
 
 import com.facebook.drawee.drawable.DrawableUtils;
 
-import tw.y_studio.ptt.UI.StaticValue;
 
 
 

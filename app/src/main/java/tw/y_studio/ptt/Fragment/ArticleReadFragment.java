@@ -50,14 +50,14 @@ import static android.content.Context.MODE_PRIVATE;
 import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
 
 public class ArticleReadFragment extends BaseFragment {
-    
+
     public static ArticleReadFragment newInstance() {
         Bundle args = new Bundle();
         ArticleReadFragment fragment = new ArticleReadFragment();
         fragment.setArguments(args);
         return fragment;
     }
-    
+
     public static ArticleReadFragment newInstance(Bundle args) {
         ArticleReadFragment fragment = new ArticleReadFragment();
         fragment.setArguments(args);

@@ -82,7 +82,7 @@ public class SearchBoardsFragment extends BaseFragment {
 
 
         Bundle bundle = getArguments();//取得Bundle
-        
+
         mRecyclerView = findViewById(R.id.search_boards_fragment_recyclerView);
         searchBar = findViewById(R.id.search_boards_fragment_editText_search);
         clearButton = findViewById(R.id.search_boards_item_imageView_like);

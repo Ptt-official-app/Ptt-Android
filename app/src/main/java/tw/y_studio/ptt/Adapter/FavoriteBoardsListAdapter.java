@@ -1,7 +1,6 @@
 package tw.y_studio.ptt.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;

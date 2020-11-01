@@ -2,16 +2,11 @@ package tw.y_studio.ptt.UI;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.util.TypedValue;
 
-import androidx.annotation.ColorInt;
-import androidx.core.content.ContextCompat;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import tw.y_studio.ptt.R;
 
 public class UiFix {
 

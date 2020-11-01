@@ -198,6 +198,6 @@ public class HotArticleFilterFragment extends BaseFragment {
 
         if(data!=null)
         data.clear();
-       
+
     }
 }

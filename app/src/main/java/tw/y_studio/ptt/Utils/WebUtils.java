@@ -1,18 +1,13 @@
 package tw.y_studio.ptt.Utils;
 
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 
 import androidx.browser.customtabs.CustomTabsIntent;
 
-import tw.y_studio.ptt.R;
 
 public class WebUtils {
     public static void turnOnUrl(Context context, String url){

@@ -1,25 +1,19 @@
 package tw.y_studio.ptt.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import tw.y_studio.ptt.Ptt.PttColor;
 import tw.y_studio.ptt.R;
-import tw.y_studio.ptt.UI.TypefaceUI;
 import tw.y_studio.ptt.Utils.StringUtils;
 
 public class HotBoardsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener,View.OnLongClickListener{

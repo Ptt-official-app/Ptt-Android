@@ -2,11 +2,9 @@ package tw.y_studio.ptt.DataBase;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.drawable.Drawable;
 
 import java.util.ArrayList;
 import java.util.HashMap;

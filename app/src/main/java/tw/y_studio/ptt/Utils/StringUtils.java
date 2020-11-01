@@ -1,6 +1,7 @@
 package tw.y_studio.ptt.Utils;
 
 import android.graphics.Color;
+import android.graphics.text.LineBreaker;
 import android.os.Build;
 import android.text.Layout;
 import android.text.Spannable;
@@ -9,10 +10,8 @@ import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
-import android.util.Log;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.AppCompatTextView;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -23,7 +22,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import tw.y_studio.ptt.UI.StaticValue;
-import tw.y_studio.ptt.UI.TypefaceUI;
 
 public class StringUtils {
     public static final Pattern UrlPattern = Pattern.compile("(http|https|line)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
@@ -188,7 +186,7 @@ public class StringUtils {
 
         }
       if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            mText.setBreakStrategy(Layout.BREAK_STRATEGY_SIMPLE);
+            mText.setBreakStrategy(LineBreaker.BREAK_STRATEGY_SIMPLE);
             mText.setHyphenationFrequency(Layout.HYPHENATION_FREQUENCY_NONE);
 
         }

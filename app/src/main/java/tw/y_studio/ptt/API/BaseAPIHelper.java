@@ -2,8 +2,6 @@ package tw.y_studio.ptt.API;
 
 import android.content.Context;
 
-import java.util.List;
-import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import tw.y_studio.ptt.BuildConfig;

@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.graphics.PointF;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;

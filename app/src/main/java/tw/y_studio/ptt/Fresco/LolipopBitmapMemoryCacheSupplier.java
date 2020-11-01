@@ -2,7 +2,6 @@ package tw.y_studio.ptt.Fresco;
 
 import android.app.ActivityManager;
 import android.os.Build;
-import android.util.Log;
 
 import com.facebook.common.internal.Supplier;
 import com.facebook.common.util.ByteConstants;

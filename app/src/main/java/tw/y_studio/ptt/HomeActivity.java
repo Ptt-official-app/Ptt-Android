@@ -1,7 +1,6 @@
 package tw.y_studio.ptt;
 
 import androidx.annotation.ColorInt;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -24,7 +23,6 @@ import java.util.Date;
 import tw.y_studio.ptt.Fragment.HomeFragment;
 import tw.y_studio.ptt.UI.BaseActivity;
 import tw.y_studio.ptt.UI.StaticValue;
-import tw.y_studio.ptt.Utils.DebugUtils;
 
 
 public class HomeActivity extends BaseActivity {

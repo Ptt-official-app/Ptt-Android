@@ -4,7 +4,6 @@ import android.graphics.Color;
 
 import androidx.annotation.ColorInt;
 
-import tw.y_studio.ptt.R;
 
 public class StaticValue {
     public static double ScreenDensity = 3;

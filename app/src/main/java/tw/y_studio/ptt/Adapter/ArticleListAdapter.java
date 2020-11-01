@@ -1,6 +1,5 @@
 package tw.y_studio.ptt.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.TypedValue;
@@ -17,9 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import java.util.Map;
 
-import tw.y_studio.ptt.Ptt.PttColor;
 import tw.y_studio.ptt.R;
-import tw.y_studio.ptt.UI.TypefaceUI;
 import tw.y_studio.ptt.Utils.StringUtils;
 
 public class ArticleListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener,View.OnLongClickListener{

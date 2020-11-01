@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Collections;
 
 import tw.y_studio.ptt.Adapter.FavoriteBoardsListAdapter;
 
