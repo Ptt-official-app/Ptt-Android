@@ -1,10 +1,10 @@
 package tw.y_studio.ptt.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,24 +29,22 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
-
 import tw.y_studio.ptt.Adapter.GeneralFragmentStatePagerAdapter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ImageLoadingDrawable;
-import tw.y_studio.ptt.Utils.DebugUtils;
 
-import static android.content.Context.MODE_PRIVATE;
+import java.util.ArrayList;
 
 public class PersonalPageFragment extends BaseFragment {
-    private View Mainview=null;
+
     public static PersonalPageFragment newInstance() {
         Bundle args = new Bundle();
         PersonalPageFragment fragment = new PersonalPageFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     public static PersonalPageFragment newInstance(Bundle args) {
         PersonalPageFragment fragment = new PersonalPageFragment();
         fragment.setArguments(args);
@@ -70,25 +68,37 @@ public class PersonalPageFragment extends BaseFragment {
     private ViewPager2 mViewPager;
     private GeneralFragmentStatePagerAdapter fragmentStatePagerAdapter;
     private ArrayList<Fragment> fragmentArrayList;
-    //private ScrollView scrollView_personal_page;
+    // private ScrollView scrollView_personal_page;
 
     private ArrayList<String> TabTitles;
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.persional_page_fragment_layout, container, false);
 
+        setMainView(view);
 
+        Bundle bundle = getArguments(); // 取得Bundle
 
-        Mainview=view;
+        persionPicture = findViewById(R.id.person_page_picture);
+        persionPictureMini = findViewById(R.id.person_page_picture_mini);
+        mTabs = findViewById(R.id.page_tabs);
+        personIDTextView = findViewById(R.id.textView_persion_page_id);
+        personNickTextView = findViewById(R.id.textView_persion_page_nick);
+        personLikeTextView = findViewById(R.id.textView_persional_like);
+        personIDTextViewMini = findViewById(R.id.textView_person_page_id_mini);
 
-        Bundle bundle = getArguments();//取得Bundle
+        headerRelativeLayout = findViewById(R.id.relativeLayout_person_page_header);
+        headerRelativeLayoutMini = findViewById(R.id.relativeLayout_person_page_header_mini);
+        likeBarRelativeLayout = findViewById(R.id.relativeLayout_person_page_like_bar);
 
-        persionPicture = Mainview.findViewById(R.id.person_page_picture);
+        mAppBar = findViewById(R.id.appBarLayout_person_page);
 
-        persionPictureMini = Mainview.findViewById(R.id.person_page_picture_mini);
-
-        mTabs = Mainview.findViewById(R.id.page_tabs);
+        mViewPager = findViewById(R.id.viewPager_person_page);
 
         mTabs.addTab(mTabs.newTab().setText(R.string.persion_page_tabs_info));
         mTabs.addTab(mTabs.newTab().setText(R.string.persion_page_tabs_articles));
@@ -99,149 +109,111 @@ public class PersonalPageFragment extends BaseFragment {
         TabTitles.add(getString(R.string.persion_page_tabs_articles));
         TabTitles.add(getString(R.string.persion_page_tabs_comments));
 
-        personIDTextView = Mainview.findViewById(R.id.textView_persion_page_id);
-        personNickTextView = Mainview.findViewById(R.id.textView_persion_page_nick);
-        personLikeTextView = Mainview.findViewById(R.id.textView_persional_like);
+        mAppBar.addOnOffsetChangedListener(
+                new AppBarLayout.OnOffsetChangedListener() {
 
-        personIDTextViewMini = Mainview.findViewById(R.id.textView_person_page_id_mini);
+                    @Override
+                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                        if (isAlreadyReady) {
+                            int percent =
+                                    (int)
+                                            ((double) Math.abs(verticalOffset)
+                                                    / (double)
+                                                            Math.abs(
+                                                                    headerRelativeLayout
+                                                                            .getHeight())
+                                                    * 100d);
+                            int hight = headerRelativeLayoutMini.getHeight();
+                            headerRelativeLayoutMini.setY(
+                                    (float) (hight * -1 + (hight * (percent / 100d))));
+                        }
+                        isAlreadyReady = true;
+                    }
+                });
 
-        headerRelativeLayout = Mainview.findViewById(R.id.relativeLayout_person_page_header);
-        headerRelativeLayoutMini = Mainview.findViewById(R.id.relativeLayout_person_page_header_mini);
-        likeBarRelativeLayout = Mainview.findViewById(R.id.relativeLayout_person_page_like_bar);
-
-        //scrollView_personal_page = Mainview.findViewById(R.id.scrollView_personal_page);
-
-        //headerRelativeLayoutMini.setVisibility(View.GONE);
-        //likeBarRelativeLayout.setVisibility(View.VISIBLE);
-
-        mAppBar = Mainview.findViewById(R.id.appBarLayout_person_page);
-
-        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-
-                if(isAlreadyReady){
-
-                    int percent =  (int) ((double)Math.abs(verticalOffset) / (double)Math.abs(headerRelativeLayout.getHeight()) * 100d);
-
-                    //Log.d("tag_scroll", "percent =  "+percent);
-                    int hight = headerRelativeLayoutMini.getHeight();
-                    headerRelativeLayoutMini.setY((float) (hight*-1+(hight*(percent/100d))));
-
-
-                }
-                isAlreadyReady = true;
-
-            }
-        });
-
-        mViewPager = Mainview.findViewById(R.id.viewPager_person_page);
         fragmentArrayList = new ArrayList<>();
         fragmentArrayList.add(PersonInfoFragment.newInstance());
         fragmentArrayList.add(EmptyFragment.newInstance());
         fragmentArrayList.add(EmptyFragment.newInstance());
 
-        fragmentStatePagerAdapter = new GeneralFragmentStatePagerAdapter(getActivity(),fragmentArrayList);
+        fragmentStatePagerAdapter =
+                new GeneralFragmentStatePagerAdapter(getActivity(), fragmentArrayList);
         mViewPager.setAdapter(fragmentStatePagerAdapter);
 
-        new TabLayoutMediator(mTabs, mViewPager,
-                (tab, position) -> tab.setText(this.TabTitles.get(position))
-        ).attach();
+        new TabLayoutMediator(
+                        mTabs,
+                        mViewPager,
+                        (tab, position) -> tab.setText(this.TabTitles.get(position)))
+                .attach();
 
         loadData();
-
 
         return view;
     }
 
     private boolean isAlreadyReady = false;
-    public void loadData(){
-        setImageView(persionPicture,"asset:///List-Of-Android-R-Features.jpeg");
-        setImageView(persionPictureMini,"asset:///List-Of-Android-R-Features.jpeg");
 
-        String id = getThisActivity().getSharedPreferences(
-                "MainSetting", MODE_PRIVATE).getString("APIPTTID","Guest");
+    public void loadData() {
+        setImageView(persionPicture, "asset:///List-Of-Android-R-Features.jpeg");
+        setImageView(persionPictureMini, "asset:///List-Of-Android-R-Features.jpeg");
+
+        String id =
+                getCurrentActivity()
+                        .getSharedPreferences("MainSetting", MODE_PRIVATE)
+                        .getString("APIPTTID", "Guest");
         personIDTextView.setText(id);
         personIDTextViewMini.setText(id);
         personNickTextView.setText("匿名訪客");
     }
 
-
-
-    private void setImageView(SimpleDraweeView draweeView, final String Url){
-
-
-        if(draweeView.getTag()!=null){
-            if(draweeView.getTag().toString().equals(Url)){
+    private void setImageView(SimpleDraweeView draweeView, final String Url) {
+        if (draweeView.getTag() != null) {
+            if (draweeView.getTag().toString().equals(Url)) {
                 return;
             }
         }
         draweeView.setTag(Url);
 
-        try{
+        try {
             final Uri uri = Uri.parse(Url);
 
+            ImageRequest request =
+                    ImageRequestBuilder.newBuilderWithSource(uri)
+                            .setLocalThumbnailPreviewsEnabled(true)
+                            .setProgressiveRenderingEnabled(false)
+                            .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
+                            .setResizeOptions(new ResizeOptions(1024, 1024))
+                            .build();
 
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                    .setLocalThumbnailPreviewsEnabled(true)
-                    .setProgressiveRenderingEnabled(false)
-                    .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
-                    .setResizeOptions(new ResizeOptions(1024,1024))
-
-                    .build();
-
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setAutoPlayAnimations(true)
-
-                    .setOldController(draweeView.getController())
-                    .build();
-
-            //Fresco.getImagePipeline().prefetchToDiskCache(request,null);
+            DraweeController controller =
+                    Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(request)
+                            .setAutoPlayAnimations(true)
+                            .setOldController(draweeView.getController())
+                            .build();
 
             GenericDraweeHierarchyBuilder builder =
                     new GenericDraweeHierarchyBuilder(this.getResources());
 
-            RoundingParams roundingParams = RoundingParams.fromCornersRadius (200f);
+            RoundingParams roundingParams = RoundingParams.fromCornersRadius(200f);
 
-            //roundingParams.setOverlayColor(Color.GRAY);
-            //roundingParams.setBorderColor(Color.GRAY);
-            //roundingParams.setBorderWidth(2f);
-            PointF pf=new PointF(0.5f,0.5f);
+            PointF pf = new PointF(0.5f, 0.5f);
             GenericDraweeHierarchy hierarchy = null;
-            hierarchy = builder
-                    .setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP)
-                    .setActualImageFocusPoint(pf)
-
-                    .setFadeDuration(0)
-                    .setProgressBarImage(new ImageLoadingDrawable())
-                    .setRoundingParams(roundingParams)
-                    .build();
-
+            hierarchy =
+                    builder.setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP)
+                            .setActualImageFocusPoint(pf)
+                            .setFadeDuration(0)
+                            .setProgressBarImage(new ImageLoadingDrawable())
+                            .setRoundingParams(roundingParams)
+                            .build();
             draweeView.setController(controller);
             draweeView.setHierarchy(hierarchy);
-
-        }catch (Exception e){
-
-
+        } catch (Exception e) {
         }
-
-
-
-
-
-    }
-
-
-
-    private void initView() throws Exception{
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-
     }
 }

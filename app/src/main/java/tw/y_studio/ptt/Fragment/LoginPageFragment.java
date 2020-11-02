@@ -1,11 +1,10 @@
 package tw.y_studio.ptt.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.InputType;
 import android.text.SpannableString;
 import android.text.method.PasswordTransformationMethod;
 import android.text.style.UnderlineSpan;
@@ -13,9 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -23,39 +19,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import tw.y_studio.ptt.Adapter.SimpleAdapter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.Utils.StringUtils;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class LoginPageFragment extends BaseFragment {
-    private View Mainview=null;
+
     public static LoginPageFragment newInstance() {
         Bundle args = new Bundle();
         LoginPageFragment fragment = new LoginPageFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     public static LoginPageFragment newInstance(Bundle args) {
         LoginPageFragment fragment = new LoginPageFragment();
         fragment.setArguments(args);
         return fragment;
     }
-
 
     private Button loginBt;
     private ImageButton showPassword;
@@ -65,95 +48,108 @@ public class LoginPageFragment extends BaseFragment {
 
     private ClickFix mClickFix = new ClickFix();
     private boolean isShowPassword = false;
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_page_fragment_layout, container, false);
 
-        Bundle bundle = getArguments();//取得Bundle
-        Mainview=view;
+        setMainView(view);
 
-        loginBt = view.findViewById(R.id.login_page_button);
-        passwordET = view.findViewById(R.id.login_page_editTextText_password);
-        accountET = view.findViewById(R.id.login_page_editTextText_account);
-        showPassword = view.findViewById(R.id.login_page_imageButton_showpassword);
-        forgetTV = view.findViewById(R.id.login_page_textView_forgot);
+        Bundle bundle = getArguments(); // 取得Bundle
+
+        loginBt = findViewById(R.id.login_page_button);
+        passwordET = findViewById(R.id.login_page_editTextText_password);
+        accountET = findViewById(R.id.login_page_editTextText_account);
+        showPassword = findViewById(R.id.login_page_imageButton_showpassword);
+        forgetTV = findViewById(R.id.login_page_textView_forgot);
 
         String forgetTVText = "忘記密碼？";
         SpannableString content = new SpannableString(forgetTVText);
         content.setSpan(new UnderlineSpan(), 0, forgetTVText.length(), 0);
         forgetTV.setText(content);
 
-        String id = getThisActivity().getSharedPreferences(
-                "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
+        String id =
+                getCurrentActivity()
+                        .getSharedPreferences("MainSetting", MODE_PRIVATE)
+                        .getString("APIPTTID", "");
+
         accountET.setText(id);
 
         loginBt.setBackgroundColor(getResources().getColor(R.color.slateGrey));
 
-        loginBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        loginBt.setOnClickListener(
+                new View.OnClickListener() {
 
-                String text = accountET.getText().toString();
+                    @Override
+                    public void onClick(View view) {
+                        String text = accountET.getText().toString();
 
-                if(!StringUtils.isAccount(text)){
-                    Toast.makeText(getContext(),"format incorrect",Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                        if (!StringUtils.isAccount(text)) {
+                            Toast.makeText(getContext(), "format incorrect", Toast.LENGTH_SHORT)
+                                    .show();
+                            return;
+                        }
 
-                SharedPreferences preference = getThisActivity().getSharedPreferences(
-                        "MainSetting", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preference.edit();
-                editor.putString(StringUtils.notNullImageString("APIPTTID"),text);
-                editor.apply();
-                editor.commit();
-                getThisActivity().onBackPressed();
-            }
-        });
+                        SharedPreferences preference =
+                                getCurrentActivity()
+                                        .getSharedPreferences("MainSetting", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preference.edit();
+                        editor.putString(StringUtils.notNullImageString("APIPTTID"), text);
+                        editor.apply();
+                        editor.commit();
+                        getCurrentActivity().onBackPressed();
+                    }
+                });
 
-
-        if(!isShowPassword){
-            showPassword.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_visibility_off_24));
-        }else{
-            showPassword.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_visibility_24));
+        if (!isShowPassword) {
+            showPassword.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_baseline_visibility_off_24));
+        } else {
+            showPassword.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_baseline_visibility_24));
         }
 
-        showPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //passwordET.setInputType(InputType.TYPE_NULL);
-                if(isShowPassword){
-                    showPassword.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_visibility_off_24));
-                    //passwordET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        showPassword.setOnClickListener(
+                new View.OnClickListener() {
 
-                    passwordET.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                }else{
-                    showPassword.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_visibility_24));
-                    //passwordET.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    passwordET.setTransformationMethod(null);
-                }
-                passwordET.setSelection(passwordET.getText().length());
-                //passwordET.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                isShowPassword=!isShowPassword;
-            }
-        });
+                    @Override
+                    public void onClick(View view) {
+                        if (isShowPassword) {
+                            showPassword.setImageDrawable(
+                                    getResources()
+                                            .getDrawable(R.drawable.ic_baseline_visibility_off_24));
+                            passwordET.setTransformationMethod(
+                                    PasswordTransformationMethod.getInstance());
+                        } else {
+                            showPassword.setImageDrawable(
+                                    getResources()
+                                            .getDrawable(R.drawable.ic_baseline_visibility_24));
+                            passwordET.setTransformationMethod(null);
+                        }
+                        passwordET.setSelection(passwordET.getText().length());
+                        isShowPassword = !isShowPassword;
+                    }
+                });
 
         return view;
     }
 
-    protected void onAnimOver() {
+    protected void onAnimOver() {}
 
-    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getThisActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(Mainview.getWindowToken(), 0);
-        }catch (Exception e){
-
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager)
+                            getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
+        } catch (Exception e) {
         }
-
-        Mainview=null;
     }
 }

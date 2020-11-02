@@ -1,7 +1,6 @@
 package tw.y_studio.ptt.Ptt;
 
-public class AidBean{
-
+public class AidBean {
     // 看板名稱
     private String boardTitle;
 
@@ -14,11 +13,9 @@ public class AidBean{
 
     public void setBoardTitle(String boardTitle) {
         this.boardTitle = boardTitle;
-        if(boardTitle.equals("iPhone")){
-            this.boardTitle="iOS";
+        if (boardTitle.equals("iPhone")) {
+            this.boardTitle = "iOS";
         }
-
-
     }
 
     public String getAid() {
@@ -33,8 +30,7 @@ public class AidBean{
         private String boardTitle;
         private String aid;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         public static Builder anAidBean() {
             return new Builder();

@@ -11,15 +11,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class StickyHeaderItemDecorator extends RecyclerView.ItemDecoration {
-
     private StickyAdapter adapter;
     private int currentStickyPosition = RecyclerView.NO_POSITION;
     private RecyclerView recyclerView;
     private RecyclerView.ViewHolder currentStickyHolder;
     private View lastViewOverlappedByHeader = null;
     private int stickyHolderHight = 0;
-    public int getStickyHolderHight(){
 
+    public int getStickyHolderHight() {
         return stickyHolderHight;
     }
 
@@ -73,7 +72,8 @@ public class StickyHeaderItemDecorator extends RecyclerView.ItemDecoration {
             return;
         }
 
-        View viewOverlappedByHeader = getChildInContact(parent, currentStickyHolder.itemView.getBottom());
+        View viewOverlappedByHeader =
+                getChildInContact(parent, currentStickyHolder.itemView.getBottom());
         if (viewOverlappedByHeader == null) {
             if (lastViewOverlappedByHeader != null) {
                 viewOverlappedByHeader = lastViewOverlappedByHeader;
@@ -87,7 +87,8 @@ public class StickyHeaderItemDecorator extends RecyclerView.ItemDecoration {
         int overlappedHeaderPosition;
         int preOverlappedPosition;
         if (overlappedByHeaderPosition > 0) {
-            preOverlappedPosition = adapter.getHeaderPositionForItem(overlappedByHeaderPosition - 1);
+            preOverlappedPosition =
+                    adapter.getHeaderPositionForItem(overlappedByHeaderPosition - 1);
             overlappedHeaderPosition = adapter.getHeaderPositionForItem(overlappedByHeaderPosition);
         } else {
             preOverlappedPosition = adapter.getHeaderPositionForItem(topChildPosition);
@@ -98,7 +99,8 @@ public class StickyHeaderItemDecorator extends RecyclerView.ItemDecoration {
             return;
         }
 
-        if (preOverlappedPosition != overlappedHeaderPosition && shouldMoveHeader(viewOverlappedByHeader)) {
+        if (preOverlappedPosition != overlappedHeaderPosition
+                && shouldMoveHeader(viewOverlappedByHeader)) {
             updateStickyHeader(topChildPosition, overlappedByHeaderPosition);
             moveHeader(c, viewOverlappedByHeader);
         } else {
@@ -117,7 +119,8 @@ public class StickyHeaderItemDecorator extends RecyclerView.ItemDecoration {
     @SuppressWarnings("unchecked")
     private void updateStickyHeader(int topChildPosition, int contactChildPosition) {
         int headerPositionForItem = adapter.getHeaderPositionForItem(topChildPosition);
-        if (headerPositionForItem != currentStickyPosition && headerPositionForItem != RecyclerView.NO_POSITION) {
+        if (headerPositionForItem != currentStickyPosition
+                && headerPositionForItem != RecyclerView.NO_POSITION) {
             adapter.onBindHeaderViewHolder(currentStickyHolder, headerPositionForItem);
             currentStickyPosition = headerPositionForItem;
         } else if (headerPositionForItem != RecyclerView.NO_POSITION) {
@@ -155,33 +158,52 @@ public class StickyHeaderItemDecorator extends RecyclerView.ItemDecoration {
     }
 
     private void fixLayoutSize() {
-        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                // Specs for parent (RecyclerView)
-                int widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getWidth(), View.MeasureSpec.EXACTLY);
-                int heightSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getHeight(), View.MeasureSpec.UNSPECIFIED);
+        recyclerView
+                .getViewTreeObserver()
+                .addOnGlobalLayoutListener(
+                        new ViewTreeObserver.OnGlobalLayoutListener() {
 
-                // Specs for children (headers)
-                int childWidthSpec = ViewGroup.getChildMeasureSpec(
-                        widthSpec,
-                        recyclerView.getPaddingLeft() + recyclerView.getPaddingRight(),
-                        currentStickyHolder.itemView.getLayoutParams().width);
-                int childHeightSpec = ViewGroup.getChildMeasureSpec(
-                        heightSpec,
-                        recyclerView.getPaddingTop() + recyclerView.getPaddingBottom(),
-                        currentStickyHolder.itemView.getLayoutParams().height);
+                            @Override
+                            public void onGlobalLayout() {
+                                recyclerView
+                                        .getViewTreeObserver()
+                                        .removeOnGlobalLayoutListener(this);
+                                // Specs for parent (RecyclerView)
+                                int widthSpec =
+                                        View.MeasureSpec.makeMeasureSpec(
+                                                recyclerView.getWidth(), View.MeasureSpec.EXACTLY);
+                                int heightSpec =
+                                        View.MeasureSpec.makeMeasureSpec(
+                                                recyclerView.getHeight(),
+                                                View.MeasureSpec.UNSPECIFIED);
 
+                                // Specs for children (headers)
+                                int childWidthSpec =
+                                        ViewGroup.getChildMeasureSpec(
+                                                widthSpec,
+                                                recyclerView.getPaddingLeft()
+                                                        + recyclerView.getPaddingRight(),
+                                                currentStickyHolder.itemView.getLayoutParams()
+                                                        .width);
+                                int childHeightSpec =
+                                        ViewGroup.getChildMeasureSpec(
+                                                heightSpec,
+                                                recyclerView.getPaddingTop()
+                                                        + recyclerView.getPaddingBottom(),
+                                                currentStickyHolder.itemView.getLayoutParams()
+                                                        .height);
 
-                currentStickyHolder.itemView.measure(childWidthSpec, childHeightSpec);
+                                currentStickyHolder.itemView.measure(
+                                        childWidthSpec, childHeightSpec);
 
-                currentStickyHolder.itemView.layout(0, 0,
-                        currentStickyHolder.itemView.getMeasuredWidth(),
-                        currentStickyHolder.itemView.getMeasuredHeight());
-                stickyHolderHight = currentStickyHolder.itemView.getMeasuredHeight();
-
-            }
-        });
+                                currentStickyHolder.itemView.layout(
+                                        0,
+                                        0,
+                                        currentStickyHolder.itemView.getMeasuredWidth(),
+                                        currentStickyHolder.itemView.getMeasuredHeight());
+                                stickyHolderHight =
+                                        currentStickyHolder.itemView.getMeasuredHeight();
+                            }
+                        });
     }
 }

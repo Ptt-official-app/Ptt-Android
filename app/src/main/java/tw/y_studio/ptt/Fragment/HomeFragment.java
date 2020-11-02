@@ -17,100 +17,102 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 
+import java.util.HashMap;
+import java.util.Map;
 
 public class HomeFragment extends BaseFragment {
-    private View Mainview=null;
+
     public static HomeFragment newInstance() {
         Bundle args = new Bundle();
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
     }
+
     public static HomeFragment newInstance(Bundle args) {
         HomeFragment fragment = new HomeFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
-    private Fragment homeFragment;
-    private Fragment homeFragment2;
-    private Fragment homeFragment3;
-    private Fragment homeFragment4;
-    private Fragment homeFragment5;
-    private Fragment homeFragment6;
+    private Map<String, Fragment> homeFragmentMap = new HashMap<>();
     private Fragment preFragment;
     private BottomNavigationView navigation;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener;
-    private BottomNavigationView.OnNavigationItemReselectedListener mOnNavigationItemReselectedListener;
+    private BottomNavigationView.OnNavigationItemReselectedListener
+            mOnNavigationItemReselectedListener;
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment_layout, container, false);
 
+        setMainView(view);
 
+        mOnNavigationItemSelectedListener =
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-        Mainview=view;
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        return changeFragnent(item.getItemId());
+                    }
+                };
 
-        mOnNavigationItemSelectedListener
-                = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        mOnNavigationItemReselectedListener =
+                new BottomNavigationView.OnNavigationItemReselectedListener() {
 
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-               return changeFragnent(item.getItemId());
-                //return true;
-            }
-
-        };
-        mOnNavigationItemReselectedListener = new BottomNavigationView.OnNavigationItemReselectedListener (){
-            @Override
-            public void onNavigationItemReselected(@NonNull MenuItem item) {
-
-                switch (item.getItemId()) {
-
-                    case R.id.home_bottom_navigation_item_hot_boards:
-
-                        if(homeFragment!=null&&preFragment==homeFragment){
-                            ((HotBoardsFragment)homeFragment).scrollToTop();
+                    @Override
+                    public void onNavigationItemReselected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.home_bottom_navigation_item_hot_boards:
+                                if (homeFragmentMap.containsKey("0")) {
+                                    ((HotBoardsFragment) homeFragmentMap.get("0")).scrollToTop();
+                                }
+                                break;
+                            case R.id.home_bottom_navigation_item_favorite_boards:
+                                if (homeFragmentMap.containsKey("2")) {
+                                    ((FavoriteBoardsFragment) homeFragmentMap.get("2"))
+                                            .scrollToTop();
+                                }
+                                break;
+                            case R.id.home_bottom_navigation_item_hot_articles:
+                                if (homeFragmentMap.containsKey("4")) {
+                                    ((HotArticleListFragment) homeFragmentMap.get("4"))
+                                            .scrollToTop();
+                                }
+                                break;
+                            case R.id.home_bottom_navigation_item_user_page:
+                                break;
+                            case R.id.home_bottom_navigation_item_more_action:
+                                break;
+                            default:
+                                break;
                         }
-                        break;
-                    case R.id.home_bottom_navigation_item_favorite_boards:
-                        if(homeFragment2!=null&&preFragment==homeFragment2){
-                            ((FavoriteBoardsFragment)homeFragment2).scrollToTop();
-                        }
-                        break;
-                    case R.id.home_bottom_navigation_item_hot_articles:
-                        if(homeFragment4!=null&&preFragment==homeFragment4){
-                            ((HotArticleListFragment)homeFragment4).scrollToTop();
-                        }
-                        break;
-                    case R.id.home_bottom_navigation_item_user_page:
-                        break;
-                    case R.id.home_bottom_navigation_item_more_action:
-                        break;
-                    default:
+                    }
+                };
 
-                        break;
-                }
-
-            }
-
-        };
-
-        navigation = (BottomNavigationView) Mainview.findViewById(R.id.home_bottom_navigation);
+        navigation = (BottomNavigationView) getMainView().findViewById(R.id.home_bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener);
 
         return view;
     }
 
-    private boolean changeFragnent(int id){
-        switch (navigation.getSelectedItemId()){
+    private boolean changeFragnent(int id) {
+        switch (navigation.getSelectedItemId()) {
             case R.id.home_bottom_navigation_item_favorite_boards:
-                if(homeFragment2!=null && homeFragment2 instanceof FavoriteBoardsFragment){
-                    if(((FavoriteBoardsFragment)homeFragment2).isEditMode()){
-                        Toast mm = Toast.makeText(getContext(),R.string.attion_close_edit_mode,Toast.LENGTH_SHORT);
-                        mm.setGravity(Gravity.CENTER,0,0);
+                if (homeFragmentMap.containsKey("2")
+                        && homeFragmentMap.get("2") instanceof FavoriteBoardsFragment) {
+                    if (((FavoriteBoardsFragment) homeFragmentMap.get("2")).isEditMode()) {
+                        Toast mm =
+                                Toast.makeText(
+                                        getContext(),
+                                        R.string.attion_close_edit_mode,
+                                        Toast.LENGTH_SHORT);
+                        mm.setGravity(Gravity.CENTER, 0, 0);
                         mm.show();
 
                         return false;
@@ -118,137 +120,108 @@ public class HomeFragment extends BaseFragment {
                 }
         }
 
+        Fragment fragment;
+        String key = "";
+
         switch (id) {
             case R.id.home_bottom_navigation_item_hot_boards:
-                if(homeFragment==null){
-                    Bundle bundle = new Bundle();
-                    //bundle.putString("Title","看板分類");
-                    homeFragment = HotBoardsFragment.newInstance(bundle);
-                }
-                if(preFragment==homeFragment){
-                    //((HotBoardsFragment)homeFragment).scrollToTop();
-                }else {
-                    showFragment(homeFragment);
-                }
-                return true;
+                key = "0";
+                break;
             case R.id.home_bottom_navigation_item_favorite_boards:
-                if(homeFragment2==null){
-                    Bundle bundle = new Bundle();
-                    //bundle.putString("Title","看板分類");
-                    homeFragment2 = FavoriteBoardsFragment.newInstance(bundle);
-                }
-                if(preFragment==homeFragment2){
-                    //((HotBoardsFragment)homeFragment).scrollToTop();
-                }else {
-                    showFragment(homeFragment2);
-                }
-                return true;
+                key = "2";
+                break;
             case R.id.home_bottom_navigation_item_hot_articles:
-                if(homeFragment4==null){
-                    Bundle bundle = new Bundle();
-                    //bundle.putString("Title","看板分類");
-                    homeFragment4 = HotArticleListFragment.newInstance(bundle);
-                }
-                if(preFragment==homeFragment4){
-                    //((HotBoardsFragment)homeFragment).scrollToTop();
-                }else {
-                    showFragment(homeFragment4);
-                }
-                return true;
+                key = "4";
+                break;
             case R.id.home_bottom_navigation_item_more_action:
-                if(homeFragment5==null){
-                    Bundle bundle = new Bundle();
-                    //bundle.putString("Title","看板分類");
-                    homeFragment5 = SettingFragment.newInstance(bundle);
-                }
-                if(preFragment==homeFragment5){
-                    //((HotBoardsFragment)homeFragment).scrollToTop();
-                }else {
-                    showFragment(homeFragment5);
-                }
-                return true;
+                key = "5";
+                break;
             case R.id.home_bottom_navigation_item_user_page:
-                if(homeFragment6==null){
-                    Bundle bundle = new Bundle();
-                    //bundle.putString("Title","看板分類");
-                    homeFragment6 = PersonalPageFragment.newInstance(bundle);
-                }
-                if(preFragment==homeFragment6){
-                    //((HotBoardsFragment)homeFragment).scrollToTop();
-                }else {
-                    showFragment(homeFragment6);
-                }
-                return true;
+                key = "6";
+                break;
             default:
-                if(homeFragment3==null){
-                    Bundle bundle = new Bundle();
-                    //bundle.putString("Title","看板分類");
-                    homeFragment3 = EmptyFragment.newInstance(bundle);
-                }
-                if(preFragment==homeFragment3){
-                    //((HotBoardsFragment)homeFragment).scrollToTop();
-                }else {
-                    showFragment(homeFragment3);
-                }
-                return true;
-
+                key = "3";
+                break;
         }
+
+        if (!homeFragmentMap.containsKey(key)) {
+            switch (id) {
+                case R.id.home_bottom_navigation_item_hot_boards:
+                    fragment = HotBoardsFragment.newInstance(new Bundle());
+                    break;
+                case R.id.home_bottom_navigation_item_favorite_boards:
+                    fragment = FavoriteBoardsFragment.newInstance(new Bundle());
+                    break;
+                case R.id.home_bottom_navigation_item_hot_articles:
+                    fragment = HotArticleListFragment.newInstance(new Bundle());
+                    break;
+                case R.id.home_bottom_navigation_item_more_action:
+                    fragment = SettingFragment.newInstance(new Bundle());
+                    break;
+                case R.id.home_bottom_navigation_item_user_page:
+                    fragment = PersonalPageFragment.newInstance(new Bundle());
+                    break;
+                default:
+                    fragment = EmptyFragment.newInstance(new Bundle());
+                    break;
+            }
+            homeFragmentMap.put(key, fragment);
+        } else {
+            fragment = homeFragmentMap.get(key);
+        }
+        if (fragment != preFragment) {
+            showFragment(homeFragmentMap.get(key));
+        }
+
+        return true;
     }
+
     protected void onAnimOver() {
-
         changeFragnent(navigation.getSelectedItemId());
-
     }
 
     public void showFragment(Fragment toFragment) {
-
-        if(preFragment==null) {
+        if (preFragment == null) {
             getChildFragmentManager()
                     .beginTransaction()
                     .add(R.id.framelayout_home, toFragment, toFragment.getClass().getSimpleName())
                     .show(toFragment)
                     .commit();
-
-        }else {
-            if(toFragment.isAdded()) {
+        } else {
+            if (toFragment.isAdded()) {
                 getChildFragmentManager()
                         .beginTransaction()
                         .hide(preFragment)
                         .show(toFragment)
                         .commit();
-            }else {
+            } else {
                 getChildFragmentManager()
                         .beginTransaction()
-                        .add(R.id.framelayout_home, toFragment, toFragment.getClass().getSimpleName())
+                        .add(
+                                R.id.framelayout_home,
+                                toFragment,
+                                toFragment.getClass().getSimpleName())
                         .hide(preFragment)
                         .show(toFragment)
                         .commit();
             }
-
         }
         preFragment = toFragment;
     }
 
-    public void closeFragment(){
-
-        for(Fragment fr:getChildFragmentManager().getFragments()){
+    public void closeFragment() {
+        for (Fragment fr : getChildFragmentManager().getFragments()) {
             getChildFragmentManager().beginTransaction().remove(fr).commitAllowingStateLoss();
         }
-
     }
+
     @Override
-    public void onActivityCreated (Bundle savedInstanceState){
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if(savedInstanceState!=null){
-
-        }
     }
-
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Mainview=null;
     }
-
 }
