@@ -28,11 +28,11 @@ public class FavoriteBoardsListAdapter extends RecyclerView.Adapter<RecyclerView
     private final StartDragListener mStartDragListener;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView mTextView_title;
-        private TextView mTextView_subtitle;
+        private  TextView  mTextView_title;
+        private TextView  mTextView_subtitle;
         private TextView mTextView_onlinePeople;
         // private TextView mTextView_color;
-        private AppCompatImageButton person;
+        private AppCompatImageButton  person;
 
         public ViewHolder(View v) {
             super(v);
