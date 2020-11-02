@@ -30,7 +30,7 @@ public class FavoriteBoardsListAdapter extends RecyclerView.Adapter<RecyclerView
     public class ViewHolder extends RecyclerView.ViewHolder {
         private  TextView  mTextView_title;
         private TextView  mTextView_subtitle;
-        private TextView mTextView_onlinePeople;
+        private TextView  mTextView_onlinePeople;
         // private TextView mTextView_color;
         private AppCompatImageButton  person;
 
