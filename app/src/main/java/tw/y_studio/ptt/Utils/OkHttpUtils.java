@@ -3,24 +3,6 @@ package tw.y_studio.ptt.Utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
-import java.lang.ref.SoftReference;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -32,19 +14,29 @@ import okio.BufferedSink;
 import okio.GzipSink;
 import okio.Okio;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.lang.ref.SoftReference;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.X509TrustManager;
+
 public class OkHttpUtils {
 
-
     public static class MyTrustManager implements X509TrustManager {
-        @SuppressLint("TrustAllX509TrustManager")
-        @Override
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
 
         @SuppressLint("TrustAllX509TrustManager")
         @Override
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-        }
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {}
+
+        @SuppressLint("TrustAllX509TrustManager")
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {}
 
         @Override
         public X509Certificate[] getAcceptedIssuers() {
@@ -53,9 +45,11 @@ public class OkHttpUtils {
     }
 
     public Cache provideCache(Context mContext) {
-        return new Cache(mContext.getCacheDir(), 10240*1024*100);
+        return new Cache(mContext.getCacheDir(), 10240 * 1024 * 100);
     }
+
     public static class CacheInterceptor implements Interceptor {
+
         @NotNull
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -64,54 +58,58 @@ public class OkHttpUtils {
             return response.newBuilder()
                     .removeHeader("Pragma")
                     .removeHeader("Cache-Control")
-                    //cache for 3 days
+                    // cache for 3 days
                     .header("Cache-Control", "max-age=" + 3600 * 24 * 3)
                     .build();
         }
     }
+
     public OkHttpClient getTrustlAllClient(Context mContext) {
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
 
         mBuilder.connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(new GzipRequestInterceptor())//Gzip
-                //.cache(provideCache(mContext))
-        ;
+                .addInterceptor(
+                        new GzipRequestInterceptor()); // .cache(provideCache(mContext)) //Gzip
         return new SoftReference<OkHttpClient>(mBuilder.build()).get();
     }
+
     public OkHttpClient getCacheClient(Context mContext) {
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
-
 
         mBuilder.addNetworkInterceptor(new CacheInterceptor())
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(new GzipRequestInterceptor())//Gzip
-                .cache(provideCache(mContext))
-        ;
+                .addInterceptor(new GzipRequestInterceptor()) // Gzip
+                .cache(provideCache(mContext));
         return new SoftReference<OkHttpClient>(mBuilder.build()).get();
     }
 
     public static class GzipRequestInterceptor implements Interceptor {
+
         @NotNull
         @Override
         public Response intercept(Chain chain) throws IOException {
             Request originalRequest = chain.request();
-            if (originalRequest.body() == null || originalRequest.header("Content-Encoding") != null) {
+            if (originalRequest.body() == null
+                    || originalRequest.header("Content-Encoding") != null) {
                 return chain.proceed(originalRequest);
             }
 
-            Request compressedRequest = originalRequest.newBuilder()
-                    .header("Content-Encoding", "gzip, deflate")
-                    .method(originalRequest.method(), gzip(originalRequest.body()))
-                    .build();
+            Request compressedRequest =
+                    originalRequest
+                            .newBuilder()
+                            .header("Content-Encoding", "gzip, deflate")
+                            .method(originalRequest.method(), gzip(originalRequest.body()))
+                            .build();
             return chain.proceed(compressedRequest);
         }
 
         private RequestBody gzip(final RequestBody body) {
             return new RequestBody() {
+
                 @Override
                 public MediaType contentType() {
                     return body.contentType();
@@ -131,6 +129,4 @@ public class OkHttpUtils {
             };
         }
     }
-
 }
-

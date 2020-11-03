@@ -1,11 +1,5 @@
 package tw.y_studio.ptt;
 
-import androidx.annotation.ColorInt;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -17,38 +11,39 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-
 import android.widget.Toast;
-import java.util.Date;
+
+import androidx.annotation.ColorInt;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import tw.y_studio.ptt.Fragment.HomeFragment;
 import tw.y_studio.ptt.UI.BaseActivity;
 import tw.y_studio.ptt.UI.StaticValue;
-import tw.y_studio.ptt.Utils.DebugUtils;
 
+import java.util.Date;
 
 public class HomeActivity extends BaseActivity {
-
     private HomeFragment homeFragment;
     private int themeType = 0;
-    private long TimeTemp = 0 ;
+    private long TimeTemp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
-        SharedPreferences preference2 = getSharedPreferences(
-                "MainSetting", MODE_PRIVATE);
+        SharedPreferences preference2 = getSharedPreferences("MainSetting", MODE_PRIVATE);
 
-        themeType = preference2.getInt("THEME",0);
+        themeType = preference2.getInt("THEME", 0);
 
-        StaticValue.ThemMode=themeType;
+        StaticValue.ThemMode = themeType;
 
-        if(themeType==1){
+        if (themeType == 1) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }else if(themeType==0){
+        } else if (themeType == 0) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }else {
+        } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
 
@@ -60,9 +55,9 @@ public class HomeActivity extends BaseActivity {
         window.setStatusBarColor(color);
         window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
 
-        if(themeType==0){
+        if (themeType == 0) {
             window.getDecorView().setSystemUiVisibility(0);
-        }else if(themeType==1){
+        } else if (themeType == 1) {
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         setContentView(R.layout.activity_main);
@@ -70,114 +65,144 @@ public class HomeActivity extends BaseActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         StaticValue.densityDpi = metrics.densityDpi;
-        StaticValue.ScreenDensity=metrics.density;
-        StaticValue.widthPixels=metrics.widthPixels;
-        StaticValue.highPixels=metrics.heightPixels;
+        StaticValue.ScreenDensity = metrics.density;
+        StaticValue.widthPixels = metrics.widthPixels;
+        StaticValue.highPixels = metrics.heightPixels;
 
         showHome();
         isReadyLaunch = true;
     }
 
-    private void showHome(){
-        if(getSupportFragmentManager().getBackStackEntryCount()==0){
-            try{
+    private void showHome() {
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            try {
                 homeFragment = new HomeFragment();
-                loadFragment(homeFragment,null);
+                loadFragment(homeFragment, null);
                 isReadyShowHome = true;
-            }catch (Exception e){
-
+            } catch (Exception e) {
             }
         }
     }
+
     private boolean isReadyShowHome = false;
     private boolean isReadyLaunch = false;
 
     @Override
-    public void closeAllFragment(){
+    public void closeAllFragment() {
         try {
-            while(getSupportFragmentManager().getBackStackEntryCount()>0){
-                String backStackId = getSupportFragmentManager().getBackStackEntryAt(getSupportFragmentManager().getBackStackEntryCount()-1).getName();
-                getSupportFragmentManager().popBackStackImmediate(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            while (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+                String backStackId =
+                        getSupportFragmentManager()
+                                .getBackStackEntryAt(
+                                        getSupportFragmentManager().getBackStackEntryCount() - 1)
+                                .getName();
+                getSupportFragmentManager()
+                        .popBackStackImmediate(
+                                backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
     }
 
     @Override
-    public void loadFragment(Fragment toFragment, Fragment thisFragment) throws Exception{
-        if(getSupportFragmentManager().getFragments().size()>0){
-
-            getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right_250,R.anim.slide_out_right_250,R.anim.slide_in_right_250,R.anim.slide_out_right_250)
-                    .add(R.id.mainActivity_mainLayout, toFragment, toFragment.getClass().getSimpleName())
+    public void loadFragment(Fragment toFragment, Fragment thisFragment) throws Exception {
+        if (getSupportFragmentManager().getFragments().size() > 0) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in_right_250,
+                            R.anim.slide_out_right_250,
+                            R.anim.slide_in_right_250,
+                            R.anim.slide_out_right_250)
+                    .add(
+                            R.id.mainActivity_mainLayout,
+                            toFragment,
+                            toFragment.getClass().getSimpleName())
                     .addToBackStack(toFragment.getClass().getSimpleName())
                     .commitAllowingStateLoss();
-        }else {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.mainActivity_mainLayout, toFragment, toFragment.getClass().getSimpleName())
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(
+                            R.id.mainActivity_mainLayout,
+                            toFragment,
+                            toFragment.getClass().getSimpleName())
                     .addToBackStack(toFragment.getClass().getSimpleName())
                     .commitAllowingStateLoss();
         }
     }
 
     @Override
-    public void loadFragmentNoAnim(Fragment toFragment, Fragment thisFragment) throws Exception{
-        if(getSupportFragmentManager().getFragments().size()>0){
-
-            getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.no_anim,R.anim.no_anim,R.anim.no_anim,R.anim.no_anim)
-                    .add(R.id.mainActivity_mainLayout, toFragment, toFragment.getClass().getSimpleName())
+    public void loadFragmentNoAnim(Fragment toFragment, Fragment thisFragment) throws Exception {
+        if (getSupportFragmentManager().getFragments().size() > 0) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.no_anim, R.anim.no_anim, R.anim.no_anim, R.anim.no_anim)
+                    .add(
+                            R.id.mainActivity_mainLayout,
+                            toFragment,
+                            toFragment.getClass().getSimpleName())
                     .addToBackStack(toFragment.getClass().getSimpleName())
                     .commitAllowingStateLoss();
-        }else {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.mainActivity_mainLayout, toFragment, toFragment.getClass().getSimpleName())
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(
+                            R.id.mainActivity_mainLayout,
+                            toFragment,
+                            toFragment.getClass().getSimpleName())
                     .addToBackStack(toFragment.getClass().getSimpleName())
                     .commitAllowingStateLoss();
         }
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) { // 確定按下退出鍵and防止重複按下退出鍵
-            if(getSupportFragmentManager().getBackStackEntryCount() >1){
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) { // 確定按下退出鍵and防止重複按下退出鍵
+            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
                 onBackPressed();
-            }else {
+            } else {
                 Date myDate = new Date();
                 long myDate2 = myDate.getTime();
                 if (Math.abs(TimeTemp - myDate2) > 1500) {
-                    Toast.makeText(this, getString(R.string.press_again_to_leave), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                                    this,
+                                    getString(R.string.press_again_to_leave),
+                                    Toast.LENGTH_SHORT)
+                            .show();
                     TimeTemp = myDate2;
                 } else {
                     finish();
                     System.gc();
                 }
             }
-        }else {
-            super.onKeyDown(keyCode,event);
+        } else {
+            super.onKeyDown(keyCode, event);
         }
         return false;
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
     }
+
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         super.onDestroy();
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
-        if(isReadyLaunch&&!isReadyShowHome){
+        if (isReadyLaunch && !isReadyShowHome) {
             showHome();
         }
     }

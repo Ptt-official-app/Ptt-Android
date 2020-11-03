@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import tw.y_studio.ptt.Adapter.SearchBoardsAdapter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class PersonInfoFragment extends BaseFragment {
 
@@ -35,19 +35,23 @@ public class PersonInfoFragment extends BaseFragment {
     private RecyclerView recyclerView;
     private SearchBoardsAdapter mdapter;
     private List<Map<String, Object>> data = new ArrayList<>();
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.personal_info_fragment_layout, container, false);
 
         setMainView(view);
 
         recyclerView = findViewById(R.id.persion_info_fragment_recyclerView);
 
-        Bundle bundle = getArguments();//取得Bundle
-        final String title_=bundle.getString("Title");
+        Bundle bundle = getArguments(); // 取得Bundle
+        final String title_ = bundle.getString("Title");
 
-        mdapter = new SearchBoardsAdapter(getCurrentActivity(),data);
+        mdapter = new SearchBoardsAdapter(getCurrentActivity(), data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -58,8 +62,5 @@ public class PersonInfoFragment extends BaseFragment {
         return view;
     }
 
-    protected void onAnimOver() {
-
-    }
-
+    protected void onAnimOver() {}
 }

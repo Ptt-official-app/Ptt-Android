@@ -1,5 +1,7 @@
 package tw.y_studio.ptt.Fragment;
 
+import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,25 +19,16 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.jsoup.nodes.Document;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.jsoup.nodes.Document;
+
 import tw.y_studio.ptt.Adapter.HotArticleListAdapter;
 import tw.y_studio.ptt.BuildConfig;
 import tw.y_studio.ptt.Ptt.AidConverter;
@@ -50,7 +43,15 @@ import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.OkHttpUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 
-import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HotArticleListFragment extends BaseFragment {
 
@@ -74,21 +75,23 @@ public class HotArticleListFragment extends BaseFragment {
     private List<Map<String, Object>> data = new ArrayList<>();
 
     private ClickFix mClickFix = new ClickFix();
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.hot_article_list_fragment_layout, container, false);
 
         setMainView(view);
 
         mRecyclerView = findViewById(R.id.article_list_fragment_recyclerView);
-        mSwipeRefreshLayout= findViewById(R.id.article_list_fragment_refresh_layout);
+        mSwipeRefreshLayout = findViewById(R.id.article_list_fragment_refresh_layout);
 
-        Bundle bundle = getArguments();//取得Bundle
+        Bundle bundle = getArguments(); // 取得Bundle
 
-
-
-        mAdapter = new HotArticleListAdapter(getCurrentActivity(),data);
+        mAdapter = new HotArticleListAdapter(getCurrentActivity(), data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -99,8 +102,7 @@ public class HotArticleListFragment extends BaseFragment {
         StickyHeaderItemDecorator decorator = new StickyHeaderItemDecorator(mAdapter);
         decorator.attachToRecyclerView(mRecyclerView);
 
-
-        //mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
+        // mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE);
         mSwipeRefreshLayout.setColorSchemeResources(
                 android.R.color.holo_red_light,
                 android.R.color.holo_blue_light,
@@ -112,86 +114,114 @@ public class HotArticleListFragment extends BaseFragment {
 
                     @Override
                     public void onRefresh() {
-
                         loadData();
-
-                    }
-
-                });
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                int totalItemCount = layoutManager.getItemCount();
-
-
-                if(!GattingData)
-                    if (lastVisibleItem >= totalItemCount - 30 ) {
-                        // loadNextData();
-                    }
-
-
-            }
-        });
-
-        RecyclerItemClickListener recyclerItemClickListener = new RecyclerItemClickListener(mRecyclerView,
-                new RecyclerItemClickListener.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View view, int position) {
-                        //System.out.println("onItemClick " + adapter.getItem(position));
-                        if(mClickFix.isFastDoubleClick()) return;
-                        if(position>0){
-                            data.get(position).put("readed",true);
-                            mAdapter.setHighLightUrl(StringUtils.notNullString(data.get(position).get("url")));
-                            mAdapter.notifyDataSetChanged();
-                            //WebUtils.turnOnUrl(getContext(),StringUtils.notNullString(data.get(position).get("url")));
-
-                            Bundle bundle = new Bundle();
-                            bundle.putString("title", StringUtils.notNullString(data.get(position).get("title")));
-                            bundle.putString("auth", StringUtils.notNullString(data.get(position).get("auth")));
-                            bundle.putString("date", StringUtils.notNullString(data.get(position).get("date")));
-                            bundle.putString("class", StringUtils.notNullString(data.get(position).get("class")));
-                            bundle.putString("board", StringUtils.notNullString(data.get(position).get("board")));
-                            bundle.putString("url",StringUtils.notNullString(data.get(position).get("url")));
-
-                            loadFragment(ArticleReadFragment.newInstance(bundle),getCurrentFragment());
-
-                        }else {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("title", StringUtils.notNullString(data.get(0).get("title")));
-                            bundle.putStringArrayList("BoardList",(ArrayList<String>) board_list);
-                            //Log.d("onHot","size = "+board_list.size());
-
-                            loadFragmentNoAnim(HotArticleFilterFragment.newInstance(bundle),getCurrentFragment());
-
-                        }
-                    }
-
-                    @Override
-                    public void onItemLongClick(View view, int position) {
-                        //System.out.println("onItemLongClick " + position);
                     }
                 });
+
+        mRecyclerView.addOnScrollListener(
+                new RecyclerView.OnScrollListener() {
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                        int totalItemCount = layoutManager.getItemCount();
+
+                        if (!GattingData)
+                            if (lastVisibleItem >= totalItemCount - 30) {
+                                // loadNextData();
+                            }
+                    }
+                });
+
+        RecyclerItemClickListener recyclerItemClickListener =
+                new RecyclerItemClickListener(
+                        mRecyclerView,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                // System.out.println("onItemClick " + adapter.getItem(position));
+                                if (mClickFix.isFastDoubleClick()) return;
+                                if (position > 0) {
+                                    data.get(position).put("readed", true);
+                                    mAdapter.setHighLightUrl(
+                                            StringUtils.notNullString(
+                                                    data.get(position).get("url")));
+                                    mAdapter.notifyDataSetChanged();
+                                    // WebUtils.turnOnUrl(getContext(),StringUtils.notNullString(data.get(position).get("url")));
+
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(
+                                            "title",
+                                            StringUtils.notNullString(
+                                                    data.get(position).get("title")));
+                                    bundle.putString(
+                                            "auth",
+                                            StringUtils.notNullString(
+                                                    data.get(position).get("auth")));
+                                    bundle.putString(
+                                            "date",
+                                            StringUtils.notNullString(
+                                                    data.get(position).get("date")));
+                                    bundle.putString(
+                                            "class",
+                                            StringUtils.notNullString(
+                                                    data.get(position).get("class")));
+                                    bundle.putString(
+                                            "board",
+                                            StringUtils.notNullString(
+                                                    data.get(position).get("board")));
+                                    bundle.putString(
+                                            "url",
+                                            StringUtils.notNullString(
+                                                    data.get(position).get("url")));
+
+                                    loadFragment(
+                                            ArticleReadFragment.newInstance(bundle),
+                                            getCurrentFragment());
+                                } else {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString(
+                                            "title",
+                                            StringUtils.notNullString(data.get(0).get("title")));
+                                    bundle.putStringArrayList(
+                                            "BoardList", (ArrayList<String>) board_list);
+                                    // Log.d("onHot","size = "+board_list.size());
+
+                                    loadFragmentNoAnim(
+                                            HotArticleFilterFragment.newInstance(bundle),
+                                            getCurrentFragment());
+                                }
+                            }
+
+                            @Override
+                            public void onItemLongClick(View view, int position) {
+                                // System.out.println("onItemLongClick " + position);
+                            }
+                        });
 
         recyclerItemClickListener.setDecorator(decorator);
         mRecyclerView.addOnItemTouchListener(recyclerItemClickListener);
 
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
-                new IntentFilter("puty-hot-article-change"));
+        LocalBroadcastManager.getInstance(getContext())
+                .registerReceiver(mMessageReceiver, new IntentFilter("puty-hot-article-change"));
 
-        mAdapter.setMoreClickListen(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mClickFix.isFastDoubleClick()) return;
-                Bundle bundle = new Bundle();
-                bundle.putString("title", StringUtils.notNullString(data.get(0).get("title")));
-                bundle.putStringArrayList("BoardList",(ArrayList<String>) board_list);
-                DebugUtils.Log("onHot","size = "+board_list.size());
-                loadFragmentNoAnim(HotArticleFilterFragment.newInstance(bundle),getCurrentFragment());
-            }
-        });
+        mAdapter.setMoreClickListen(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        if (mClickFix.isFastDoubleClick()) return;
+                        Bundle bundle = new Bundle();
+                        bundle.putString(
+                                "title", StringUtils.notNullString(data.get(0).get("title")));
+                        bundle.putStringArrayList("BoardList", (ArrayList<String>) board_list);
+                        DebugUtils.Log("onHot", "size = " + board_list.size());
+                        loadFragmentNoAnim(
+                                HotArticleFilterFragment.newInstance(bundle), getCurrentFragment());
+                    }
+                });
 
         return view;
     }
@@ -200,13 +230,12 @@ public class HotArticleListFragment extends BaseFragment {
         loadData();
     }
 
-    public void scrollToTop(){
+    public void scrollToTop() {
         try {
-            if(mRecyclerView!=null){
+            if (mRecyclerView != null) {
                 mRecyclerView.scrollToPosition(0);
             }
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
     }
 
@@ -221,224 +250,221 @@ public class HotArticleListFragment extends BaseFragment {
     private List<Map<String, Object>> data_temp = new ArrayList<>();
     private List<String> board_list = new ArrayList<String>();
 
-    private void getDataFromPttWeb(){
+    private void getDataFromPttWeb() {
+        r1 =
+                new Runnable() {
 
-        r1 = new Runnable() {
-            public void run() {
-                runOnUI(()->{
-                    mSwipeRefreshLayout.setRefreshing(true);
-                });
+                    public void run() {
+                        runOnUI(
+                                () -> {
+                                    mSwipeRefreshLayout.setRefreshing(true);
+                                });
 
-                GattingData=true;
-                data_temp.clear();
-                DebugUtils.Log("onAL","get data from web start");
-                String url= BuildConfig.demo_hot_article_url;
-                if(FieldName!=null&&FieldName.length()>0){
-                    Map<String,Object> datt=new HashMap<>();
-                    datt.put("title",FieldName);
-                    datt.put("type","title");
-                    data_temp.add(datt);
-                }else {
-                    Map<String,Object> datt=new HashMap<>();
-                    datt.put("title","ALL");
-                    datt.put("type","title");
-                    data_temp.add(datt);
-                }
-
-
-                Document doc;
-                try {
-                    if(StaticValue.userDebugMode){
-                        if(url==null) throw new Exception("url is null");
-
-                        if(client_puty==null)
-                            client_puty = new OkHttpUtils().getTrustlAllClient(getContext());
-
-                        Request request = new Request.Builder()
-                                .url(url)
-                                .build();
-                        Call mcall=client_puty.newCall(request);
-
-                        Response response = mcall.execute();
-                        final int code =response.code(); // can be any value
-                        if (!response.isSuccessful()&&code!=200) {
-                            //error
-                        }else {
-                            ResponseBody mRb = response.body();
-                            String cont = mRb.string();
-
-                            JSONObject mm = new JSONObject(cont);
-
-
-                            JSONArray m2 = mm.getJSONArray("r");
-                            int i = 0;
-                            while (true) {
-                                try {
-                                    if (m2.isNull(i)) break;
-                                    JSONObject m3 = m2.getJSONObject(i);
-                                    if(!board_list.contains(m3.getString("brd"))){
-                                        board_list.add(m3.getString("brd"));
-                                    }
-                                    if(FieldName!=null&&FieldName.length()>0){
-                                        if(!m3.getString("brd").equalsIgnoreCase(FieldName)){
-                                            i++;
-                                            continue;
-                                        }
-                                    }
-                                    //if(m3==null) break;
-                                    Map<String, Object> datt = new HashMap<>();
-
-
-                                    datt.put("like", "" + m3.getInt("pushcnt"));
-                                    datt.put("commit", "" + m3.getInt("pushcnt"));
-
-
-
-                                    datt.put("type", "article");
-                                    datt.put("readed", false);
-
-                                    datt.put("url", AidConverter.aidToUrl(m3.getString("brd"), m3.getString("pid")));
-                                    String title = m3.getString("t");
-                                    String classs = "";
-                                    final Pattern p23 = Pattern.compile("\\[([\\s\\S]{1,4})\\]");
-                                    Matcher m23 = p23.matcher(title);
-
-                                    if (m23.find()) {
-
-
-                                        classs = m23.group(1);
-                                        if (classs.length() <= 6) {
-                                            int start = title.indexOf("[" + classs + "]");
-                                            int end = start + classs.length() + 2;
-                                            if (start == 0) {
-                                                title = StringUtils.clearStart(title.substring(end));
-                                            } else {
-                                                try {
-                                                    title = title.substring(0, start) + StringUtils.clearStart(title.substring(end));
-
-                                                } catch (Exception E) {
-
-                                                }
-
-                                            }
-
-                                        } else {
-                                            classs = "無分類";
-                                        }
-
-                                    }
-                                    datt.put("title", title);
-                                    datt.put("class", classs);
-                                    datt.put("board", "" + m3.getString("brd"));
-                                    //datt.put("auth",""+m3.getString("pid"));
-                                    String auth = m3.getString("a1");
-
-                                    Matcher m26 = p2id.matcher(auth);
-                                    if (m26.find()) {
-                                        auth = m26.group();
-                                    }
-
-                                    datt.put("auth", "" + auth);
-                                    datt.put("image", "" + m3.getString("i"));
-                                    String time = m3.getString("ts");
-
-
-                                    SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy", Locale.ENGLISH);
-                                    Date date = sdf.parse(time);
-                                    //Log.d("onPuty","i = "+i+" / time ="+date.getTime());
-                                    datt.put("date", "" + date.getTime());
-                                    data_temp.add(datt);
-
-                                } catch (Exception e) {
-                                    //Log.d("onPuty","error2 = "+e.toString());
-                                    DebugUtils.Log("onAL", "inner = " + e.toString());
-                                    break;
-                                }
-
-
-                                i++;
-                                //DebugUtils.Log("onAL","i = "+i);
-                            }
-
+                        GattingData = true;
+                        data_temp.clear();
+                        DebugUtils.Log("onAL", "get data from web start");
+                        String url = BuildConfig.demo_hot_article_url;
+                        if (FieldName != null && FieldName.length() > 0) {
+                            Map<String, Object> datt = new HashMap<>();
+                            datt.put("title", FieldName);
+                            datt.put("type", "title");
+                            data_temp.add(datt);
+                        } else {
+                            Map<String, Object> datt = new HashMap<>();
+                            datt.put("title", "ALL");
+                            datt.put("type", "title");
+                            data_temp.add(datt);
                         }
 
+                        Document doc;
+                        try {
+                            if (StaticValue.userDebugMode) {
+                                if (url == null) throw new Exception("url is null");
 
+                                if (client_puty == null)
+                                    client_puty =
+                                            new OkHttpUtils().getTrustlAllClient(getContext());
+
+                                Request request = new Request.Builder().url(url).build();
+                                Call mcall = client_puty.newCall(request);
+
+                                Response response = mcall.execute();
+                                final int code = response.code(); // can be any value
+                                if (!response.isSuccessful() && code != 200) {
+                                    // error
+                                } else {
+                                    ResponseBody mRb = response.body();
+                                    String cont = mRb.string();
+
+                                    JSONObject mm = new JSONObject(cont);
+
+                                    JSONArray m2 = mm.getJSONArray("r");
+                                    int i = 0;
+                                    while (true) {
+                                        try {
+                                            if (m2.isNull(i)) break;
+                                            JSONObject m3 = m2.getJSONObject(i);
+                                            if (!board_list.contains(m3.getString("brd"))) {
+                                                board_list.add(m3.getString("brd"));
+                                            }
+                                            if (FieldName != null && FieldName.length() > 0) {
+                                                if (!m3.getString("brd")
+                                                        .equalsIgnoreCase(FieldName)) {
+                                                    i++;
+                                                    continue;
+                                                }
+                                            }
+                                            // if(m3==null) break;
+                                            Map<String, Object> datt = new HashMap<>();
+
+                                            datt.put("like", "" + m3.getInt("pushcnt"));
+                                            datt.put("commit", "" + m3.getInt("pushcnt"));
+
+                                            datt.put("type", "article");
+                                            datt.put("readed", false);
+
+                                            datt.put(
+                                                    "url",
+                                                    AidConverter.aidToUrl(
+                                                            m3.getString("brd"),
+                                                            m3.getString("pid")));
+                                            String title = m3.getString("t");
+                                            String classs = "";
+                                            final Pattern p23 =
+                                                    Pattern.compile("\\[([\\s\\S]{1,4})\\]");
+                                            Matcher m23 = p23.matcher(title);
+
+                                            if (m23.find()) {
+                                                classs = m23.group(1);
+                                                if (classs.length() <= 6) {
+                                                    int start = title.indexOf("[" + classs + "]");
+                                                    int end = start + classs.length() + 2;
+                                                    if (start == 0) {
+                                                        title =
+                                                                StringUtils.clearStart(
+                                                                        title.substring(end));
+                                                    } else {
+                                                        try {
+                                                            title =
+                                                                    title.substring(0, start)
+                                                                            + StringUtils
+                                                                                    .clearStart(
+                                                                                            title
+                                                                                                    .substring(
+                                                                                                            end));
+                                                        } catch (Exception E) {
+                                                        }
+                                                    }
+                                                } else {
+                                                    classs = "無分類";
+                                                }
+                                            }
+                                            datt.put("title", title);
+                                            datt.put("class", classs);
+                                            datt.put("board", "" + m3.getString("brd"));
+                                            // datt.put("auth",""+m3.getString("pid"));
+                                            String auth = m3.getString("a1");
+
+                                            Matcher m26 = p2id.matcher(auth);
+                                            if (m26.find()) {
+                                                auth = m26.group();
+                                            }
+
+                                            datt.put("auth", "" + auth);
+                                            datt.put("image", "" + m3.getString("i"));
+                                            String time = m3.getString("ts");
+
+                                            SimpleDateFormat sdf =
+                                                    new SimpleDateFormat(
+                                                            "EEE MMM d HH:mm:ss yyyy",
+                                                            Locale.ENGLISH);
+                                            Date date = sdf.parse(time);
+                                            // Log.d("onPuty","i = "+i+" / time ="+date.getTime());
+                                            datt.put("date", "" + date.getTime());
+                                            data_temp.add(datt);
+                                        } catch (Exception e) {
+                                            // Log.d("onPuty","error2 = "+e.toString());
+                                            DebugUtils.Log("onAL", "inner = " + e.toString());
+                                            break;
+                                        }
+
+                                        i++;
+                                        // DebugUtils.Log("onAL","i = "+i);
+                                    }
+                                }
+                            }
+
+                            runOnUI(
+                                    () -> {
+                                        data.addAll(data_temp);
+                                        mAdapter.notifyDataSetChanged();
+                                        data_temp.clear();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    });
+
+                            DebugUtils.Log("onAL", "get data from web over");
+                        } catch (final Exception e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                            DebugUtils.Log("onHALF", "Error : " + e.toString());
+                            runOnUI(
+                                    () -> {
+                                        Toast.makeText(
+                                                        getCurrentActivity(),
+                                                        "Error : " + e.toString(),
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    });
+                        }
+
+                        GattingData = false;
                     }
-
-                    runOnUI(()->{
-                        data.addAll(data_temp);
-                        mAdapter.notifyDataSetChanged();
-                        data_temp.clear();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
-
-                    DebugUtils.Log("onAL","get data from web over");
-
-
-                } catch (final Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                    DebugUtils.Log("onHALF","Error : "+e.toString());
-                    runOnUI(()->{
-                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
-
-                }
-
-                GattingData=false;
-            }
-
-        };
+                };
 
         mThread = new HandlerThread("name");
         mThread.start();
         mThreadHandler = new Handler(mThread.getLooper());
         mThreadHandler.post(r1);
-
     }
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String message = intent.getStringExtra("message");
-            dealDataChange(message);
-            DebugUtils.Log("receiver", "Got message: " + message);
-        }
-    };
+    private BroadcastReceiver mMessageReceiver =
+            new BroadcastReceiver() {
 
-    private void dealDataChange(String board){
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    // Get extra data included in the Intent
+                    String message = intent.getStringExtra("message");
+                    dealDataChange(message);
+                    DebugUtils.Log("receiver", "Got message: " + message);
+                }
+            };
+
+    private void dealDataChange(String board) {
         FieldName = board;
         loadData();
     }
 
-    private void getDataFromApi(){
-
-
-    }
+    private void getDataFromApi() {}
 
     private boolean haveApi = false;
     private boolean GattingData = false;
 
-    private void loadData(){
-        if(GattingData) return;
+    private void loadData() {
+        if (GattingData) return;
 
         data.clear();
 
         board_list.clear();
         board_list.add("ALL");
 
-
         mAdapter.notifyDataSetChanged();
-        if(haveApi&&useApi){
+        if (haveApi && useApi) {
             getDataFromApi();
-        }else {
+        } else {
             getDataFromPttWeb();
         }
-
     }
-
 
     @Override
     public void onDestroy() {
@@ -446,8 +472,7 @@ public class HotArticleListFragment extends BaseFragment {
 
         LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
 
-        if(data!=null)
-            data.clear();
+        if (data != null) data.clear();
         // 移除工作
         if (mThreadHandler != null) {
             mThreadHandler.removeCallbacks(r1);

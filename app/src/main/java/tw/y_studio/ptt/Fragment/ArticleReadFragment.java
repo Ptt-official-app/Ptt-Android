@@ -1,5 +1,8 @@
 package tw.y_studio.ptt.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
@@ -25,13 +28,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import tw.y_studio.ptt.API.GetPostRankAPIHelper;
 import tw.y_studio.ptt.API.PostAPIHelper;
 import tw.y_studio.ptt.API.SetPostRankAPIHelper;
@@ -41,23 +37,26 @@ import tw.y_studio.ptt.Ptt.AidConverter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
-
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 import tw.y_studio.ptt.Utils.UIUtils;
 
-import static android.content.Context.MODE_PRIVATE;
-import static tw.y_studio.ptt.Utils.DebugUtils.useApi;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ArticleReadFragment extends BaseFragment {
-    
+
     public static ArticleReadFragment newInstance() {
         Bundle args = new Bundle();
         ArticleReadFragment fragment = new ArticleReadFragment();
         fragment.setArguments(args);
         return fragment;
     }
-    
+
     public static ArticleReadFragment newInstance(Bundle args) {
         ArticleReadFragment fragment = new ArticleReadFragment();
         fragment.setArguments(args);
@@ -72,7 +71,7 @@ public class ArticleReadFragment extends BaseFragment {
 
     private String articleTitle = "";
     private String articleBoard = "";
-    private String articleAuth =" ";
+    private String articleAuth = " ";
     private String articleTime = "";
     private String articleClass = "";
     private String originalArticleTitle = "";
@@ -89,7 +88,10 @@ public class ArticleReadFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.article_read_fragment_layout, container, false);
 
         setMainView(view);
@@ -113,21 +115,29 @@ public class ArticleReadFragment extends BaseFragment {
         Window window = getCurrentActivity().getWindow();
         window.setStatusBarColor(color);
 
-        likeBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setRankMenu(v);
-            }
-        });
+        likeBT.setOnClickListener(
+                new View.OnClickListener() {
 
-        shareArticleBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UIUtils.shareTo(getContext(),originalArticleTitle,originalArticleTitle+"\n"+orgUrl,"分享文章");
-            }
-        });
+                    @Override
+                    public void onClick(View v) {
+                        setRankMenu(v);
+                    }
+                });
 
-        mAdapter = new ArticleReadAdapter(getCurrentActivity(),data);
+        shareArticleBT.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        UIUtils.shareTo(
+                                getContext(),
+                                originalArticleTitle,
+                                originalArticleTitle + "\n" + orgUrl,
+                                "分享文章");
+                    }
+                });
+
+        mAdapter = new ArticleReadAdapter(getCurrentActivity(), data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
@@ -143,68 +153,73 @@ public class ArticleReadFragment extends BaseFragment {
 
         mSwipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
+
                     @Override
                     public void onRefresh() {
                         loadData();
                     }
                 });
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-                int totalItemCount = layoutManager.getItemCount();
-                if(!GattingData)
-                    if (lastVisibleItem >= totalItemCount - 30 ) {
-                        //loadNextData();
+        mRecyclerView.addOnScrollListener(
+                new RecyclerView.OnScrollListener() {
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                        int totalItemCount = layoutManager.getItemCount();
+                        if (!GattingData)
+                            if (lastVisibleItem >= totalItemCount - 30) {
+                                // loadNextData();
+                            }
                     }
-            }
-        });
+                });
 
-        mAdapter.setOnItemClickListener(new ArticleReadAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
+        mAdapter.setOnItemClickListener(
+                new ArticleReadAdapter.OnItemClickListener() {
 
-            }
-        });
+                    @Override
+                    public void onItemClick(View view, int position) {}
+                });
 
-        reply_hide.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reply_edittext.clearFocus();
-                org_left.setVisibility(View.VISIBLE);
-                org_right.setVisibility(View.VISIBLE);
-                reply_left.setVisibility(View.GONE);
-                reply_right.setVisibility(View.GONE);
-                reply_edittext.setSingleLine(true);
-            }
-        });
+        reply_hide.setOnClickListener(
+                new View.OnClickListener() {
 
-        reply_edittext.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
+                    @Override
+                    public void onClick(View v) {
+                        reply_edittext.clearFocus();
+                        org_left.setVisibility(View.VISIBLE);
+                        org_right.setVisibility(View.VISIBLE);
+                        reply_left.setVisibility(View.GONE);
+                        reply_right.setVisibility(View.GONE);
+                        reply_edittext.setSingleLine(true);
+                    }
+                });
 
-                if (hasFocus) {
-                    org_left.setVisibility(View.GONE);
-                    org_right.setVisibility(View.GONE);
-                    reply_left.setVisibility(View.VISIBLE);
-                    reply_right.setVisibility(View.VISIBLE);
-                    reply_edittext.setSingleLine(false);
-                    reply_edittext.setMaxLines(5);
-                }else {
+        reply_edittext.setOnFocusChangeListener(
+                new View.OnFocusChangeListener() {
 
-                }
-            }
-        });
+                    @Override
+                    public void onFocusChange(View v, boolean hasFocus) {
+                        if (hasFocus) {
+                            org_left.setVisibility(View.GONE);
+                            org_right.setVisibility(View.GONE);
+                            reply_left.setVisibility(View.VISIBLE);
+                            reply_right.setVisibility(View.VISIBLE);
+                            reply_edittext.setSingleLine(false);
+                            reply_edittext.setMaxLines(5);
+                        } else {
+                        }
+                    }
+                });
 
-        Bundle bundle = getArguments();//取得Bundle
-        orgUrl=bundle.getString("url","");
-        articleBoard=bundle.getString("board","");
-        articleTitle=bundle.getString("title","");
-        articleAuth=bundle.getString("auth","");
-        articleClass=bundle.getString("class","");
-        articleTime=bundle.getString("date","");
+        Bundle bundle = getArguments(); // 取得Bundle
+        orgUrl = bundle.getString("url", "");
+        articleBoard = bundle.getString("board", "");
+        articleTitle = bundle.getString("title", "");
+        articleAuth = bundle.getString("auth", "");
+        articleClass = bundle.getString("class", "");
+        articleTime = bundle.getString("date", "");
         putDefaultHeader();
         article_read_item_textView_like.setText("0");
 
@@ -221,170 +236,184 @@ public class ArticleReadFragment extends BaseFragment {
 
     private String orgUrl = "";
 
-    private int floorNum=0;
+    private int floorNum = 0;
     private List<Map<String, Object>> data_temp = new ArrayList<>();
 
-    private int pushCount=0;
+    private int pushCount = 0;
 
     private boolean gettedUrl = false;
 
     private PostAPIHelper postAPI;
     private GetPostRankAPIHelper getPostRankAPI;
 
-    private void getDataFromApi(){
-        if(postAPI==null){
-            final Pattern p = Pattern.compile("www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
+    private void getDataFromApi() {
+        if (postAPI == null) {
+            final Pattern p =
+                    Pattern.compile(
+                            "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
             Matcher m = p.matcher(orgUrl);
-            if(m.find()){
-                postAPI = new PostAPIHelper(getContext(),m.group(1),m.group(2));
-            }else {
+            if (m.find()) {
+                postAPI = new PostAPIHelper(getContext(), m.group(1), m.group(2));
+            } else {
                 DebugUtils.Log("onAR", "not match");
             }
-
         }
 
-        if(getPostRankAPI==null){
-            final Pattern p = Pattern.compile("www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
+        if (getPostRankAPI == null) {
+            final Pattern p =
+                    Pattern.compile(
+                            "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
             Matcher m = p.matcher(orgUrl);
-            if(m.find()){
+            if (m.find()) {
                 AidBean aid = AidConverter.urlToAid(orgUrl);
-                getPostRankAPI = new GetPostRankAPIHelper(getContext(),aid.getBoardTitle(),aid.getAid());
-            }else {
+                getPostRankAPI =
+                        new GetPostRankAPIHelper(getContext(), aid.getBoardTitle(), aid.getAid());
+            } else {
                 DebugUtils.Log("onAR", "not match");
             }
         }
 
-        r1 = new Runnable() {
-            public void run() {
-                runOnUI(()->{
-                    mSwipeRefreshLayout.setRefreshing(true);
-                });
+        r1 =
+                new Runnable() {
 
-                GattingData = true;
-                data_temp.clear();
-                DebugUtils.Log("onAR", "get data from web start");
+                    public void run() {
+                        runOnUI(
+                                () -> {
+                                    mSwipeRefreshLayout.setRefreshing(true);
+                                });
 
-                try {
-                    postAPI.get();
-                    getPostRankAPI.get();
-                    pushCount = getPostRankAPI.getLike();
-                    floorNum = postAPI.getFloorNum();
+                        GattingData = true;
+                        data_temp.clear();
+                        DebugUtils.Log("onAR", "get data from web start");
 
-                    originalArticleTitle = postAPI.getTitle();
-                    if(true){
-                        Map<String, Object> item = new HashMap<>();
-                        item.put("type","header");
-                        item.put("title",postAPI.getTitle());
-                        item.put("auth",postAPI.getAuth()+" ("+postAPI.getAuth_nickName()+")");
-                        item.put("date",postAPI.getDate());
-                        item.put("class",postAPI.getClassString());
-                        item.put("board",postAPI.getBoard());
-                        data_temp.add(0,item);
-                    }
+                        try {
+                            postAPI.get();
+                            getPostRankAPI.get();
+                            pushCount = getPostRankAPI.getLike();
+                            floorNum = postAPI.getFloorNum();
 
-                    String contents[] = postAPI.getContent().split("\r\n");
-                    StringBuilder contentTemp = new StringBuilder();
-                    for(int i=0;i<contents.length;i++){
-                        String cmd = contents[i];
-                        Matcher urlM = StringUtils.UrlPattern.matcher(cmd);
-                        if(urlM.find()){
-                            if(true){
+                            originalArticleTitle = postAPI.getTitle();
+                            if (true) {
                                 Map<String, Object> item = new HashMap<>();
-                                item.put("type","content");
-                                item.put("text",contentTemp.toString());
-                                data_temp.add(item);
+                                item.put("type", "header");
+                                item.put("title", postAPI.getTitle());
+                                item.put(
+                                        "auth",
+                                        postAPI.getAuth()
+                                                + " ("
+                                                + postAPI.getAuth_nickName()
+                                                + ")");
+                                item.put("date", postAPI.getDate());
+                                item.put("class", postAPI.getClassString());
+                                item.put("board", postAPI.getBoard());
+                                data_temp.add(0, item);
                             }
-                            contentTemp = new StringBuilder();
-                            if(true){
-                                Map<String, Object> item = new HashMap<>();
-                                item.put("type","content");
-                                item.put("text",cmd);
-                                data_temp.add(item);
-                            }
-                            List<String> imageUrl = StringUtils.getImgUrl(cmd);
-                            for(String urlString : imageUrl){
-                                if(true){
-                                    Map<String, Object> item = new HashMap<>();
-                                    item.put("type","content_image");
-                                    item.put("url",urlString);
-                                    item.put("index",-1);
-                                    data_temp.add(item);
+
+                            String contents[] = postAPI.getContent().split("\r\n");
+                            StringBuilder contentTemp = new StringBuilder();
+                            for (int i = 0; i < contents.length; i++) {
+                                String cmd = contents[i];
+                                Matcher urlM = StringUtils.UrlPattern.matcher(cmd);
+                                if (urlM.find()) {
+                                    if (true) {
+                                        Map<String, Object> item = new HashMap<>();
+                                        item.put("type", "content");
+                                        item.put("text", contentTemp.toString());
+                                        data_temp.add(item);
+                                    }
+                                    contentTemp = new StringBuilder();
+                                    if (true) {
+                                        Map<String, Object> item = new HashMap<>();
+                                        item.put("type", "content");
+                                        item.put("text", cmd);
+                                        data_temp.add(item);
+                                    }
+                                    List<String> imageUrl = StringUtils.getImgUrl(cmd);
+                                    for (String urlString : imageUrl) {
+                                        if (true) {
+                                            Map<String, Object> item = new HashMap<>();
+                                            item.put("type", "content_image");
+                                            item.put("url", urlString);
+                                            item.put("index", -1);
+                                            data_temp.add(item);
+                                        }
+                                    }
+                                } else {
+                                    contentTemp.append(cmd);
+                                    if (i < contents.length - 1) {
+                                        contentTemp.append("\n");
+                                    }
                                 }
                             }
-
-                        }else {
-                            contentTemp.append(cmd);
-                            if(i<contents.length-1){
-                                contentTemp.append("\n");
+                            if (contentTemp.toString().length() > 0) {
+                                Map<String, Object> item = new HashMap<>();
+                                item.put("type", "content");
+                                item.put("text", contentTemp.toString());
+                                data_temp.add(item);
+                                contentTemp = new StringBuilder();
                             }
+
+                            if (true) {
+                                Map<String, Object> item = new HashMap<>();
+                                item.put("type", "center_bar");
+                                item.put("like", pushCount + "");
+                                item.put("floor", floorNum + "");
+                                data_temp.add(item);
+                            }
+
+                            data_temp.addAll(postAPI.getPushData());
+
+                            runOnUI(
+                                    () -> {
+                                        data.clear();
+                                        // mAdapter.notifyDataSetChanged();
+                                        data.addAll(data_temp);
+                                        mAdapter.notifyDataSetChanged();
+                                        data_temp.clear();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                        article_read_item_textView_like.setText(pushCount + "");
+                                    });
+                            DebugUtils.Log("onAL", "get data from web over");
+                        } catch (final Exception e) {
+                            DebugUtils.Log("onAL", "Error : " + e.toString());
+                            runOnUI(
+                                    () -> {
+                                        Toast.makeText(
+                                                        getActivity(),
+                                                        "Error : " + e.toString(),
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    });
                         }
+
+                        GattingData = false;
                     }
-                    if(contentTemp.toString().length()>0){
-                        Map<String, Object> item = new HashMap<>();
-                        item.put("type","content");
-                        item.put("text",contentTemp.toString());
-                        data_temp.add(item);
-                        contentTemp = new StringBuilder();
-                    }
-
-                    if(true){
-                        Map<String, Object> item = new HashMap<>();
-                        item.put("type","center_bar");
-                        item.put("like",pushCount+"");
-                        item.put("floor",floorNum+"");
-                        data_temp.add(item);
-                    }
-
-                    data_temp.addAll(postAPI.getPushData());
-
-                   runOnUI(()->{
-                            data.clear();
-                            //mAdapter.notifyDataSetChanged();
-                            data.addAll(data_temp);
-                            mAdapter.notifyDataSetChanged();
-                            data_temp.clear();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                            article_read_item_textView_like.setText(pushCount+"");
-                    });
-                    DebugUtils.Log("onAL", "get data from web over");
-                }catch (final Exception e){
-                    DebugUtils.Log("onAL", "Error : "+e.toString());
-                    runOnUI(()->{
-                        Toast.makeText(getActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    });
-
-                }
-
-                GattingData=false;
-            }
-
-        };
+                };
 
         mThread = new HandlerThread("name");
         mThread.start();
         mThreadHandler = new Handler(mThread.getLooper());
         mThreadHandler.post(r1);
-
     }
 
     private boolean haveApi = true;
 
-    private void putDefaultHeader(){
+    private void putDefaultHeader() {
         Map<String, Object> item = new HashMap<>();
-        item.put("type","header");
-        item.put("title",articleTitle);
-        item.put("auth",articleAuth);
-        item.put("date",articleTime);
-        item.put("class",articleClass);
-        item.put("board",articleBoard);
+        item.put("type", "header");
+        item.put("title", articleTitle);
+        item.put("auth", articleAuth);
+        item.put("date", articleTime);
+        item.put("class", articleClass);
+        item.put("board", articleBoard);
         data.add(item);
     }
 
     private boolean GattingData = false;
 
-    private void loadData(){
-        if(GattingData) return;
+    private void loadData() {
+        if (GattingData) return;
 
         data.clear();
         putDefaultHeader();
@@ -392,162 +421,182 @@ public class ArticleReadFragment extends BaseFragment {
         getDataFromApi();
     }
 
-    private void setRankMenu(View view){
-        if(!(haveApi&&useApi)){
+    private void setRankMenu(View view) {
+        if (!(haveApi && useApi)) {
             return;
         }
-        String id = getCurrentActivity().getSharedPreferences(
-                "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
-        if(id.isEmpty()){
-            loadFragment(LoginPageFragment.newInstance(),getCurrentFragment());
+        String id =
+                getCurrentActivity()
+                        .getSharedPreferences("MainSetting", MODE_PRIVATE)
+                        .getString("APIPTTID", "");
+        if (id.isEmpty()) {
+            loadFragment(LoginPageFragment.newInstance(), getCurrentFragment());
             return;
         }
 
         PopupMenu popupMenu = new PopupMenu(getCurrentActivity(), view);
         popupMenu.getMenuInflater().inflate(R.menu.post_article_rank_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                SetPostRankAPIHelper.iRank rank = SetPostRankAPIHelper.iRank.non;
-                switch (item.getItemId()) {
-                    case R.id.post_article_rank_like:
-                        rank = SetPostRankAPIHelper.iRank.like;
-                        break;
-                    case R.id.post_article_rank_dislike:
-                        rank = SetPostRankAPIHelper.iRank.dislike;
-                        break;
-                    case R.id.post_article_rank_non:
-                        rank = SetPostRankAPIHelper.iRank.non;
-                        break;
-                }
-                setRank(rank);
-                return true;
-            }
-        });
+        popupMenu.setOnMenuItemClickListener(
+                new PopupMenu.OnMenuItemClickListener() {
+
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        SetPostRankAPIHelper.iRank rank = SetPostRankAPIHelper.iRank.non;
+                        switch (item.getItemId()) {
+                            case R.id.post_article_rank_like:
+                                rank = SetPostRankAPIHelper.iRank.like;
+                                break;
+                            case R.id.post_article_rank_dislike:
+                                rank = SetPostRankAPIHelper.iRank.dislike;
+                                break;
+                            case R.id.post_article_rank_non:
+                                rank = SetPostRankAPIHelper.iRank.non;
+                                break;
+                        }
+                        setRank(rank);
+                        return true;
+                    }
+                });
 
         popupMenu.show();
-
     }
 
-    private void rehreshRank(){
-        if(getPostRankAPI==null){
-            final Pattern p = Pattern.compile("www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
+    private void rehreshRank() {
+        if (getPostRankAPI == null) {
+            final Pattern p =
+                    Pattern.compile(
+                            "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
             Matcher m = p.matcher(orgUrl);
-            if(m.find()){
+            if (m.find()) {
                 AidBean aid = AidConverter.urlToAid(orgUrl);
-                getPostRankAPI = new GetPostRankAPIHelper(getContext(),aid.getBoardTitle(),aid.getAid());
-            }else {
+                getPostRankAPI =
+                        new GetPostRankAPIHelper(getContext(), aid.getBoardTitle(), aid.getAid());
+            } else {
                 DebugUtils.Log("onAR", "not match");
             }
         }
 
-        r1 = new Runnable() {
-            public void run() {
-                runOnUI(()->{
-                        mSwipeRefreshLayout.setRefreshing(true);
-                    }
-               );
+        r1 =
+                new Runnable() {
 
-                GattingData = true;
+                    public void run() {
+                        runOnUI(
+                                () -> {
+                                    mSwipeRefreshLayout.setRefreshing(true);
+                                });
 
-                try {
-                    getPostRankAPI.get();
-                    pushCount = getPostRankAPI.getLike();
-                    int center_bar_index = -1;
+                        GattingData = true;
 
-                    for(int i = 0 ; i < data.size() ; i++){
-                        if(StringUtils.notNullString(data.get(i).get("type")).equalsIgnoreCase("center_bar")){
-                            center_bar_index = i;
-                            break;
+                        try {
+                            getPostRankAPI.get();
+                            pushCount = getPostRankAPI.getLike();
+                            int center_bar_index = -1;
+
+                            for (int i = 0; i < data.size(); i++) {
+                                if (StringUtils.notNullString(data.get(i).get("type"))
+                                        .equalsIgnoreCase("center_bar")) {
+                                    center_bar_index = i;
+                                    break;
+                                }
+                            }
+
+                            if (center_bar_index != -1) {
+                                Map<String, Object> item = data.get(center_bar_index);
+
+                                item.put("like", pushCount + "");
+                            }
+
+                            runOnUI(
+                                    () -> {
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                        mAdapter.notifyDataSetChanged();
+                                        article_read_item_textView_like.setText(pushCount + "");
+                                    });
+                            DebugUtils.Log("onAL", "get data from web over");
+                        } catch (final Exception e) {
+                            DebugUtils.Log("onAL", "Error : " + e.toString());
+                            runOnUI(
+                                    () -> {
+                                        Toast.makeText(
+                                                        getCurrentActivity(),
+                                                        "Error : " + e.toString(),
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        mSwipeRefreshLayout.setRefreshing(false);
+                                    });
                         }
+                        GattingData = false;
                     }
-
-                    if(center_bar_index!=-1){
-                        Map<String, Object> item = data.get(center_bar_index);
-
-                        item.put("like",pushCount+"");
-
-
-                    }
-
-                    runOnUI(()->{
-                        mSwipeRefreshLayout.setRefreshing(false);
-                            mAdapter.notifyDataSetChanged();
-                            article_read_item_textView_like.setText(pushCount+"");
-                        });
-                    DebugUtils.Log("onAL", "get data from web over");
-                }catch (final Exception e){
-                    DebugUtils.Log("onAL", "Error : "+e.toString());
-                    runOnUI(()->{
-                        Toast.makeText(getCurrentActivity(),"Error : "+e.toString(),Toast.LENGTH_SHORT).show();
-                                mSwipeRefreshLayout.setRefreshing(false);
-                            });
-                }
-                GattingData=false;
-            }
-
-        };
+                };
 
         mThread = new HandlerThread("name");
         mThread.start();
         mThreadHandler = new Handler(mThread.getLooper());
         mThreadHandler.post(r1);
-
     }
 
     private ProgressDialog mDialog = null;
 
-    private void setRank(final SetPostRankAPIHelper.iRank rank_){
-
+    private void setRank(final SetPostRankAPIHelper.iRank rank_) {
         mDialog = ProgressDialog.show(getCurrentActivity(), "", "Please wait.");
         mDialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
 
         new Thread() {
+
             @Override
             public void run() {
                 try {
                     SetPostRankAPIHelper setPostRankAPI;
-                    final Pattern p = Pattern.compile("www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
+                    final Pattern p =
+                            Pattern.compile(
+                                    "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm");
                     Matcher m = p.matcher(orgUrl);
-                    if(m.find()){
+                    if (m.find()) {
                         AidBean aid = AidConverter.urlToAid(orgUrl);
-                        setPostRankAPI = new SetPostRankAPIHelper(getContext(),aid.getBoardTitle(),aid.getAid());
-                    }else {
+                        setPostRankAPI =
+                                new SetPostRankAPIHelper(
+                                        getContext(), aid.getBoardTitle(), aid.getAid());
+                    } else {
                         throw new Exception("error");
-                        //DebugUtils.Log("onAR", "not match");
+                        // DebugUtils.Log("onAR", "not match");
                     }
-                    String id = getCurrentActivity().getSharedPreferences(
-                            "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
-                    if(id.length()==0){
+                    String id =
+                            getCurrentActivity()
+                                    .getSharedPreferences("MainSetting", MODE_PRIVATE)
+                                    .getString("APIPTTID", "");
+                    if (id.length() == 0) {
                         throw new Exception("No Ptt id");
                     }
-                    setPostRankAPI.get(id,rank_);
-                    runOnUI(()->{
-                        mDialog.dismiss();
+                    setPostRankAPI.get(id, rank_);
+                    runOnUI(
+                            () -> {
+                                mDialog.dismiss();
                                 rehreshRank();
                             });
-
-                }catch (Exception e){
-                    runOnUI(()-> {
-                        mDialog.dismiss();
-                        Toast.makeText(getCurrentActivity(), "Error : " + e.toString(), Toast.LENGTH_SHORT).show();
-                    });
-
+                } catch (Exception e) {
+                    runOnUI(
+                            () -> {
+                                mDialog.dismiss();
+                                Toast.makeText(
+                                                getCurrentActivity(),
+                                                "Error : " + e.toString(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            });
                 }
-
             }
         }.start();
-
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager)
+                            getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
     }
 
@@ -555,12 +604,11 @@ public class ArticleReadFragment extends BaseFragment {
     public void onDestroy() {
         super.onDestroy();
 
-        if(postAPI!=null){
+        if (postAPI != null) {
             postAPI.close();
         }
 
-        if(data!=null)
-            data.clear();
+        if (data != null) data.clear();
         // 移除工作
         if (mThreadHandler != null) {
             mThreadHandler.removeCallbacks(r1);
@@ -576,6 +624,5 @@ public class ArticleReadFragment extends BaseFragment {
         @ColorInt int color = typedValue.data;
         Window window = getCurrentActivity().getWindow();
         window.setStatusBarColor(color);
-
     }
 }

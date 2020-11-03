@@ -1,5 +1,7 @@
 package tw.y_studio.ptt.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,14 +29,12 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.ArrayList;
-
 import tw.y_studio.ptt.Adapter.GeneralFragmentStatePagerAdapter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ImageLoadingDrawable;
 
-import static android.content.Context.MODE_PRIVATE;
+import java.util.ArrayList;
 
 public class PersonalPageFragment extends BaseFragment {
 
@@ -68,17 +68,21 @@ public class PersonalPageFragment extends BaseFragment {
     private ViewPager2 mViewPager;
     private GeneralFragmentStatePagerAdapter fragmentStatePagerAdapter;
     private ArrayList<Fragment> fragmentArrayList;
-    //private ScrollView scrollView_personal_page;
+    // private ScrollView scrollView_personal_page;
 
     private ArrayList<String> TabTitles;
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.persional_page_fragment_layout, container, false);
 
         setMainView(view);
 
-        Bundle bundle = getArguments();//取得Bundle
+        Bundle bundle = getArguments(); // 取得Bundle
 
         persionPicture = findViewById(R.id.person_page_picture);
         persionPictureMini = findViewById(R.id.person_page_picture_mini);
@@ -105,96 +109,107 @@ public class PersonalPageFragment extends BaseFragment {
         TabTitles.add(getString(R.string.persion_page_tabs_articles));
         TabTitles.add(getString(R.string.persion_page_tabs_comments));
 
-        mAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if(isAlreadyReady){
-                    int percent =  (int) ((double)Math.abs(verticalOffset) / (double)Math.abs(headerRelativeLayout.getHeight()) * 100d);
-                    int hight = headerRelativeLayoutMini.getHeight();
-                    headerRelativeLayoutMini.setY((float) (hight*-1+(hight*(percent/100d))));
-                }
-                isAlreadyReady = true;
-            }
-        });
+        mAppBar.addOnOffsetChangedListener(
+                new AppBarLayout.OnOffsetChangedListener() {
 
+                    @Override
+                    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                        if (isAlreadyReady) {
+                            int percent =
+                                    (int)
+                                            ((double) Math.abs(verticalOffset)
+                                                    / (double)
+                                                            Math.abs(
+                                                                    headerRelativeLayout
+                                                                            .getHeight())
+                                                    * 100d);
+                            int hight = headerRelativeLayoutMini.getHeight();
+                            headerRelativeLayoutMini.setY(
+                                    (float) (hight * -1 + (hight * (percent / 100d))));
+                        }
+                        isAlreadyReady = true;
+                    }
+                });
 
         fragmentArrayList = new ArrayList<>();
         fragmentArrayList.add(PersonInfoFragment.newInstance());
         fragmentArrayList.add(EmptyFragment.newInstance());
         fragmentArrayList.add(EmptyFragment.newInstance());
 
-        fragmentStatePagerAdapter = new GeneralFragmentStatePagerAdapter(getActivity(),fragmentArrayList);
+        fragmentStatePagerAdapter =
+                new GeneralFragmentStatePagerAdapter(getActivity(), fragmentArrayList);
         mViewPager.setAdapter(fragmentStatePagerAdapter);
 
-        new TabLayoutMediator(mTabs, mViewPager,
-                (tab, position) -> tab.setText(this.TabTitles.get(position))
-        ).attach();
+        new TabLayoutMediator(
+                        mTabs,
+                        mViewPager,
+                        (tab, position) -> tab.setText(this.TabTitles.get(position)))
+                .attach();
 
         loadData();
-
 
         return view;
     }
 
     private boolean isAlreadyReady = false;
 
-    public void loadData(){
-        setImageView(persionPicture,"asset:///List-Of-Android-R-Features.jpeg");
-        setImageView(persionPictureMini,"asset:///List-Of-Android-R-Features.jpeg");
+    public void loadData() {
+        setImageView(persionPicture, "asset:///List-Of-Android-R-Features.jpeg");
+        setImageView(persionPictureMini, "asset:///List-Of-Android-R-Features.jpeg");
 
-        String id = getCurrentActivity().getSharedPreferences(
-                "MainSetting", MODE_PRIVATE).getString("APIPTTID","Guest");
+        String id =
+                getCurrentActivity()
+                        .getSharedPreferences("MainSetting", MODE_PRIVATE)
+                        .getString("APIPTTID", "Guest");
         personIDTextView.setText(id);
         personIDTextViewMini.setText(id);
         personNickTextView.setText("匿名訪客");
     }
 
-    private void setImageView(SimpleDraweeView draweeView, final String Url){
-
-        if(draweeView.getTag()!=null){
-            if(draweeView.getTag().toString().equals(Url)){
+    private void setImageView(SimpleDraweeView draweeView, final String Url) {
+        if (draweeView.getTag() != null) {
+            if (draweeView.getTag().toString().equals(Url)) {
                 return;
             }
         }
         draweeView.setTag(Url);
 
-        try{
+        try {
             final Uri uri = Uri.parse(Url);
 
-            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)
-                    .setLocalThumbnailPreviewsEnabled(true)
-                    .setProgressiveRenderingEnabled(false)
-                    .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
-                    .setResizeOptions(new ResizeOptions(1024,1024))
-                    .build();
+            ImageRequest request =
+                    ImageRequestBuilder.newBuilderWithSource(uri)
+                            .setLocalThumbnailPreviewsEnabled(true)
+                            .setProgressiveRenderingEnabled(false)
+                            .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
+                            .setResizeOptions(new ResizeOptions(1024, 1024))
+                            .build();
 
-            DraweeController controller = Fresco.newDraweeControllerBuilder()
-                    .setImageRequest(request)
-                    .setAutoPlayAnimations(true)
-                    .setOldController(draweeView.getController())
-                    .build();
+            DraweeController controller =
+                    Fresco.newDraweeControllerBuilder()
+                            .setImageRequest(request)
+                            .setAutoPlayAnimations(true)
+                            .setOldController(draweeView.getController())
+                            .build();
 
             GenericDraweeHierarchyBuilder builder =
                     new GenericDraweeHierarchyBuilder(this.getResources());
 
-            RoundingParams roundingParams = RoundingParams.fromCornersRadius (200f);
+            RoundingParams roundingParams = RoundingParams.fromCornersRadius(200f);
 
-            PointF pf=new PointF(0.5f,0.5f);
+            PointF pf = new PointF(0.5f, 0.5f);
             GenericDraweeHierarchy hierarchy = null;
-            hierarchy = builder
-                    .setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP)
-                    .setActualImageFocusPoint(pf)
-                    .setFadeDuration(0)
-                    .setProgressBarImage(new ImageLoadingDrawable())
-                    .setRoundingParams(roundingParams)
-                    .build();
+            hierarchy =
+                    builder.setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP)
+                            .setActualImageFocusPoint(pf)
+                            .setFadeDuration(0)
+                            .setProgressBarImage(new ImageLoadingDrawable())
+                            .setRoundingParams(roundingParams)
+                            .build();
             draweeView.setController(controller);
             draweeView.setHierarchy(hierarchy);
-
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
-
     }
 
     @Override

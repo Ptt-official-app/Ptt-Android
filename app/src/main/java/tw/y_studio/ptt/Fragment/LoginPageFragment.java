@@ -1,5 +1,7 @@
 package tw.y_studio.ptt.Fragment;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -23,8 +25,6 @@ import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.Utils.StringUtils;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class LoginPageFragment extends BaseFragment {
 
     public static LoginPageFragment newInstance() {
@@ -40,7 +40,6 @@ public class LoginPageFragment extends BaseFragment {
         return fragment;
     }
 
-
     private Button loginBt;
     private ImageButton showPassword;
     private EditText passwordET;
@@ -49,15 +48,18 @@ public class LoginPageFragment extends BaseFragment {
 
     private ClickFix mClickFix = new ClickFix();
     private boolean isShowPassword = false;
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_page_fragment_layout, container, false);
 
         setMainView(view);
 
-        Bundle bundle = getArguments();//取得Bundle
-
+        Bundle bundle = getArguments(); // 取得Bundle
 
         loginBt = findViewById(R.id.login_page_button);
         passwordET = findViewById(R.id.login_page_editTextText_password);
@@ -70,72 +72,84 @@ public class LoginPageFragment extends BaseFragment {
         content.setSpan(new UnderlineSpan(), 0, forgetTVText.length(), 0);
         forgetTV.setText(content);
 
-        String id = getCurrentActivity().getSharedPreferences(
-                "MainSetting", MODE_PRIVATE).getString("APIPTTID","");
+        String id =
+                getCurrentActivity()
+                        .getSharedPreferences("MainSetting", MODE_PRIVATE)
+                        .getString("APIPTTID", "");
 
         accountET.setText(id);
 
         loginBt.setBackgroundColor(getResources().getColor(R.color.slateGrey));
 
-        loginBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        loginBt.setOnClickListener(
+                new View.OnClickListener() {
 
-                String text = accountET.getText().toString();
+                    @Override
+                    public void onClick(View view) {
+                        String text = accountET.getText().toString();
 
-                if(!StringUtils.isAccount(text)){
-                    Toast.makeText(getContext(),"format incorrect",Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                        if (!StringUtils.isAccount(text)) {
+                            Toast.makeText(getContext(), "format incorrect", Toast.LENGTH_SHORT)
+                                    .show();
+                            return;
+                        }
 
-                SharedPreferences preference = getCurrentActivity().getSharedPreferences(
-                        "MainSetting", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preference.edit();
-                editor.putString(StringUtils.notNullImageString("APIPTTID"),text);
-                editor.apply();
-                editor.commit();
-                getCurrentActivity().onBackPressed();
-            }
-        });
+                        SharedPreferences preference =
+                                getCurrentActivity()
+                                        .getSharedPreferences("MainSetting", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = preference.edit();
+                        editor.putString(StringUtils.notNullImageString("APIPTTID"), text);
+                        editor.apply();
+                        editor.commit();
+                        getCurrentActivity().onBackPressed();
+                    }
+                });
 
-
-        if(!isShowPassword){
-            showPassword.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_visibility_off_24));
-        }else{
-            showPassword.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_visibility_24));
+        if (!isShowPassword) {
+            showPassword.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_baseline_visibility_off_24));
+        } else {
+            showPassword.setImageDrawable(
+                    getResources().getDrawable(R.drawable.ic_baseline_visibility_24));
         }
 
-        showPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(isShowPassword){
-                    showPassword.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_visibility_off_24));
-                    passwordET.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                }else{
-                    showPassword.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_visibility_24));
-                    passwordET.setTransformationMethod(null);
-                }
-                passwordET.setSelection(passwordET.getText().length());
-                isShowPassword =! isShowPassword;
-            }
-        });
+        showPassword.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        if (isShowPassword) {
+                            showPassword.setImageDrawable(
+                                    getResources()
+                                            .getDrawable(R.drawable.ic_baseline_visibility_off_24));
+                            passwordET.setTransformationMethod(
+                                    PasswordTransformationMethod.getInstance());
+                        } else {
+                            showPassword.setImageDrawable(
+                                    getResources()
+                                            .getDrawable(R.drawable.ic_baseline_visibility_24));
+                            passwordET.setTransformationMethod(null);
+                        }
+                        passwordET.setSelection(passwordET.getText().length());
+                        isShowPassword = !isShowPassword;
+                    }
+                });
 
         return view;
     }
 
-    protected void onAnimOver() {
+    protected void onAnimOver() {}
 
-    }
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
         try {
-            InputMethodManager inputMethodManager = (InputMethodManager)  getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager inputMethodManager =
+                    (InputMethodManager)
+                            getCurrentActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(getMainView().getWindowToken(), 0);
-        }catch (Exception e){
-
+        } catch (Exception e) {
         }
-
     }
 }
