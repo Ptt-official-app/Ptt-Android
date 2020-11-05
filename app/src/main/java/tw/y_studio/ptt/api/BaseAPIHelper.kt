@@ -5,7 +5,7 @@ import okhttp3.OkHttpClient
 import tw.y_studio.ptt.BuildConfig
 import tw.y_studio.ptt.Utils.OkHttpUtils
 
-open class BaseAPIHelper : IBaseAPI {
+abstract class BaseAPIHelper : IBaseAPI {
     constructor() {
         okHttpClient = OkHttpUtils().trustAllClient
     }
