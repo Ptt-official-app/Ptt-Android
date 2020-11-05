@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.API;
+package tw.y_studio.ptt.api;
 
 import android.content.Context;
 
@@ -38,7 +38,7 @@ public class GetPostRankAPIHelper extends BaseAPIHelper {
                         /// api/Rank/{board}/{aid}
                         .url(hostUrl + "/api/Rank/" + board + "/" + aid)
                         .build();
-        Call mcall = mOkHttpClient.newCall(request);
+        Call mcall = getOkHttpClient().newCall(request);
 
         Response response = mcall.execute();
         final int code = response.code(); // can be any value

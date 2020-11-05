@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.API;
+package tw.y_studio.ptt.api;
 
 import android.content.Context;
 
@@ -96,7 +96,7 @@ public class PostAPIHelper extends BaseAPIHelper {
                 new Request.Builder()
                         .url(hostUrl + "/api/Article/" + board + "/" + fileName)
                         .build();
-        Call mcall = mOkHttpClient.newCall(request);
+        Call mcall = getOkHttpClient().newCall(request);
 
         Response response = mcall.execute();
         final int code = response.code(); // can be any value

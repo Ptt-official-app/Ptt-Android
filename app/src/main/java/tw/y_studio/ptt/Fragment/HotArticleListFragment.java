@@ -282,8 +282,7 @@ public class HotArticleListFragment extends BaseFragment {
                                 if (url == null) throw new Exception("url is null");
 
                                 if (client_puty == null)
-                                    client_puty =
-                                            new OkHttpUtils().getTrustlAllClient(getContext());
+                                    client_puty = new OkHttpUtils().getTrustAllClient();
 
                                 Request request = new Request.Builder().url(url).build();
                                 Call mcall = client_puty.newCall(request);

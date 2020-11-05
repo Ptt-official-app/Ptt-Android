@@ -43,11 +43,11 @@ android {
 }
 
 static def apiDomain() {
-    return ""
+    return "https://webptt.azurewebsites.net/"
 }
 
 static def demoHotArticleUrl(){
-    return ""
+    return "https://www.google.com.tw/"
 }
 
 dependencies {
