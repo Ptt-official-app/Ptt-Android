@@ -2,5 +2,5 @@ package tw.y_studio.ptt.source.remote.search
 
 interface ISearchBoardRemoteDataSource {
 
-    fun searchBoardByKeyboard(keyboard: String): MutableList<Map<String, Any>>
+    fun searchBoardByKeyword(keyword: String): MutableList<Map<String, Any>>
 }

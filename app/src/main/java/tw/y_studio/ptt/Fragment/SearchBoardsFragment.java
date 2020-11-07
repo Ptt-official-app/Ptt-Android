@@ -419,7 +419,7 @@ public class SearchBoardsFragment extends BaseFragment {
                             myBoardIndex = mDBHelper.getMaxIndex();
 
                             data_temp.addAll(
-                                    searchBoardRemoteDataSource.searchBoardByKeyboard(
+                                    searchBoardRemoteDataSource.searchBoardByKeyword(
                                             keyboard.replace(" ", "")));
 
                             for (Map<String, Object> item : data_temp) {
