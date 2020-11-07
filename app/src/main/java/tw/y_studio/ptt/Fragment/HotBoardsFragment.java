@@ -20,8 +20,8 @@ import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
-import tw.y_studio.ptt.api.popular.IPopularRemoteDataSource;
 import tw.y_studio.ptt.di.Injection;
+import tw.y_studio.ptt.source.remote.popular.IPopularRemoteDataSource;
 
 import java.util.ArrayList;
 import java.util.List;

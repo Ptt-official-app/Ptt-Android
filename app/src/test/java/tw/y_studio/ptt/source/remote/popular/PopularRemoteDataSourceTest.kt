@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.api.popular
+package tw.y_studio.ptt.source.remote.popular
 
 import com.google.common.truth.Truth
 import io.mockk.MockKAnnotations
