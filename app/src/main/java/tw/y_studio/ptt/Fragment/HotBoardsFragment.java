@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import tw.y_studio.ptt.API.PopularBoardListAPIHelper;
 import tw.y_studio.ptt.Adapter.HotBoardsListAdapter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
@@ -21,6 +20,8 @@ import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
+import tw.y_studio.ptt.api.popular.IPopularRemoteDataSource;
+import tw.y_studio.ptt.api.popular.PopularRemoteDataSourceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +129,10 @@ public class HotBoardsFragment extends BaseFragment {
     private HandlerThread mThread;
     private Runnable r1;
 
+    private List<Map<String, Object>> data_temp = new ArrayList<>();
+
+    private IPopularRemoteDataSource popularRemoteDataSource = new PopularRemoteDataSourceImpl();
+
     public void scrollToTop() {
         try {
             if (mRecyclerView != null) {
@@ -137,12 +142,10 @@ public class HotBoardsFragment extends BaseFragment {
         }
     }
 
-    private List<Map<String, Object>> data_temp = new ArrayList<>();
-    private PopularBoardListAPIHelper popularBoardListAPI;
-
     private void getDataFromApi() {
-        if (popularBoardListAPI == null) {
-            popularBoardListAPI = new PopularBoardListAPIHelper(getContext());
+        // TODO: 2020/11/5 Create an injection to provide instance
+        if (popularRemoteDataSource == null) {
+            popularRemoteDataSource = new PopularRemoteDataSourceImpl();
         }
         r1 =
                 new Runnable() {
@@ -157,7 +160,7 @@ public class HotBoardsFragment extends BaseFragment {
                         data_temp.clear();
 
                         try {
-                            data_temp.addAll(popularBoardListAPI.get(1, 128).getData());
+                            data_temp.addAll(popularRemoteDataSource.getPopularBoardData(1, 128));
                             runOnUI(
                                     () -> {
                                         data.addAll(data_temp);

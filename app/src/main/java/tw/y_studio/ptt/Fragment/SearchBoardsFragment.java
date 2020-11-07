@@ -26,7 +26,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import okhttp3.OkHttpClient;
-import tw.y_studio.ptt.API.SearchBoardAPIHelper;
 import tw.y_studio.ptt.Adapter.SearchBoardsAdapter;
 import tw.y_studio.ptt.DataBase.FavoriteDBHelper;
 import tw.y_studio.ptt.R;
@@ -36,6 +35,7 @@ import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.UiFix;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
+import tw.y_studio.ptt.api.SearchBoardAPIHelper;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -18,7 +18,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import tw.y_studio.ptt.API.PostListAPIHelper;
 import tw.y_studio.ptt.Adapter.ArticleListAdapter;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
@@ -26,6 +25,7 @@ import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
+import tw.y_studio.ptt.api.PostListAPIHelper;
 
 import java.util.ArrayList;
 import java.util.List;

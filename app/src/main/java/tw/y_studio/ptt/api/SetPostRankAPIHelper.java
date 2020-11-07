@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.API;
+package tw.y_studio.ptt.api;
 
 import android.content.Context;
 
@@ -70,7 +70,7 @@ public class SetPostRankAPIHelper extends BaseAPIHelper {
                                         + iRank2Int(rank))
                         .build();
         DebugUtils.Log("SetPostRankAPIHelper", "" + request.toString());
-        Call mcall = mOkHttpClient.newCall(request);
+        Call mcall = getOkHttpClient().newCall(request);
 
         Response response = mcall.execute();
         final int code = response.code(); // can be any value

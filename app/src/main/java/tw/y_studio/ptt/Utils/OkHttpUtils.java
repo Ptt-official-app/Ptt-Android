@@ -64,14 +64,13 @@ public class OkHttpUtils {
         }
     }
 
-    public OkHttpClient getTrustlAllClient(Context mContext) {
+    public OkHttpClient getTrustAllClient() {
         OkHttpClient.Builder mBuilder = new OkHttpClient.Builder();
 
         mBuilder.connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(
-                        new GzipRequestInterceptor()); // .cache(provideCache(mContext)) //Gzip
+                .addInterceptor(new GzipRequestInterceptor());
         return new SoftReference<OkHttpClient>(mBuilder.build()).get();
     }
 

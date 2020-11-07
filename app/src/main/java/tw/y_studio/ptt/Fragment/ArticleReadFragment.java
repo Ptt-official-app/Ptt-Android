@@ -28,9 +28,6 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import tw.y_studio.ptt.API.GetPostRankAPIHelper;
-import tw.y_studio.ptt.API.PostAPIHelper;
-import tw.y_studio.ptt.API.SetPostRankAPIHelper;
 import tw.y_studio.ptt.Adapter.ArticleReadAdapter;
 import tw.y_studio.ptt.Ptt.AidBean;
 import tw.y_studio.ptt.Ptt.AidConverter;
@@ -40,6 +37,9 @@ import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 import tw.y_studio.ptt.Utils.UIUtils;
+import tw.y_studio.ptt.api.GetPostRankAPIHelper;
+import tw.y_studio.ptt.api.PostAPIHelper;
+import tw.y_studio.ptt.api.SetPostRankAPIHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
