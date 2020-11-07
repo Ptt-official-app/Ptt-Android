@@ -35,7 +35,7 @@ import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.UiFix;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
-import tw.y_studio.ptt.api.SearchBoardAPIHelper;
+import tw.y_studio.ptt.api.SearchBoardAPI;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -384,7 +384,7 @@ public class SearchBoardsFragment extends BaseFragment {
     private Set<String> myBoard = new HashSet<>();
     private int myBoardIndex = 0;
 
-    private SearchBoardAPIHelper searchBoardAPI;
+    private SearchBoardAPI searchBoardAPI;
 
     private void getDataFromApi(String keyboard) {
         nowSearchText = keyboard;
@@ -392,7 +392,7 @@ public class SearchBoardsFragment extends BaseFragment {
             return;
         }
         if (searchBoardAPI == null) {
-            searchBoardAPI = new SearchBoardAPIHelper(getContext());
+            searchBoardAPI = new SearchBoardAPI(getContext());
         }
 
         r1 =
