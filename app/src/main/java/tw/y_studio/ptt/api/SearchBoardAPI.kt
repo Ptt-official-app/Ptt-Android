@@ -1,20 +1,16 @@
 package tw.y_studio.ptt.api
 
-import android.content.Context
 import okhttp3.Request
 import org.json.JSONArray
 import java.net.URLEncoder
 import java.util.*
 
-class SearchBoardAPI(context: Context?) : BaseAPIHelper(context) {
-    private val data: MutableList<Map<String, Any>>
-    fun getData(): List<Map<String, Any>> {
-        return data
-    }
+class SearchBoardAPI() : BaseAPIHelper(), IBaseAPI {
+    private val _data = mutableListOf<Map<String, Any>>()
 
     @Throws(Exception::class)
-    operator fun get(keyword: String?): SearchBoardAPI {
-        data.clear()
+    fun searchBoard(keyword: String): MutableList<Map<String, Any>> {
+        _data.clear()
         val text = URLEncoder.encode(keyword, "UTF-8").toString()
         val request = Request.Builder().url("$hostUrl/api/Board/Search?keyword=$text").build()
         val mcall = okHttpClient.newCall(request)
@@ -41,13 +37,9 @@ class SearchBoardAPI(context: Context?) : BaseAPIHelper(context) {
                 item["class"] = ""
                 item["online"] = m3.getInt("onlineCount")
                 item["onlineColor"] = 7
-                data.add(item)
+                _data.add(item)
             }
         }
-        return this
-    }
-
-    init {
-        data = ArrayList()
+        return _data
     }
 }

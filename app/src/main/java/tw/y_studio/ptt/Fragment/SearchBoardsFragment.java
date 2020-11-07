@@ -36,6 +36,8 @@ import tw.y_studio.ptt.UI.UiFix;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 import tw.y_studio.ptt.api.SearchBoardAPI;
+import tw.y_studio.ptt.di.Injection;
+import tw.y_studio.ptt.source.remote.search.ISearchBoardRemoteDataSource;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -385,14 +387,14 @@ public class SearchBoardsFragment extends BaseFragment {
     private int myBoardIndex = 0;
 
     private SearchBoardAPI searchBoardAPI;
+    private ISearchBoardRemoteDataSource searchBoardRemoteDataSource =
+            Injection.RemoteDataSource.INSTANCE.getSearchBoardRemoteDataSource();
 
     private void getDataFromApi(String keyboard) {
         nowSearchText = keyboard;
         if (keyboard.isEmpty()) {
+            mSwipeRefreshLayout.setRefreshing(false);
             return;
-        }
-        if (searchBoardAPI == null) {
-            searchBoardAPI = new SearchBoardAPI(getContext());
         }
 
         r1 =
@@ -416,7 +418,9 @@ public class SearchBoardsFragment extends BaseFragment {
                             myBoard.addAll(mDBHelper.getAllSet());
                             myBoardIndex = mDBHelper.getMaxIndex();
 
-                            data_temp.addAll(searchBoardAPI.get(keyboard).getData());
+                            data_temp.addAll(
+                                    searchBoardRemoteDataSource.searchBoardByKeyboard(
+                                            keyboard.replace(" ", "")));
 
                             for (Map<String, Object> item : data_temp) {
                                 if (myBoard.contains(item.get("title").toString())) {
