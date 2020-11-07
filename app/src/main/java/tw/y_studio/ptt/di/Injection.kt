@@ -1,4 +1,4 @@
-package tw.y_studio.ptt
+package tw.y_studio.ptt.di
 
 import tw.y_studio.ptt.api.PopularBoardListAPI
 import tw.y_studio.ptt.api.popular.IPopularRemoteDataSource
