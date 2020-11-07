@@ -7,10 +7,6 @@ import java.util.*
 class PopularBoardListAPI : BaseAPIHelper(), IBaseAPI {
     private val _data: MutableList<Map<String, Any>> = mutableListOf()
 
-    fun getData(): MutableList<Map<String, Any>> {
-        return _data
-    }
-
     @Throws(Exception::class)
     fun refresh(page: Int, count: Int): MutableList<Map<String, Any>> {
         _data.clear()

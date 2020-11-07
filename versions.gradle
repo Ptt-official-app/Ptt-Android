@@ -27,8 +27,10 @@ ext.versions = [
         'jsoup': '1.13.1',
         'junit': '4.13',
         'material': '1.2.1',
+        "mockK": '1.10.2',
         'okhttp': '4.9.0',
-        'okio': '2.8.0'
+        'okio': '2.8.0',
+        'truth': '1.1',
 ]
 
 ext.projectDeps = [
@@ -65,7 +67,8 @@ ext.deps = [
                 ]
         ],
         'google': [
-                'material': "com.google.android.material:material:${versions.material}"
+                'material': "com.google.android.material:material:${versions.material}",
+                'truth': "com.google.truth:truth:${versions.truth}"
         ],
         'jsoup': "org.jsoup:jsoup:${versions.jsoup}",
         'junit': "junit:junit:${versions.junit}",
@@ -75,6 +78,10 @@ ext.deps = [
                         'animate': "com.facebook.fresco:animated-gif:${versions.fresco}",
                         'imagePipeline': "com.facebook.fresco:imagepipeline-okhttp3:${versions.fresco}"
                 ]
+        ],
+        "mockK": [
+                "core": "io.mockk:mockk:${versions.mockK}",
+                "android": "io.mockk:mockk-android:${versions.mockK}",
         ],
         'square': [
                 'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}",

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import tw.y_studio.ptt.Adapter.HotBoardsListAdapter;
+import tw.y_studio.ptt.Injection;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
@@ -21,7 +22,6 @@ import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 import tw.y_studio.ptt.api.popular.IPopularRemoteDataSource;
-import tw.y_studio.ptt.api.popular.PopularRemoteDataSourceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,7 +131,8 @@ public class HotBoardsFragment extends BaseFragment {
 
     private List<Map<String, Object>> data_temp = new ArrayList<>();
 
-    private IPopularRemoteDataSource popularRemoteDataSource = new PopularRemoteDataSourceImpl();
+    private IPopularRemoteDataSource popularRemoteDataSource =
+            Injection.RemoteDataSource.INSTANCE.getPopularRemoteDataSource();
 
     public void scrollToTop() {
         try {
@@ -143,10 +144,6 @@ public class HotBoardsFragment extends BaseFragment {
     }
 
     private void getDataFromApi() {
-        // TODO: 2020/11/5 Create an injection to provide instance
-        if (popularRemoteDataSource == null) {
-            popularRemoteDataSource = new PopularRemoteDataSourceImpl();
-        }
         r1 =
                 new Runnable() {
 
