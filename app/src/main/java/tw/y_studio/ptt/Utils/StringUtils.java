@@ -12,13 +12,13 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.widget.TextView;
 
+import tw.y_studio.ptt.UI.StaticValue;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import tw.y_studio.ptt.UI.StaticValue;
 
 public class StringUtils {
     public static final Pattern UrlPattern =

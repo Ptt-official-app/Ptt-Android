@@ -86,7 +86,7 @@ public class HotArticleListFragment extends BaseFragment {
 
         setMainView(view);
 
-        mRecyclerView = findViewById(R.id.article_list_fragment_recyclerView);
+        mRecyclerView = findViewById(R.id.article_list_fragment_recycler_view);
         mSwipeRefreshLayout = findViewById(R.id.article_list_fragment_refresh_layout);
 
         Bundle bundle = getArguments(); // 取得Bundle
