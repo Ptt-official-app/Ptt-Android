@@ -19,7 +19,7 @@
     <string name="not_at_debug_time">已過期，請安裝新版！</string>
     <string name="setting_theme">設定主題</string>
     <string name="setting_data_source">Environment</string>
-    <string name="clen_buttom">取消</string>
+    <string name="cancel_button">取消</string>
     <string name="press_again_to_leave">再按一次返回鍵離開</string>
     <string name="setting_search_item_style">搜尋看板樣式</string>
     <string name="setting_post_bottom_style">編輯文章底部工具列樣式</string>
