@@ -83,9 +83,14 @@ dependencies {
     implementation deps.square.okhttp
     implementation deps.square.okio
 
+    testImplementation deps.google.truth
     testImplementation deps.junit
+    testImplementation deps.mockK.core
+
     androidTestImplementation deps.androidX.test.ext.junit
     androidTestImplementation deps.androidX.test.ext.espresso
+    androidTestImplementation deps.google.truth
+    androidTestImplementation deps.mockK.android
 
     // solved AndroidX conflict: Duplicate class guava listenablefuture
     // see：https://stackoverflow.com/questions/60472354/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
