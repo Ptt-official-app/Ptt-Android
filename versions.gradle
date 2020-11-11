@@ -18,6 +18,7 @@ ext.versions = [
         'androidXConstraintLayout'  : '2.0.4',
         'androidXLegacy'            : '1.0.0',
         'androidXLifecycle'         : '2.2.0',
+        'androidXNavigation'        : '2.3.1',
         'androidXLocalBroadcastManager': '1.0.0',
         'androidXMultidex': '2.0.1',
         'androidXSwipeRefreshLayout': '1.1.0',
@@ -55,6 +56,10 @@ ext.deps = [
                         'extensions'  : "androidx.lifecycle:lifecycle-extensions:${versions.androidXLifecycle}",
                         'compiler'    : "androidx.lifecycle:lifecycle-compiler:${versions.androidXLifecycle}",
                         'viewmodelKTX': "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.androidXLifecycle}"
+                ],
+                'navigation'        : [
+                        'fragment'      : "androidx.navigation:navigation-fragment-ktx:${versions.androidXNavigation}",
+                        'ui'            : "androidx.navigation:navigation-ui-ktx:${versions.androidXNavigation}"
                 ],
                 'localBroadcastManager': "androidx.localbroadcastmanager:localbroadcastmanager:${versions.androidXLocalBroadcastManager}",
                 'multidex': "androidx.multidex:multidex:${versions.androidXMultidex}",

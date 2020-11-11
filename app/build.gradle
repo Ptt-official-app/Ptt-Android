@@ -64,6 +64,8 @@ dependencies {
     implementation deps.androidX.localBroadcastManager
     implementation deps.androidX.multidex
     implementation deps.androidX.swipeRefreshLayout
+    implementation deps.androidX.navigation.fragment
+    implementation deps.androidX.navigation.ui
 
     // Facebook
     implementation deps.facebook.fresco.core

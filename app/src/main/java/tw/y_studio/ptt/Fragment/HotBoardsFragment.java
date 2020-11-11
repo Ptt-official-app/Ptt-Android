@@ -46,7 +46,7 @@ public class HotBoardsFragment extends BaseFragment {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private HotBoardsListAdapter mHotBoardsListAdapter;
 
-    private List<Map<String, Object>> data;
+    private List<Map<String, Object>> data = new ArrayList<>();
     private ClickFix mClickFix = new ClickFix();
 
     private LinearLayout search_bar;
@@ -61,7 +61,6 @@ public class HotBoardsFragment extends BaseFragment {
 
         setMainView(view);
 
-        data = new ArrayList<>();
         Bundle bundle = getArguments();
 
         search_bar = getMainView().findViewById(R.id.hot_boards_fragment_search);

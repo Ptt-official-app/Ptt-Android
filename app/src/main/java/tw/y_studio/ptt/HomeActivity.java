@@ -17,17 +17,30 @@ import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
+import tw.y_studio.ptt.Fragment.ArticleListFragment;
+import tw.y_studio.ptt.Fragment.ArticleListSearchFragment;
+import tw.y_studio.ptt.Fragment.ArticleReadFragment;
 import tw.y_studio.ptt.Fragment.HomeFragment;
+import tw.y_studio.ptt.Fragment.HotArticleFilterFragment;
+import tw.y_studio.ptt.Fragment.LoginPageFragment;
+import tw.y_studio.ptt.Fragment.PostArticleFragment;
+import tw.y_studio.ptt.Fragment.SearchBoardsFragment;
 import tw.y_studio.ptt.UI.BaseActivity;
 import tw.y_studio.ptt.UI.StaticValue;
+import tw.y_studio.ptt.UI.common.extension.NavExtKt;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class HomeActivity extends BaseActivity {
     private HomeFragment homeFragment;
     private int themeType = 0;
     private long TimeTemp = 0;
+
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,19 +82,19 @@ public class HomeActivity extends BaseActivity {
         StaticValue.widthPixels = metrics.widthPixels;
         StaticValue.highPixels = metrics.heightPixels;
 
-        showHome();
-        isReadyLaunch = true;
-    }
+        /**
+         * TODO when refactor to Kotlin we can declare: private val navController by lazy {
+         * (supportFragmentManager.findFragmentById( R.id.nav_host_fragment) as
+         * NavHostFragment).navController }
+         */
+        navController =
+                ((NavHostFragment)
+                                Objects.requireNonNull(
+                                        getSupportFragmentManager()
+                                                .findFragmentById(R.id.nav_host_fragment)))
+                        .getNavController();
 
-    private void showHome() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            try {
-                homeFragment = new HomeFragment();
-                loadFragment(homeFragment, null);
-                isReadyShowHome = true;
-            } catch (Exception e) {
-            }
-        }
+        isReadyLaunch = true;
     }
 
     private boolean isReadyShowHome = false;
@@ -106,61 +119,40 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     public void loadFragment(Fragment toFragment, Fragment thisFragment) throws Exception {
-        if (getSupportFragmentManager().getFragments().size() > 0) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in_right_250,
-                            R.anim.slide_out_right_250,
-                            R.anim.slide_in_right_250,
-                            R.anim.slide_out_right_250)
-                    .add(
-                            R.id.mainActivity_mainLayout,
-                            toFragment,
-                            toFragment.getClass().getSimpleName())
-                    .addToBackStack(toFragment.getClass().getSimpleName())
-                    .commitAllowingStateLoss();
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(
-                            R.id.mainActivity_mainLayout,
-                            toFragment,
-                            toFragment.getClass().getSimpleName())
-                    .addToBackStack(toFragment.getClass().getSimpleName())
-                    .commitAllowingStateLoss();
+        int id = 0;
+        if (toFragment instanceof LoginPageFragment) {
+            id = R.id.loginPageFragment;
+        } else if (toFragment instanceof ArticleListFragment) {
+            id = R.id.articleListFragment;
+        } else if (toFragment instanceof ArticleReadFragment) {
+            id = R.id.articleReadFragment;
+        } else if (toFragment instanceof ArticleListSearchFragment) {
+            id = R.id.articleListSearchFragment;
+        } else if (toFragment instanceof PostArticleFragment) {
+            id = R.id.postArticleFragment;
         }
+        NavExtKt.navigateForward(navController, id, toFragment.getArguments(), false, true);
     }
 
     @Override
     public void loadFragmentNoAnim(Fragment toFragment, Fragment thisFragment) throws Exception {
-        if (getSupportFragmentManager().getFragments().size() > 0) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.no_anim, R.anim.no_anim, R.anim.no_anim, R.anim.no_anim)
-                    .add(
-                            R.id.mainActivity_mainLayout,
-                            toFragment,
-                            toFragment.getClass().getSimpleName())
-                    .addToBackStack(toFragment.getClass().getSimpleName())
-                    .commitAllowingStateLoss();
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(
-                            R.id.mainActivity_mainLayout,
-                            toFragment,
-                            toFragment.getClass().getSimpleName())
-                    .addToBackStack(toFragment.getClass().getSimpleName())
-                    .commitAllowingStateLoss();
+        int id = 0;
+        if (toFragment instanceof SearchBoardsFragment) {
+            id = R.id.searchBoardsFragment;
+        } else if (toFragment instanceof HotArticleFilterFragment) {
+            id = R.id.hotArticleFilterFragment;
         }
+        NavExtKt.navigateForward(navController, id, toFragment.getArguments(), false, false);
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.getRepeatCount() == 0) { // 確定按下退出鍵and防止重複按下退出鍵
-            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            // TODO refactor this check
+            if (!navController
+                    .getCurrentDestination()
+                    .getLabel()
+                    .equals(HomeFragment.class.getSimpleName())) {
                 onBackPressed();
             } else {
                 Date myDate = new Date();
@@ -202,9 +194,6 @@ public class HomeActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (isReadyLaunch && !isReadyShowHome) {
-            showHome();
-        }
     }
 
     @Override
