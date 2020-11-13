@@ -3,7 +3,7 @@ package tw.y_studio.ptt.api
 import android.content.Context
 import okhttp3.OkHttpClient
 import tw.y_studio.ptt.BuildConfig
-import tw.y_studio.ptt.Utils.OkHttpUtils
+import tw.y_studio.ptt.utils.OkHttpUtils
 
 abstract class BaseAPIHelper : IBaseAPI {
     constructor() {
