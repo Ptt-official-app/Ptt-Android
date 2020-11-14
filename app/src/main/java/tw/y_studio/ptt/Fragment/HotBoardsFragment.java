@@ -18,6 +18,7 @@ import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.UI.BaseFragment;
 import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
+import tw.y_studio.ptt.UI.article.list.ArticleListFragment;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 import tw.y_studio.ptt.di.Injection;
