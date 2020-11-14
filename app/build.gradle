@@ -61,6 +61,7 @@ dependencies {
     implementation deps.androidX.lifecycle.extensions
     implementation deps.androidX.lifecycle.compiler
     implementation deps.androidX.lifecycle.viewmodelKTX
+    implementation deps.androidX.lifecycle.runtime
     implementation deps.androidX.localBroadcastManager
     implementation deps.androidX.multidex
     implementation deps.androidX.swipeRefreshLayout
@@ -80,7 +81,6 @@ dependencies {
 
     // Kotlin
     implementation deps.kotlin.stdlib.jdk8
-
     // Square
     implementation deps.square.okhttp
     implementation deps.square.okio

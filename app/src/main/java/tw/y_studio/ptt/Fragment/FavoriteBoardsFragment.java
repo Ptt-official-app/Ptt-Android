@@ -34,6 +34,7 @@ import tw.y_studio.ptt.UI.ClickFix;
 import tw.y_studio.ptt.UI.CustomLinearLayoutManager;
 import tw.y_studio.ptt.UI.DragItemMove.ItemMoveCallback;
 import tw.y_studio.ptt.UI.DragItemMove.StartDragListener;
+import tw.y_studio.ptt.UI.article.list.ArticleListFragment;
 import tw.y_studio.ptt.Utils.DebugUtils;
 import tw.y_studio.ptt.Utils.StringUtils;
 

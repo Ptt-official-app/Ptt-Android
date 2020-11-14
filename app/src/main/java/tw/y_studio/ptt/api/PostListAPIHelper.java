@@ -1,7 +1,5 @@
 package tw.y_studio.ptt.api;
 
-import android.content.Context;
-
 import okhttp3.Call;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -11,28 +9,27 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import tw.y_studio.ptt.Utils.StringUtils;
+import tw.y_studio.ptt.model.PartialPost;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PostListAPIHelper extends BaseAPIHelper {
 
-    public PostListAPIHelper(Context context, String board) {
-        super(context);
+    public PostListAPIHelper(String board) {
+        super();
         this.board = board;
         this.data = new ArrayList<>();
     }
 
-    private List<Map<String, Object>> data;
+    private List<PartialPost> data;
     private String board = "";
     private String boardTitle = "";
     private Pattern Title_class = Pattern.compile("\\[([\\s\\S]{1,4})\\]");
 
-    public List<Map<String, Object>> getData() {
+    public List<PartialPost> getData() {
         return data;
     }
 
@@ -61,11 +58,6 @@ public class PostListAPIHelper extends BaseAPIHelper {
                 JSONObject m3 = PostList.getJSONObject(i);
                 i++;
 
-                Map<String, Object> item = new HashMap<>();
-                item.put("auth", m3.getString("author"));
-                item.put("date", m3.getString("date"));
-                item.put("like", m3.getInt("goup"));
-                item.put("commit", 0);
                 String title = m3.getString("title");
                 String classs = "";
 
@@ -89,13 +81,20 @@ public class PostListAPIHelper extends BaseAPIHelper {
                         classs = "無分類";
                     }
                 }
-                item.put("title", title);
-                item.put("class", classs);
-                item.put("url", "https://www.ptt.cc" + m3.getString("href"));
-                item.put("num", 0);
-                item.put("readed", false);
-                item.put("deleted", false);
-                data.add(item);
+
+                PartialPost post =
+                        new PartialPost(
+                                title,
+                                m3.getString("date"),
+                                classs,
+                                0,
+                                m3.getInt("goup"),
+                                m3.getString("author"),
+                                false,
+                                false,
+                                "https://www.ptt.cc" + m3.getString("href"));
+
+                data.add(post);
             }
         }
 

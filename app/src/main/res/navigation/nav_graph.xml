@@ -32,7 +32,7 @@
         tools:layout="@layout/login_page_fragment_layout"/>
     <fragment
         android:id="@+id/articleListFragment"
-        android:name="tw.y_studio.ptt.Fragment.ArticleListFragment"
+        android:name="tw.y_studio.ptt.UI.article.list.ArticleListFragment"
         android:label="ArticleListFragment"
         tools:layout="@layout/article_list_fragment_layout">
         <argument
@@ -41,10 +41,6 @@
         <argument
             android:name="subtitle"
             app:argType="string" />
-        <argument
-            android:name="PageType"
-            app:argType="tw.y_studio.ptt.Fragment.ArticleListFragment$Type"
-            android:defaultValue="Normal" />
     </fragment>
     <fragment
         android:id="@+id/searchBoardsFragment"

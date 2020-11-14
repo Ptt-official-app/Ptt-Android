@@ -20,7 +20,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import tw.y_studio.ptt.Fragment.ArticleListFragment;
 import tw.y_studio.ptt.Fragment.ArticleListSearchFragment;
 import tw.y_studio.ptt.Fragment.ArticleReadFragment;
 import tw.y_studio.ptt.Fragment.HomeFragment;
@@ -30,6 +29,7 @@ import tw.y_studio.ptt.Fragment.PostArticleFragment;
 import tw.y_studio.ptt.Fragment.SearchBoardsFragment;
 import tw.y_studio.ptt.UI.BaseActivity;
 import tw.y_studio.ptt.UI.StaticValue;
+import tw.y_studio.ptt.UI.article.list.ArticleListFragment;
 import tw.y_studio.ptt.UI.common.extension.NavExtKt;
 
 import java.util.Date;

@@ -31,7 +31,7 @@ ext.versions = [
         "mockK": '1.10.2',
         'okhttp': '4.9.0',
         'okio': '2.8.0',
-        'truth': '1.1',
+        'truth': '1.1'
 ]
 
 ext.projectDeps = [
@@ -55,7 +55,8 @@ ext.deps = [
                 'lifecycle'         : [
                         'extensions'  : "androidx.lifecycle:lifecycle-extensions:${versions.androidXLifecycle}",
                         'compiler'    : "androidx.lifecycle:lifecycle-compiler:${versions.androidXLifecycle}",
-                        'viewmodelKTX': "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.androidXLifecycle}"
+                        'viewmodelKTX': "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.androidXLifecycle}",
+                        'runtime'    : "androidx.lifecycle:lifecycle-runtime-ktx:${versions.androidXLifecycle}"
                 ],
                 'navigation'        : [
                         'fragment'      : "androidx.navigation:navigation-fragment-ktx:${versions.androidXNavigation}",
