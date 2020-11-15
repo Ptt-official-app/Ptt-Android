@@ -7,32 +7,32 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="tw.y_studio.ptt.Fragment.HomeFragment"
+        android:name="tw.y_studio.ptt.fragment.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/home_fragment_layout"/>
     <fragment
         android:id="@+id/postArticleFragment"
-        android:name="tw.y_studio.ptt.Fragment.PostArticleFragment"
+        android:name="tw.y_studio.ptt.fragment.PostArticleFragment"
         android:label="PostArticleFragment"
         tools:layout="@layout/post_article_fragment_layout"/>
     <fragment
         android:id="@+id/articleListSearchFragment"
-        android:name="tw.y_studio.ptt.Fragment.ArticleListSearchFragment"
+        android:name="tw.y_studio.ptt.fragment.ArticleListSearchFragment"
         android:label="ArticleListSearchFragment"
         tools:layout="@layout/article_list_search_fragment_layout"/>
     <fragment
         android:id="@+id/articleReadFragment"
-        android:name="tw.y_studio.ptt.Fragment.ArticleReadFragment"
+        android:name="tw.y_studio.ptt.fragment.ArticleReadFragment"
         android:label="ArticleReadFragment"
         tools:layout="@layout/article_read_fragment_layout"/>
     <fragment
         android:id="@+id/loginPageFragment"
-        android:name="tw.y_studio.ptt.Fragment.LoginPageFragment"
+        android:name="tw.y_studio.ptt.fragment.LoginPageFragment"
         android:label="LoginPageFragment"
         tools:layout="@layout/login_page_fragment_layout"/>
     <fragment
         android:id="@+id/articleListFragment"
-        android:name="tw.y_studio.ptt.UI.article.list.ArticleListFragment"
+        android:name="tw.y_studio.ptt.ui.article.list.ArticleListFragment"
         android:label="ArticleListFragment"
         tools:layout="@layout/article_list_fragment_layout">
         <argument
@@ -44,12 +44,12 @@
     </fragment>
     <fragment
         android:id="@+id/searchBoardsFragment"
-        android:name="tw.y_studio.ptt.Fragment.SearchBoardsFragment"
+        android:name="tw.y_studio.ptt.fragment.SearchBoardsFragment"
         android:label="SearchBoardsFragment"
         tools:layout="@layout/search_boards_fragment_layout"/>
     <fragment
         android:id="@+id/hotArticleFilterFragment"
-        android:name="tw.y_studio.ptt.Fragment.HotArticleFilterFragment"
+        android:name="tw.y_studio.ptt.fragment.HotArticleFilterFragment"
         android:label="HotArticleFilterFragment"
         tools:layout="@layout/hot_article_list_fragment_layout"/>
 

@@ -8,8 +8,8 @@ import okhttp3.ResponseBody;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import tw.y_studio.ptt.Utils.StringUtils;
 import tw.y_studio.ptt.model.PartialPost;
+import tw.y_studio.ptt.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;

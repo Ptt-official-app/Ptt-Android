@@ -20,17 +20,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
-import tw.y_studio.ptt.Fragment.ArticleListSearchFragment;
-import tw.y_studio.ptt.Fragment.ArticleReadFragment;
-import tw.y_studio.ptt.Fragment.HomeFragment;
-import tw.y_studio.ptt.Fragment.HotArticleFilterFragment;
-import tw.y_studio.ptt.Fragment.LoginPageFragment;
-import tw.y_studio.ptt.Fragment.PostArticleFragment;
-import tw.y_studio.ptt.Fragment.SearchBoardsFragment;
-import tw.y_studio.ptt.UI.BaseActivity;
-import tw.y_studio.ptt.UI.StaticValue;
-import tw.y_studio.ptt.UI.article.list.ArticleListFragment;
-import tw.y_studio.ptt.UI.common.extension.NavExtKt;
+import tw.y_studio.ptt.fragment.ArticleListSearchFragment;
+import tw.y_studio.ptt.fragment.ArticleReadFragment;
+import tw.y_studio.ptt.fragment.HomeFragment;
+import tw.y_studio.ptt.fragment.HotArticleFilterFragment;
+import tw.y_studio.ptt.fragment.LoginPageFragment;
+import tw.y_studio.ptt.fragment.PostArticleFragment;
+import tw.y_studio.ptt.fragment.SearchBoardsFragment;
+import tw.y_studio.ptt.ui.BaseActivity;
+import tw.y_studio.ptt.ui.StaticValue;
+import tw.y_studio.ptt.ui.article.list.ArticleListFragment;
+import tw.y_studio.ptt.ui.common.extension.NavExtKt;
 
 import java.util.Date;
 import java.util.Objects;

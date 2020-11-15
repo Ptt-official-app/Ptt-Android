@@ -11,7 +11,7 @@ import okhttp3.ResponseBody;
 
 import org.json.JSONObject;
 
-import tw.y_studio.ptt.Utils.DebugUtils;
+import tw.y_studio.ptt.utils.DebugUtils;
 
 import java.util.HashMap;
 import java.util.Map;
