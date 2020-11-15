@@ -3,7 +3,8 @@ package tw.y_studio.ptt.ui.article.list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import tw.y_studio.ptt.R
+import tw.y_studio.ptt.databinding.ArticleListItemBinding
+import tw.y_studio.ptt.databinding.ArticleListItemDeleteBinding
 import tw.y_studio.ptt.model.PartialPost
 
 class ArticleListAdapter(
@@ -16,10 +17,10 @@ class ArticleListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             0 -> {
-                PostViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.article_list_item, parent, false))
+                PostViewHolder(ArticleListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             }
             else -> {
-                DeletedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.article_list_item_delete, parent, false))
+                DeletedViewHolder(ArticleListItemDeleteBinding.inflate(LayoutInflater.from(parent.context), parent, false))
             }
         }
     }
