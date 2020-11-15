@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.databinding.ItemSettingBinding
 
 class SettingAdapter(
-        private val dataList: List<SettingFragment.SettingItem>,
-        private var mOnItemClickListener: OnItemClickListener
+    private val dataList: List<SettingFragment.SettingItem>,
+    private var mOnItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<SettingAdapter.ViewHolder>() {
 
     class ViewHolder(private val binding: ItemSettingBinding) : RecyclerView.ViewHolder(binding.root) {
