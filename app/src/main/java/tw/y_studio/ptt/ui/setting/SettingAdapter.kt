@@ -1,15 +1,14 @@
-package tw.y_studio.ptt.adapter
+package tw.y_studio.ptt.ui.setting
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.databinding.ItemSettingBinding
-import tw.y_studio.ptt.fragment.SettingFragment
 
 class SettingAdapter(
-    private val dataList: List<SettingFragment.SettingItem>,
-    private var mOnItemClickListener: OnItemClickListener
+        private val dataList: List<SettingFragment.SettingItem>,
+        private var mOnItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<SettingAdapter.ViewHolder>() {
 
     class ViewHolder(private val binding: ItemSettingBinding) : RecyclerView.ViewHolder(binding.root) {

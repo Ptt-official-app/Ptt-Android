@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.fragment
+package tw.y_studio.ptt.ui.setting
 
 import android.content.Context
 import android.os.Build
@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.adapter.SettingAdapter
 import tw.y_studio.ptt.databinding.FragmentSettingBinding
+import tw.y_studio.ptt.fragment.LoginPageFragment
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.ClickFix
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
