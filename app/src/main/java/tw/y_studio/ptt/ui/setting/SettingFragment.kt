@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.fragment
+package tw.y_studio.ptt.ui.setting
 
 import android.content.Context
 import android.os.Build
@@ -10,15 +10,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.hot_article_list_fragment_layout.*
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.adapter.SettingAdapter
+import tw.y_studio.ptt.databinding.FragmentSettingBinding
+import tw.y_studio.ptt.fragment.LoginPageFragment
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.ClickFix
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
 import tw.y_studio.ptt.utils.turnOnUrl
 
 class SettingFragment : BaseFragment() {
+    private var _binding: FragmentSettingBinding? = null
+    private val binding get() = _binding!!
+
     private val dataList = mutableListOf<SettingItem>()
     private val mClickFix = ClickFix()
 
@@ -27,7 +30,9 @@ class SettingFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_setting, container, false)
+        return FragmentSettingBinding.inflate(inflater, container, false).apply {
+            _binding = this
+        }.root
     }
 
     private fun createAdapter(): SettingAdapter {
@@ -50,17 +55,22 @@ class SettingFragment : BaseFragment() {
         )
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.apply {
-            article_list_fragment_recycler_view.apply {
+        binding.apply {
+            articleListFragmentRecyclerView.apply {
                 val layoutManager = CustomLinearLayoutManager(context)
                 layoutManager.orientation = RecyclerView.VERTICAL
                 setHasFixedSize(true)
                 setLayoutManager(layoutManager)
                 adapter = createAdapter()
             }
-            article_list_fragment_refresh_layout.apply {
+            articleListFragmentRefreshLayout.apply {
                 setColorSchemeResources(
                     android.R.color.holo_red_light,
                     android.R.color.holo_blue_light,
@@ -109,8 +119,8 @@ class SettingFragment : BaseFragment() {
         dataList.add(SettingItem.PostBottomStyle)
         dataList.add(SettingItem.Policy)
         dataList.add(SettingItem.PttId)
-        view?.run {
-            article_list_fragment_recycler_view?.adapter?.notifyDataSetChanged()
+        binding.run {
+            articleListFragmentRecyclerView?.adapter?.notifyDataSetChanged()
         }
     }
 

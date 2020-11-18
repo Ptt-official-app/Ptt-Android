@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion buildConfig.compileSDK
@@ -40,6 +39,9 @@ android {
     compileOptions {
         sourceCompatibility = buildConfig.jdk
         targetCompatibility = buildConfig.jdk
+    }
+    buildFeatures {
+        viewBinding true
     }
 }
 

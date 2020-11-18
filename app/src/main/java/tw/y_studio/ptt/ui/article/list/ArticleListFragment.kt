@@ -9,9 +9,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.android.synthetic.main.article_list_fragment_layout.*
 import tw.y_studio.ptt.R
 import tw.y_studio.ptt.api.PostListAPIHelper
+import tw.y_studio.ptt.databinding.ArticleListFragmentLayoutBinding
 import tw.y_studio.ptt.fragment.ArticleListSearchFragment
 import tw.y_studio.ptt.fragment.ArticleReadFragment
 import tw.y_studio.ptt.fragment.PostArticleFragment
@@ -23,6 +23,9 @@ import tw.y_studio.ptt.utils.Log
 import tw.y_studio.ptt.utils.observeNotNull
 
 class ArticleListFragment : BaseFragment() {
+
+    private var _binding: ArticleListFragmentLayoutBinding? = null
+    private val binding get() = _binding!!
 
     private var boardName = ""
     private var boardSubName = ""
@@ -51,14 +54,16 @@ class ArticleListFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.article_list_fragment_layout, container, false)
+        return ArticleListFragmentLayoutBinding.inflate(inflater, container, false).apply {
+            _binding = this
+        }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        view.apply {
-            article_list_fragment_textView_title.text = boardName
-            article_list_fragment_recyclerView.apply {
+        binding.apply {
+            articleListFragmentTextViewTitle.text = boardName
+            articleListFragmentRecyclerView.apply {
                 setHasFixedSize(true)
                 val layoutManager = CustomLinearLayoutManager(context).apply {
                     orientation = RecyclerView.VERTICAL
@@ -96,7 +101,7 @@ class ArticleListFragment : BaseFragment() {
                     }
                 })
             }
-            article_list_fragment_refresh_layout.apply {
+            articleListFragmentRefreshLayout.apply {
                 setColorSchemeResources(
                     android.R.color.holo_red_light,
                     android.R.color.holo_blue_light,
@@ -105,7 +110,7 @@ class ArticleListFragment : BaseFragment() {
                 )
                 setOnRefreshListener { articleListViewModel.loadData() }
             }
-            article_list_fragment_bottom_navigation.setOnNavigationItemSelectedListener(
+            articleListFragmentBottomNavigation.setOnNavigationItemSelectedListener(
                 BottomNavigationView.OnNavigationItemSelectedListener { item ->
                     when (item.itemId) {
                         R.id.article_list_navigation_item_refresh -> {
@@ -130,15 +135,15 @@ class ArticleListFragment : BaseFragment() {
                     false
                 }
             )
-            article_read_item_header_imageView_back.setOnClickListener {
+            articleReadItemHeaderImageViewBack.setOnClickListener {
                 currentActivity.onBackPressed()
             }
-            article_list_fragment_textView_subtitle.text = boardSubName
+            articleListFragmentTextViewSubtitle.text = boardSubName
         }
         articleListViewModel.run {
             observeNotNull(getLoadingStateLiveData()) { isLoading ->
-                article_list_fragment_refresh_layout.isRefreshing = isLoading
-                article_list_fragment_recyclerView.adapter?.notifyDataSetChanged()
+                binding.articleListFragmentRefreshLayout.isRefreshing = isLoading
+                binding.articleListFragmentRecyclerView.adapter?.notifyDataSetChanged()
             }
 
             observeNotNull(getErrorLiveData()) { e ->
@@ -150,7 +155,12 @@ class ArticleListFragment : BaseFragment() {
 
     override fun onAnimOver() {
         articleListViewModel.loadData()
-        article_list_fragment_recyclerView.adapter?.notifyDataSetChanged()
+        binding.articleListFragmentRecyclerView.adapter?.notifyDataSetChanged()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

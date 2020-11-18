@@ -1,32 +1,29 @@
-package tw.y_studio.ptt.adapter
+package tw.y_studio.ptt.ui.setting
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_setting.view.*
-import tw.y_studio.ptt.R
-import tw.y_studio.ptt.fragment.SettingFragment
+import tw.y_studio.ptt.databinding.ItemSettingBinding
 
 class SettingAdapter(
     private val dataList: List<SettingFragment.SettingItem>,
     private var mOnItemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<SettingAdapter.ViewHolder>() {
 
-    class ViewHolder(convertView: View) : RecyclerView.ViewHolder(convertView) {
+    class ViewHolder(private val binding: ItemSettingBinding) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: SettingFragment.SettingItem) {
-            itemView.apply {
-                textView.text = resources.getString(data.titleResId)
+            binding.apply {
+                textView.text = itemView.resources.getString(data.titleResId)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_setting, parent, false)).apply {
+        return ViewHolder(ItemSettingBinding.inflate(LayoutInflater.from(parent.context), parent, false)).apply {
             itemView.setOnClickListener {
                 mOnItemClickListener.onItemClick(it, dataList[adapterPosition])
             }
-            itemView.textView2.visibility = View.GONE
         }
     }
 
