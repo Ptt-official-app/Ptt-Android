@@ -38,6 +38,7 @@ import tw.y_studio.ptt.ui.ClickFix;
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager;
 import tw.y_studio.ptt.ui.RecyclerItemClickListener;
 import tw.y_studio.ptt.ui.StaticValue;
+import tw.y_studio.ptt.ui.article.read.ArticleReadFragment;
 import tw.y_studio.ptt.ui.stickyheader.StickyHeaderItemDecorator;
 import tw.y_studio.ptt.utils.DebugUtils;
 import tw.y_studio.ptt.utils.OkHttpUtils;

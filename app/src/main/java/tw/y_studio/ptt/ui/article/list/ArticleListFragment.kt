@@ -13,12 +13,12 @@ import tw.y_studio.ptt.R
 import tw.y_studio.ptt.api.PostListAPIHelper
 import tw.y_studio.ptt.databinding.ArticleListFragmentLayoutBinding
 import tw.y_studio.ptt.fragment.ArticleListSearchFragment
-import tw.y_studio.ptt.fragment.ArticleReadFragment
 import tw.y_studio.ptt.fragment.PostArticleFragment
 import tw.y_studio.ptt.model.PartialPost
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.ClickFix
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
+import tw.y_studio.ptt.ui.article.read.ArticleReadFragment
 import tw.y_studio.ptt.utils.Log
 import tw.y_studio.ptt.utils.observeNotNull
 
