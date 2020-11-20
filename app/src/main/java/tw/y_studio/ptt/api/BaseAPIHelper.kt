@@ -16,8 +16,8 @@ abstract class BaseAPIHelper : IBaseAPI {
     @JvmField
     protected val hostUrl = BuildConfig.API_Domain
 
-    protected val okHttpClient: OkHttpClient
+    protected val okHttpClient: OkHttpClient?
     override fun close() {
-        okHttpClient.dispatcher.cancelAll()
+        okHttpClient?.dispatcher?.cancelAll()
     }
 }

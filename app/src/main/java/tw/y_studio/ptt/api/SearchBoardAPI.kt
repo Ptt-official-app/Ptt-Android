@@ -13,10 +13,10 @@ class SearchBoardAPI() : BaseAPIHelper(), IBaseAPI {
         _data.clear()
         val text = URLEncoder.encode(keyword, "UTF-8").toString()
         val request = Request.Builder().url("$hostUrl/api/Board/Search?keyword=$text").build()
-        val mcall = okHttpClient.newCall(request)
-        val response = mcall.execute()
-        val code = response.code // can be any value
-        if (!response.isSuccessful && code != 200) {
+        val mcall = okHttpClient?.newCall(request)
+        val response = mcall?.execute()
+        val code = response?.code // can be any value
+        if (response?.isSuccessful != true && code != 200) {
             // error
             throw Exception("Error Code : $code")
         } else {

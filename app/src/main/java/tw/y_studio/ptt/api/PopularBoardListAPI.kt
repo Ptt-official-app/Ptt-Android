@@ -13,11 +13,11 @@ class PopularBoardListAPI : BaseAPIHelper(), IBaseAPI {
         val request = Request.Builder()
             .url("$hostUrl/api/Board/Popular?page=$page&count=$count")
             .build()
-        val call = okHttpClient.newCall(request)
+        val call = okHttpClient?.newCall(request)
         // TODO: 2020/11/5 refactor to enqueue()
-        val response = call.execute()
-        val code = response.code // can be any value
-        if (!response.isSuccessful && code != 200) {
+        val response = call?.execute()
+        val code = response?.code // can be any value
+        if (response?.isSuccessful != true && code != 200) {
             // error
             throw Exception("Error Code : $code")
         } else {
