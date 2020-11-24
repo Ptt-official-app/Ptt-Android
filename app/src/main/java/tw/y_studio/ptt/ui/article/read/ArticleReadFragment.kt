@@ -40,7 +40,7 @@ class ArticleReadFragment : BaseFragment() {
     private var articleTime = ""
     private var articleClass = ""
     private var originalArticleTitle = ""
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
