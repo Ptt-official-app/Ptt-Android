@@ -366,7 +366,7 @@ class ArticleReadAdapter(private val context: Context, private val data: List<Ma
     }
 
     private fun setNumberColor(tv: TextView, sd: SortDecimal) {
-        if (sd.isOverDecimal) {
+        if (sd.isOverDecimal()) {
             val typedValue = TypedValue()
             val theme = context.theme
             theme.resolveAttribute(R.attr.tangerine, typedValue, true)
