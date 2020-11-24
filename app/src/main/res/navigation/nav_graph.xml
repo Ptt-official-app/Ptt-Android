@@ -22,7 +22,7 @@
         tools:layout="@layout/article_list_search_fragment_layout"/>
     <fragment
         android:id="@+id/articleReadFragment"
-        android:name="tw.y_studio.ptt.fragment.ArticleReadFragment"
+        android:name="tw.y_studio.ptt.ui.article.read.ArticleReadFragment"
         android:label="ArticleReadFragment"
         tools:layout="@layout/article_read_fragment_layout"/>
     <fragment

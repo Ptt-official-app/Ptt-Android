@@ -21,7 +21,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import tw.y_studio.ptt.fragment.ArticleListSearchFragment;
-import tw.y_studio.ptt.fragment.ArticleReadFragment;
 import tw.y_studio.ptt.fragment.HomeFragment;
 import tw.y_studio.ptt.fragment.HotArticleFilterFragment;
 import tw.y_studio.ptt.fragment.LoginPageFragment;
@@ -30,6 +29,7 @@ import tw.y_studio.ptt.fragment.SearchBoardsFragment;
 import tw.y_studio.ptt.ui.BaseActivity;
 import tw.y_studio.ptt.ui.StaticValue;
 import tw.y_studio.ptt.ui.article.list.ArticleListFragment;
+import tw.y_studio.ptt.ui.article.read.ArticleReadFragment;
 import tw.y_studio.ptt.ui.common.extension.NavExtKt;
 
 import java.util.Date;
