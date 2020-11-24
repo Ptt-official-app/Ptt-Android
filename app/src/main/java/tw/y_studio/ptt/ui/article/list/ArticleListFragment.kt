@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.api.PostListAPIHelper
 import tw.y_studio.ptt.databinding.ArticleListFragmentLayoutBinding
+import tw.y_studio.ptt.di.Injection
 import tw.y_studio.ptt.fragment.ArticleListSearchFragment
 import tw.y_studio.ptt.fragment.PostArticleFragment
 import tw.y_studio.ptt.model.PartialPost
@@ -38,15 +38,6 @@ class ArticleListFragment : BaseFragment() {
         val bundle = arguments // 取得Bundle
         boardName = bundle?.getString("title", getString(R.string.board_list_title_empty)) ?: ""
         boardSubName = bundle?.getString("subtitle", getString(R.string.board_list_subtitle_empty)) ?: ""
-        articleListViewModel = ViewModelProvider(
-            this,
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ArticleListViewModel(PostListAPIHelper(boardName)) as T
-                }
-            }
-        ).get(ArticleListViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -60,6 +51,19 @@ class ArticleListFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        articleListViewModel = ViewModelProvider(
+            this,
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return ArticleListViewModel(
+                        Injection.RemoteDataSource.postListRemoteDataSource,
+                        boardName
+                    ) as T
+                }
+            }
+        ).get(ArticleListViewModel::class.java)
 
         binding.apply {
             articleListFragmentTextViewTitle.text = boardName

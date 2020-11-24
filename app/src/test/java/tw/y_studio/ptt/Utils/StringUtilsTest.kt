@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.Utils
+package tw.y_studio.ptt.utils
 
 import org.junit.After
 import org.junit.Assert

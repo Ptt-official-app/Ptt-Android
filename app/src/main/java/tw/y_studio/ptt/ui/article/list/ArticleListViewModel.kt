@@ -6,13 +6,14 @@ import android.os.Message
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import tw.y_studio.ptt.api.PostListAPIHelper
 import tw.y_studio.ptt.model.PartialPost
+import tw.y_studio.ptt.source.remote.post.IPostListRemoteDataSource
 import tw.y_studio.ptt.utils.Log
 import java.util.*
 
 class ArticleListViewModel(
-    private val postListAPI: PostListAPIHelper
+    private val postListRemoteDataSource: IPostListRemoteDataSource,
+    private val boardName: String // TODO: 2020/11/21 need refactor
 ) : ViewModel() {
     val data: MutableList<PartialPost> = ArrayList()
 
@@ -58,7 +59,7 @@ class ArticleListViewModel(
                     val temp = mutableListOf<PartialPost>()
                     for (i in 0..2) {
                         try {
-                            temp.addAll(postListAPI[page].data)
+                            temp.addAll(postListRemoteDataSource.getPostListData(boardName, page))
                         } catch (e: Exception) {
                             if (page > 1) {
                                 throw e
@@ -100,7 +101,7 @@ class ArticleListViewModel(
         super.onCleared()
         backgroundHandlerThread.quit()
         handler.removeCallbacksAndMessages(null)
-        postListAPI.close()
+        postListRemoteDataSource.disposeAll()
     }
 
     companion object {
