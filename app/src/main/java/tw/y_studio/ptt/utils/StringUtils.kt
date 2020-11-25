@@ -133,7 +133,7 @@ object StringUtils {
     fun clearStart(input: String): String = input.trim()
 
     @JvmStatic
-    fun ColorString(input: String): SpannableStringBuilder? {
+    fun ColorString(input: String): SpannableStringBuilder {
         val listStart: MutableList<Int> = ArrayList()
         val listEnd: MutableList<Int> = ArrayList()
         val listColor: MutableList<String> = ArrayList()
@@ -316,7 +316,7 @@ object StringUtils {
     }
 
     @JvmStatic
-    fun sortDecimal(input: String?): SortDecimal? {
+    fun sortDecimal(input: String?): SortDecimal {
         var like = 0
         try {
             like = notNullString(input).toInt()
