@@ -96,6 +96,8 @@ dependencies {
     androidTestImplementation deps.google.truth
     androidTestImplementation deps.mockK.android
 
+    debugImplementation deps.square.leakcanary
+
     // solved AndroidX conflict: Duplicate class guava listenablefuture
     // see：https://stackoverflow.com/questions/60472354/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
