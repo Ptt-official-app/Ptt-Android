@@ -8,13 +8,9 @@ import android.net.Uri
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.appcompat.widget.AppCompatImageButton
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.PrecomputedTextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -29,355 +25,223 @@ import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequest
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import tw.y_studio.ptt.R
+import tw.y_studio.ptt.databinding.*
 import tw.y_studio.ptt.ui.ImageLoadingDrawable
 import tw.y_studio.ptt.ui.StaticValue
 import tw.y_studio.ptt.ui.TextViewMovementMethod
-import tw.y_studio.ptt.ui.article.read.ArticleReadAdapter.ViewHolderCenterBar
-import tw.y_studio.ptt.ui.article.read.ArticleReadAdapter.ViewHolderComment
-import tw.y_studio.ptt.ui.article.read.ArticleReadAdapter.ViewHolderCommitBar
-import tw.y_studio.ptt.ui.article.read.ArticleReadAdapter.ViewHolderCommitSort
-import tw.y_studio.ptt.ui.article.read.ArticleReadAdapter.ViewHolderContent
-import tw.y_studio.ptt.ui.article.read.ArticleReadAdapter.ViewHolderContentImage
-import tw.y_studio.ptt.ui.article.read.ArticleReadAdapter.ViewHolderHeader
+import tw.y_studio.ptt.utils.ResourcesUtils
 import tw.y_studio.ptt.utils.StringUtils
 import tw.y_studio.ptt.utils.StringUtils.SortDecimal
 import java.lang.Exception
 import java.lang.RuntimeException
 
-class ArticleReadAdapter(private val context: Context, private val data: List<Map<String, Any>>) : RecyclerView.Adapter<RecyclerView.ViewHolder?>(), View.OnClickListener, OnLongClickListener {
-    inner class ViewHolderHeader(v: View) : RecyclerView.ViewHolder(v) {
-        val mTextView_title: TextView
-        val mTextView_board: TextView
-        val mTextView_auth: TextView
-        val mTextView_date: TextView
-        val back: AppCompatImageButton
+class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+    class ViewHolderHeader(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding = ArticleReadItemHeaderBinding.bind(view)
 
         init {
-            mTextView_title = v.findViewById(R.id.article_read_item_header_textView_title)
-            mTextView_board = v.findViewById(R.id.article_read_item_header_textView_board)
-            mTextView_auth = v.findViewById(R.id.article_read_item_header_textView_auth)
-            mTextView_date = v.findViewById(R.id.article_read_item_header_textView_time)
-            back = v.findViewById(R.id.article_read_item_header_imageView_back)
+            binding.articleReadItemHeaderImageViewBack.setOnClickListener {
+                (itemView.context as? Activity)?.onBackPressed()
+            }
+        }
+
+        fun onBind(headerItem: Item.HeaderItem) {
+            binding.apply {
+                articleReadItemHeaderTextViewTitle.text = headerItem.title
+                articleReadItemHeaderTextViewTime.text = headerItem.date
+                articleReadItemHeaderTextViewAuth.text = headerItem.auth
+                articleReadItemHeaderTextViewBoard.text = "${headerItem.board} / ${headerItem.type}"
+            }
         }
     }
 
-    inner class ViewHolderContent(v: View) : RecyclerView.ViewHolder(v) {
-        val mTextView_text: AppCompatTextView
+    class ViewHolderContent(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding = ArticleReadItemContentBinding.bind(view)
 
-        init {
-            mTextView_text = v.findViewById(R.id.article_read_item_textView)
+        fun onBind(contentLineItem: Item.ContentLineItem) {
+            binding.apply {
+                articleReadItemTextView.apply {
+                    StringUtils.TextViewAutoSplitFix(this)
+                    movementMethod = TextViewMovementMethod(context)
+                    setTextFuture(
+                        PrecomputedTextCompat.getTextFuture(
+                            StringUtils.ColorString(contentLineItem.text),
+                            textMetricsParamsCompat,
+                            null
+                        )
+                    )
+                }
+            }
         }
     }
 
-    inner class ViewHolderContentImage(v: View) : RecyclerView.ViewHolder(v) {
-        val image: SimpleDraweeView
-        val main: LinearLayout
+    inner class ViewHolderContentImage(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding = ArticleReadItemImageBinding.bind(view)
 
-        init {
-            image = v.findViewById(R.id.article_read_item_picture)
-            main = v.findViewById(R.id.article_read_item_picture_main)
+        fun onBind(imageItem: Item.ImageItem) {
+            binding.apply {
+                setImageView(articleReadItemPicture, StringUtils.notNullString(imageItem.url))
+            }
         }
     }
 
-    inner class ViewHolderCenterBar(v: View) : RecyclerView.ViewHolder(v) {
-        val textView_floor: TextView
-        val textView_like: TextView
+    inner class ViewHolderCenterBar(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding = ArticleReadItemCenterBarBinding.bind(view)
 
-        init {
-            textView_floor = v.findViewById(R.id.article_read_item_centerbar_textView_commit)
-            textView_like = v.findViewById(R.id.article_read_item_centerbar_textView_like)
+        fun onBind(centerBarItem: Item.CenterBarItem) {
+            binding.apply {
+                articleReadItemCenterbarTextViewCommit.apply {
+                    val floorString = StringUtils.sortDecimal(StringUtils.notNullString(centerBarItem.floor))
+                    text = floorString.toString()
+                    setNumberColor(this, floorString)
+                }
+                articleReadItemCenterbarTextViewLike.apply {
+                    val likeString = StringUtils.sortDecimal(StringUtils.notNullString(centerBarItem.like))
+                    text = likeString.toString()
+                    setNumberColor(this, likeString)
+                    val like = try {
+                        StringUtils.notNullString(centerBarItem.like).toInt()
+                    } catch (e: Exception) {
+                        0
+                    }
+                    setTextColor(
+                        ResourcesUtils.getColor(
+                            itemView.context,
+                            if (like > 1000) {
+                                R.attr.tangerine
+                            } else {
+                                R.attr.lightBlueGrey
+                            }
+                        )
+                    )
+                }
+            }
         }
     }
 
-    inner class ViewHolderComment(v: View) : RecyclerView.ViewHolder(v) {
-        val textView_auth: TextView
-        val textView_text: AppCompatTextView
-        val main: LinearLayout
+    inner class ViewHolderComment(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding = ArticleReadItemCommitBinding.bind(view)
 
-        init {
-            textView_auth = v.findViewById(R.id.article_read_item_commit_textview_auth)
-            textView_text = v.findViewById(R.id.article_read_item_commit_textView_text)
-            main = v.findViewById(R.id.article_read_item_commit_main)
+        fun onBind(commentItem: Item.CommentItem) {
+            binding.apply {
+
+                articleReadItemCommitTextViewText.apply {
+                    StringUtils.TextViewAutoSplitFix(this)
+                    movementMethod = TextViewMovementMethod(context)
+                    val future = PrecomputedTextCompat.getTextFuture(
+                        StringUtils.ColorString(commentItem.text),
+                        textMetricsParamsCompat,
+                        null
+                    )
+                    setTextFuture(future)
+                }
+                articleReadItemCommitTextviewAuth.text = StringUtils.ColorString(commentItem.auth)
+            }
         }
     }
 
-    inner class ViewHolderCommitBar(v: View) : RecyclerView.ViewHolder(v) {
-        val textView_floor: TextView
-        val textView_time: TextView
-        val textView_like: TextView
-        val main: LinearLayout
+    inner class ViewHolderCommitBar(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding = ArticleReadItemCommitBarBinding.bind(view)
 
-        init {
-            textView_floor = v.findViewById(R.id.article_read_item_commit_textView_floor)
-            textView_time = v.findViewById(R.id.article_read_item_commit_textView_time)
-            textView_like = v.findViewById(R.id.aarticle_read_item_commit_textView_like)
-            main = v.findViewById(R.id.article_read_item_commit_main)
+        fun onBind(commentBarItem: Item.CommentBarItem) {
+            binding.apply {
+                articleReadItemCommitTextViewTime.text = commentBarItem.time
+                articleReadItemCommitTextViewFloor.text = commentBarItem.floor
+                val colorString = StringUtils.sortDecimal(StringUtils.notNullString(commentBarItem.like))
+                aarticleReadItemCommitTextViewLike.text = colorString.toString()
+                setNumberColor(aarticleReadItemCommitTextViewLike, colorString)
+            }
         }
     }
 
-    inner class ViewHolderCommitSort(v: View?) : RecyclerView.ViewHolder(v!!)
-
-    private val inflater: LayoutInflater
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(viewType, parent, false)
         when (viewType) {
-            0 -> {
-                val view1 = inflater.inflate(R.layout.article_read_item_header, parent, false)
-                // view1.setOnClickListener(this);
-                // view1.setOnLongClickListener(this);
-                return ViewHolderHeader(view1)
+            R.layout.article_read_item_header -> {
+                return ViewHolderHeader(view)
             }
-            1 -> {
-                val view2 = inflater.inflate(R.layout.article_read_item_content, parent, false)
-                // view1.setOnClickListener(this);
-                // view1.setOnLongClickListener(this);
-                return ViewHolderContent(view2)
+            R.layout.article_read_item_content -> {
+                return ViewHolderContent(view)
             }
-            2 -> {
-                val view3 = inflater.inflate(R.layout.article_read_item_image, parent, false)
-                // view1.setOnClickListener(this);
-                // view1.setOnLongClickListener(this);
-                return ViewHolderContentImage(view3)
+            R.layout.article_read_item_image -> {
+                return ViewHolderContentImage(view)
             }
-            3 -> {
-                val view4 = inflater.inflate(R.layout.article_read_item_center_bar, parent, false)
-                // view1.setOnClickListener(this);
-                // view1.setOnLongClickListener(this);
-                return ViewHolderCenterBar(view4)
+            R.layout.article_read_item_center_bar -> {
+                return ViewHolderCenterBar(view)
             }
-            4 -> {
-                val view5 = inflater.inflate(R.layout.article_read_item_commit, parent, false)
-                // view1.setOnClickListener(this);
-                // view1.setOnLongClickListener(this);
-                return ViewHolderComment(view5)
+            R.layout.article_read_item_commit -> {
+                return ViewHolderComment(view)
             }
-            5 -> {
-                val view6 = inflater.inflate(R.layout.article_read_item_commit_sort, parent, false)
-                // view1.setOnClickListener(this);
-                // view1.setOnLongClickListener(this);
-                return ViewHolderCommitSort(view6)
-            }
-            6 -> {
-                val view7 = inflater.inflate(R.layout.article_read_item_commit_bar, parent, false)
-                // view1.setOnClickListener(this);
-                // view1.setOnLongClickListener(this);
-                return ViewHolderCommitBar(view7)
+            R.layout.article_read_item_commit_bar -> {
+                return ViewHolderCommitBar(view)
             }
             else -> {
+                throw RuntimeException("non expected type")
             }
         }
-        throw RuntimeException("non expected type")
     }
 
     override fun getItemViewType(position: Int): Int {
-        var pos = 5
-        if (StringUtils.notNullString(data[position]["type"]).equals("header", ignoreCase = true)) {
-            pos = 0
-        } else if (StringUtils.notNullString(data[position]["type"])
-            .equals("content", ignoreCase = true)
-        ) {
-            pos = 1
-        } else if (StringUtils.notNullString(data[position]["type"])
-            .equals("content_image", ignoreCase = true)
-        ) {
-            pos = 2
-        } else if (StringUtils.notNullString(data[position]["type"])
-            .equals("center_bar", ignoreCase = true)
-        ) {
-            pos = 3
-        } else if (StringUtils.notNullString(data[position]["type"])
-            .equals("commit", ignoreCase = true)
-        ) {
-            pos = 4
-        } else if (StringUtils.notNullString(data[position]["type"])
-            .equals("commit_sort", ignoreCase = true)
-        ) {
-            pos = 5
-        } else if (StringUtils.notNullString(data[position]["type"])
-            .equals("commit_bar", ignoreCase = true)
-        ) {
-            pos = 6
+        return when (data[position]) {
+            is Item.HeaderItem -> R.layout.article_read_item_header
+            is Item.ContentLineItem -> R.layout.article_read_item_content
+            is Item.ImageItem -> R.layout.article_read_item_image
+            is Item.CenterBarItem -> R.layout.article_read_item_center_bar
+            is Item.CommentItem -> R.layout.article_read_item_commit
+            is Item.CommentBarItem -> R.layout.article_read_item_commit_bar
         }
-        return pos
     }
 
-    override fun onBindViewHolder(holderO: RecyclerView.ViewHolder, position: Int) {
-        holderO!!.itemView.tag = position
-        if (holderO is ViewHolderHeader) {
-            val holder = holderO
-            StringUtils.TextViewAutoSplitFix(holder.mTextView_title)
-            holder.mTextView_title.text = StringUtils.notNullString(data[position]["title"])
-            holder.mTextView_date.text = StringUtils.notNullString(data[position]["date"])
-            holder.mTextView_auth.text = StringUtils.notNullString(data[position]["auth"])
-            holder.mTextView_board.text = (
-                StringUtils.notNullString(data[position]["board"]) +
-                    " / " +
-                    StringUtils.notNullString(data[position]["class"])
-                )
-            holder.back.setOnClickListener { (context as Activity).onBackPressed() }
-        } else if (holderO is ViewHolderContent) {
-            val holder = holderO
-
-            // holder.mTextView_text.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("text"))));
-            // holder.mTextView_text.setText((StringUtils.notNullString(data.get(position).get("text"))));
-            StringUtils.TextViewAutoSplitFix(holder.mTextView_text)
-            // Log.d(this.getClass().getName(),"mText.getLineHeight() =
-            // "+holder.mTextView_text.getLineHeight());
-            // holder.mTextView_text.setLineSpacing(0, (float) (400d/StaticValue.densityDpi));
-            holder.mTextView_text.movementMethod = TextViewMovementMethod(context)
-            val future = PrecomputedTextCompat.getTextFuture(
-                StringUtils.ColorString(
-                    StringUtils.notNullString(data[position]["text"])
-                ),
-                holder.mTextView_text.textMetricsParamsCompat,
-                null
-            )
-            holder.mTextView_text.setTextFuture(future)
-        } else if (holderO is ViewHolderComment) {
-            val holder = holderO
-
-            // holder.textView_text.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("text"))));
-            // holder.mTextView_text.setText((StringUtils.notNullString(data.get(position).get("text"))));
-            StringUtils.TextViewAutoSplitFix(holder.textView_text)
-            holder.textView_text.movementMethod = TextViewMovementMethod(context)
-            // holder.textView_text.setLineSpacing(0, (float) (400d/StaticValue.densityDpi));
-            holder.textView_auth.text = StringUtils.ColorString(
-                StringUtils.notNullString(data[position]["auth"])
-            )
-            // holder.textView_time.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("time"))));
-            // holder.textView_floor.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("floor"))));
-            // holder.textView_like.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("like"))));
-            val index = data[position]["index"] as Int
-            if (index % 2 == 0) {
-                val typedValue = TypedValue()
-                val theme = context.theme
-                theme.resolveAttribute(R.attr.darkGreyTwo, typedValue, true)
-                @ColorInt val color = typedValue.data
-                holder.main.setBackgroundColor(color)
-            } else {
-                // holder.main.setBackgroundResource(R.color.black);
-                val typedValue = TypedValue()
-                val theme = context.theme
-                theme.resolveAttribute(R.attr.article_header, typedValue, true)
-                @ColorInt val color = typedValue.data
-                holder.main.setBackgroundColor(color)
-            }
-            val future = PrecomputedTextCompat.getTextFuture(
-                StringUtils.ColorString(
-                    StringUtils.notNullString(data[position]["text"])
-                ),
-                holder.textView_text.textMetricsParamsCompat,
-                null
-            )
-            holder.textView_text.setTextFuture(future)
-        } else if (holderO is ViewHolderCommitBar) {
-            val holder = holderO
-
-            // holder.textView_text.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("text"))));
-            // holder.mTextView_text.setText((StringUtils.notNullString(data.get(position).get("text"))));
-            // StringUtils.TextViewAutoSplitFix(holder.textView_text);
-            // holder.textView_text.setMovementMethod(new TextViewMovementMethod(context));
-            // holder.textView_auth.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("auth"))));
-            holder.textView_time.text = StringUtils.ColorString(
-                StringUtils.notNullString(data[position]["time"])
-            )
-            val floor_ = StringUtils.sortDecimal(
-                StringUtils.notNullString(data[position]["floor"])
-            )
-            holder.textView_floor.text = StringUtils.notNullString(data[position]["floor"])
-            // setNumberColor(holder.textView_floor,floor_);
-            val like_ = StringUtils.sortDecimal(
-                StringUtils.notNullString(data[position]["like"])
-            )
-            // holder.textView_floor.setText((StringUtils.notNullString(data.get(position).get("floor"))));
-            holder.textView_like.text = like_.toString()
-            setNumberColor(holder.textView_like, like_)
-
-            // holder.textView_floor.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("floor"))));
-            // holder.textView_like.setText(StringUtils.ColorString(StringUtils.notNullString(data.get(position).get("like"))));
-            val index = data[position]["index"] as Int
-            if (index % 2 == 0) {
-                val typedValue = TypedValue()
-                val theme = context.theme
-                theme.resolveAttribute(R.attr.darkGreyTwo, typedValue, true)
-                @ColorInt val color = typedValue.data
-                holder.main.setBackgroundColor(color)
-            } else {
-                // holder.main.setBackgroundResource(R.color.black);
-                val typedValue = TypedValue()
-                val theme = context.theme
-                theme.resolveAttribute(R.attr.article_header, typedValue, true)
-                @ColorInt val color = typedValue.data
-                holder.main.setBackgroundColor(color)
-            }
-        } else if (holderO is ViewHolderCommitSort) {
-            val holder = holderO
-        } else if (holderO is ViewHolderCenterBar) {
-            val holder = holderO
-            val floor_ = StringUtils.sortDecimal(
-                StringUtils.notNullString(data[position]["floor"])
-            )
-            holder.textView_floor.text = floor_.toString()
-            setNumberColor(holder.textView_floor, floor_)
-            val like_ = StringUtils.sortDecimal(
-                StringUtils.notNullString(data[position]["like"])
-            )
-            // holder.textView_floor.setText((StringUtils.notNullString(data.get(position).get("floor"))));
-            holder.textView_like.text = like_.toString()
-            setNumberColor(holder.textView_like, like_)
-            var like = 0
-            try {
-                like =
-                    StringUtils.notNullString(data[position]["like"]).toInt()
-            } catch (e: Exception) {
-            }
-            if (like > 1000) {
-                val typedValue = TypedValue()
-                val theme = context.theme
-                theme.resolveAttribute(R.attr.tangerine, typedValue, true)
-                @ColorInt val color = typedValue.data
-                holder.textView_like.setTextColor(color)
-            } else {
-                val typedValue = TypedValue()
-                val theme = context.theme
-                theme.resolveAttribute(R.attr.lightBlueGrey, typedValue, true)
-                @ColorInt val color = typedValue.data
-                holder.textView_like.setTextColor(color)
-            }
-            // StringUtils.TextViewAutoSplitFix(holder.mTextView_text);
-        } else if (holderO is ViewHolderContentImage) {
-            val holder = holderO
-            setImageView(holder.image, StringUtils.notNullString(data[position]["url"]))
-            val index = data[position]["index"] as Int
-            if (Math.abs(index % 2) == 1) {
-                val typedValue = TypedValue()
-                val theme = context.theme
-                theme.resolveAttribute(R.attr.darkGreyTwo, typedValue, true)
-                @ColorInt val color = typedValue.data
-                holder.main.setBackgroundColor(color)
-            } else {
-                // holder.main.setBackgroundResource(R.color.black);
-                val typedValue = TypedValue()
-                val theme = context.theme
-                theme.resolveAttribute(R.attr.article_header, typedValue, true)
-                @ColorInt val color = typedValue.data
-                holder.main.setBackgroundColor(color)
-            }
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+        val item = data[position]
+        if (viewHolder is ViewHolderHeader && item is Item.HeaderItem) {
+            viewHolder.onBind(item)
+        } else if (viewHolder is ViewHolderContent && item is Item.ContentLineItem) {
+            viewHolder.onBind(item)
+        } else if (viewHolder is ViewHolderComment && item is Item.CommentItem) {
+            viewHolder.onBind(item)
+            updateBackgroundColor(viewHolder, item.index)
+        } else if (viewHolder is ViewHolderCommitBar && item is Item.CommentBarItem) {
+            viewHolder.onBind(item)
+            updateBackgroundColor(viewHolder, item.index)
+        } else if (viewHolder is ViewHolderCenterBar && item is Item.CenterBarItem) {
+            viewHolder.onBind(item)
+        } else if (viewHolder is ViewHolderContentImage && item is Item.ImageItem) {
+            viewHolder.onBind(item)
+            updateBackgroundColor(viewHolder, item.index)
         }
     }
 
     private fun setNumberColor(tv: TextView, sd: SortDecimal) {
-        if (sd.isOverDecimal()) {
-            val typedValue = TypedValue()
-            val theme = context.theme
-            theme.resolveAttribute(R.attr.tangerine, typedValue, true)
-            @ColorInt val color = typedValue.data
-            tv.setTextColor(color)
+        tv.setTextColor(
+            ResourcesUtils.getColor(
+                tv.context,
+                if (sd.isOverDecimal()) {
+                    R.attr.tangerine
+                } else {
+                    R.attr.lightBlueGrey
+                }
+            )
+        )
+    }
+
+    private fun updateBackgroundColor(viewHolder: RecyclerView.ViewHolder, index: Int) {
+        viewHolder.itemView.apply {
+            setBackgroundColor(getBackgroundColor(context, index))
+        }
+    }
+
+    @ColorInt
+    private fun getBackgroundColor(context: Context, index: Int): Int {
+        val typedValue = TypedValue()
+        val theme = context.theme
+        return if (index % 2 == 0) {
+            theme.resolveAttribute(R.attr.darkGreyTwo, typedValue, true)
+            typedValue.data
         } else {
-            val typedValue = TypedValue()
-            val theme = context.theme
-            theme.resolveAttribute(R.attr.lightBlueGrey, typedValue, true)
-            @ColorInt val color = typedValue.data
-            tv.setTextColor(color)
+            theme.resolveAttribute(R.attr.article_header, typedValue, true)
+            typedValue.data
         }
     }
 
@@ -440,11 +304,11 @@ class ArticleReadAdapter(private val context: Context, private val data: List<Ma
                 .setControllerListener(controllerListener)
                 .setOldController(draweeView.controller)
                 .build()
-            val builder = GenericDraweeHierarchyBuilder(context.resources)
+            val builder = GenericDraweeHierarchyBuilder(draweeView.resources)
             val pf = PointF(0.5f, 0.5f)
             var hierarchy: GenericDraweeHierarchy? = null
             hierarchy = builder.setPressedStateOverlay(
-                context.resources.getDrawable(R.drawable.image_click)
+                draweeView.resources.getDrawable(R.drawable.image_click)
             )
                 .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setActualImageFocusPoint(pf) // .setBackground(context.getResources().getDrawable(R.drawable.image_backgroung))
@@ -461,40 +325,19 @@ class ArticleReadAdapter(private val context: Context, private val data: List<Ma
         return data.size
     }
 
-    // define interface
-    interface OnItemClickListener {
-        fun onItemClick(view: View?, position: Int)
-    }
+    sealed class Item {
+        data class HeaderItem(
+            val title: String,
+            val auth: String,
+            val date: String,
+            val type: String,
+            val board: String
+        ) : Item()
 
-    interface OnItemLongClickListener {
-        fun onItemClick(view: View?, position: Int)
-    }
-
-    private var mOnItemClickListener: OnItemClickListener? = null
-    private var mOnItemLongClickListener: OnItemLongClickListener? = null
-    fun setOnItemClickListener(listener: OnItemClickListener?) {
-        mOnItemClickListener = listener
-    }
-
-    fun setOnItemLongClickListener(listener: OnItemLongClickListener?) {
-        mOnItemLongClickListener = listener
-    }
-
-    override fun onClick(v: View) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener!!.onItemClick(v, v.tag as Int)
-        }
-    }
-
-    override fun onLongClick(v: View): Boolean {
-        if (mOnItemLongClickListener != null) {
-            mOnItemLongClickListener!!.onItemClick(v, v.tag as Int)
-            return true
-        }
-        return false
-    }
-
-    init {
-        inflater = LayoutInflater.from(context)
+        data class ContentLineItem(val text: String) : Item()
+        data class ImageItem(val index: Int, val url: String) : Item()
+        data class CenterBarItem(val like: String, val floor: String) : Item()
+        data class CommentItem(val index: Int, val text: String, val auth: String) : Item()
+        data class CommentBarItem(val index: Int, val time: String, val floor: String, val like: String) : Item()
     }
 }

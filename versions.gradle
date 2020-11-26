@@ -32,7 +32,8 @@ ext.versions = [
         'okhttp': '4.9.0',
         'okio': '2.8.0',
         'truth': '1.1',
-        'leakcanary': '2.5'
+        'leakcanary': '2.5',
+        'gson' : '2.8.6'
 ]
 
 ext.projectDeps = [
@@ -75,7 +76,8 @@ ext.deps = [
         ],
         'google': [
                 'material': "com.google.android.material:material:${versions.material}",
-                'truth': "com.google.truth:truth:${versions.truth}"
+                'truth': "com.google.truth:truth:${versions.truth}",
+                "gson" : "com.google.code.gson:gson:${versions.gson}"
         ],
         'jsoup': "org.jsoup:jsoup:${versions.jsoup}",
         'junit': "junit:junit:${versions.junit}",
