@@ -32,3 +32,6 @@ assembleDebug:
   artifacts:
     paths:
       - app/build/outputs/
+  only:
+    - merge_requests
+    - dev
