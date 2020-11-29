@@ -1,11 +1,11 @@
-def addRepos(RepositoryHandler handler) {
+static def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
 }
 
 ext.addRepos = this.&addRepos
 
-def addAllRepos(RepositoryHandler handler) {
+static def addAllRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
 }
