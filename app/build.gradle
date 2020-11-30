@@ -45,8 +45,20 @@ android {
     }
 }
 
-static def apiDomain() {
-    return "https://webptt.azurewebsites.net/"
+def apiDomain() {
+    def path = getRootProject().file('api.properties')
+    if (path.canRead()) {
+        def props = new Properties()
+        props.load(new FileInputStream(path))
+        if (props != null) {
+            return props['domain']
+        } else {
+            println 'some entries in \\\'api.properties\\\' not found!'
+        }
+    } else {
+        println 'Use CI Variables'
+        return System.getenv('domain')
+    }
 }
 
 static def demoHotArticleUrl(){
