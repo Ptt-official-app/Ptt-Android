@@ -11,20 +11,23 @@ import tw.y_studio.ptt.R
 import tw.y_studio.ptt.utils.StringUtils.TextViewAutoSplitFix
 import tw.y_studio.ptt.utils.StringUtils.notNullString
 
-class SearchBoardsAdapter(private val context: Context, private val data: List<Map<String, Any>>) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
+class SearchBoardsAdapter(
+    private val data: List<Map<String, Any>>
+) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+    private var ctx: Context? = null
     private var likeOnClickListener: View.OnClickListener? = null
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        ctx = parent.context
         return when (viewType) {
             TYPE0 -> {
-                val view = inflater.inflate(R.layout.search_boards_item, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.search_boards_item, parent, false)
                 ViewHolder(view)
             }
             TYPE1 -> {
-                val view = inflater.inflate(R.layout.search_boards_item_2, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.search_boards_item_2, parent, false)
                 ViewHolder2(view)
             }
             else -> throw IllegalStateException("illegal view type: $viewType")
@@ -32,7 +35,7 @@ class SearchBoardsAdapter(private val context: Context, private val data: List<M
     }
 
     override fun getItemViewType(position: Int): Int {
-        return context.getSharedPreferences("MainSetting", Context.MODE_PRIVATE).getInt("SEARCHSTYLE", 0)
+        return ctx?.getSharedPreferences("MainSetting", Context.MODE_PRIVATE)?.getInt("SEARCHSTYLE", TYPE0) ?: TYPE0
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -42,20 +45,19 @@ class SearchBoardsAdapter(private val context: Context, private val data: List<M
                     textViewTitle.text = notNullString(data[position]["title"])
                     TextViewAutoSplitFix(holder.textViewTitle)
                     like.tag = position
-                    (data[position]["like"] as? Boolean)?.let {
-                        if (it) {
-                            like.setColorFilter(context.resources.getColor(R.color.tangerine, context.theme))
-                        } else {
-                            like.setColorFilter(context.resources.getColor(R.color.slateGrey, context.theme))
+                    ctx?.apply {
+                        (data[position]["like"] as? Boolean)?.let {
+                            if (it) {
+                                like.setColorFilter(this.resources.getColor(R.color.tangerine, this.theme))
+                            } else {
+                                like.setColorFilter(this.resources.getColor(R.color.slateGrey, this.theme))
+                            }
                         }
                     }
-
                     like.setOnClickListener(likeOnClickListener)
-                    itemView.setOnClickListener { v: View? -> mOnItemClickListener?.onItemClick(v, holder.adapterPosition) }
-                    itemView.setOnLongClickListener { v: View? ->
-                        mOnItemLongClickListener?.onItemClick(
-                            v, holder.adapterPosition
-                        )
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, holder.adapterPosition) }
+                    itemView.setOnLongClickListener {
+                        mOnItemLongClickListener?.onItemClick(it, holder.adapterPosition)
                         true
                     }
                 }
@@ -66,19 +68,19 @@ class SearchBoardsAdapter(private val context: Context, private val data: List<M
                     holder.textViewSubtitle.text = notNullString(data[position]["subtitle"])
                     TextViewAutoSplitFix(holder.textViewTitle)
                     holder.like.tag = position
-                    (data[position]["like"] as? Boolean)?.let {
-                        if (it) {
-                            like.setColorFilter(context.resources.getColor(R.color.tangerine, context.theme))
-                        } else {
-                            like.setColorFilter(context.resources.getColor(R.color.slateGrey, context.theme))
+                    ctx?.apply {
+                        (data[position]["like"] as? Boolean)?.let {
+                            if (it) {
+                                like.setColorFilter(this.resources.getColor(R.color.tangerine, this.theme))
+                            } else {
+                                like.setColorFilter(this.resources.getColor(R.color.slateGrey, this.theme))
+                            }
                         }
                     }
                     like.setOnClickListener(likeOnClickListener)
-                    itemView.setOnClickListener { v: View? -> mOnItemClickListener?.onItemClick(v, holder.adapterPosition) }
-                    itemView.setOnLongClickListener { v: View? ->
-                        mOnItemLongClickListener?.onItemClick(
-                            v, holder.adapterPosition
-                        )
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, holder.adapterPosition) }
+                    itemView.setOnLongClickListener {
+                        mOnItemLongClickListener?.onItemClick(it, holder.adapterPosition)
                         true
                     }
                 }

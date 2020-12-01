@@ -78,7 +78,7 @@ public class HotBoardsFragment extends BaseFragment {
                     }
                 });
 
-        mHotBoardsListAdapter = new HotBoardsListAdapter(getCurrentActivity(), data);
+        mHotBoardsListAdapter = new HotBoardsListAdapter(data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
