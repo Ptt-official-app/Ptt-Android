@@ -37,7 +37,7 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
         if (viewHolder instanceof FavoriteBoardsListAdapter.ViewHolderEdit) {
             FavoriteBoardsListAdapter.ViewHolderEdit view =
                     (FavoriteBoardsListAdapter.ViewHolderEdit) viewHolder;
-            view.unfav.setTag(position);
+            view.getUnfav().setTag(position);
         }
     }
 
