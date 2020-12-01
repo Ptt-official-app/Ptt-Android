@@ -33,7 +33,8 @@ ext.versions = [
         'okio': '2.8.0',
         'truth': '1.1',
         'leakcanary': '2.5',
-        'gson' : '2.8.6'
+        'gson' : '2.8.6',
+        'coroutines' : '1.4.2'
 ]
 
 ext.projectDeps = [
@@ -47,6 +48,10 @@ ext.deps = [
         'kotlin'  : [
                 'stdlib': [
                         'jdk8': "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+                ],
+                'coroutines': [
+                        'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+                        'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
                 ]
         ],
         'androidX': [

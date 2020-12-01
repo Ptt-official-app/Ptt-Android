@@ -96,6 +96,8 @@ dependencies {
 
     // Kotlin
     implementation deps.kotlin.stdlib.jdk8
+    implementation deps.kotlin.coroutines.core
+    implementation deps.kotlin.coroutines.android
     // Square
     implementation deps.square.okhttp
     implementation deps.square.okio
