@@ -1,14 +1,17 @@
 package tw.y_studio.ptt.api
 
+import com.google.gson.Gson
 import okhttp3.FormBody
 import okhttp3.Request
 import okhttp3.RequestBody
 import org.json.JSONObject
+import tw.y_studio.ptt.extension.fromJson
+import tw.y_studio.ptt.model.PostRankResponse
 import tw.y_studio.ptt.utils.Log
+import java.io.IOException
 import kotlin.jvm.Throws
 
 class PostRankAPI() : BaseAPIHelper() {
-    private val _data: MutableMap<String, Any> = mutableMapOf()
 
     enum class PostRank(val value: Int) {
         Like(1), Dislike(-1), None(0)
@@ -20,8 +23,7 @@ class PostRankAPI() : BaseAPIHelper() {
         aid: String,
         pttId: String,
         rank: PostRank
-    ): MutableMap<String, Any> {
-        _data.clear()
+    ) {
         val body: RequestBody = FormBody.Builder().build()
         val request = Request.Builder()
             .post(body)
@@ -38,15 +40,9 @@ class PostRankAPI() : BaseAPIHelper() {
             throw Exception("Error Code : $code")
         } else {
             val responseBody = response.body
-            val cont = responseBody!!.string()
-            val all = JSONObject(cont)
-            // Log.d("API","GetRankByPost = "+all.toString());
-            _data["Rank"] = all.getInt("rank")
-            _data["PTTID"] = all.getString("pttid")
-            _data["no"] = all.getString("no")
-            _data["Board"] = all.getString("board")
-            _data["AID"] = all.getString("aid")
+            responseBody?.let {
+                val postRank = Gson().fromJson<PostRankResponse>(it.string())
+            } ?: throw IOException("No response body!")
         }
-        return _data
     }
 }
