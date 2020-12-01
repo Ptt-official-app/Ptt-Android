@@ -45,3 +45,10 @@ ktlint 的 code style 參考自 [kotlinlang.org](https://kotlinlang.org/docs/ref
 #### google-java-format
 
 Google 的 format 工具，專案裡把縮排的規則改成 4 格。
+
+## Configuration
+
+### API
+
+請各位開發者自行在專案 root 建立 `api.properties`，並在裡面加入：
+> domain=開發版 server api domain
