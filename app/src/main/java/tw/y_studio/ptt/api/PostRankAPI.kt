@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import okhttp3.FormBody
 import okhttp3.Request
 import okhttp3.RequestBody
-import org.json.JSONObject
 import tw.y_studio.ptt.extension.fromJson
 import tw.y_studio.ptt.model.PostRankResponse
 import tw.y_studio.ptt.utils.Log
