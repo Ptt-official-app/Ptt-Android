@@ -226,20 +226,12 @@ class HotArticleFilterAdapter(
     }
 
     init {
-        if (true) {
-            val typedValue = TypedValue()
-            val theme = context.theme
-            theme.resolveAttribute(R.attr.slateGrey, typedValue, true)
-            @ColorInt val color = typedValue.data
-            ringColor = color
-        }
-        if (true) {
-            val typedValue = TypedValue()
-            val theme = context.theme
-            theme.resolveAttribute(R.attr.paleGrey, typedValue, true)
-            @ColorInt val color = typedValue.data
-            ringBackgroundColor = color
-        }
+        val typedValue = TypedValue()
+        val theme = context.theme
+        theme.resolveAttribute(R.attr.slateGrey, typedValue, true)
+        ringColor = typedValue.data
+        theme.resolveAttribute(R.attr.paleGrey, typedValue, true)
+        ringBackgroundColor = typedValue.data
     }
 
     companion object {
