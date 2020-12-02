@@ -55,9 +55,9 @@ class SearchBoardsAdapter(
                         }
                     }
                     like.setOnClickListener(likeOnClickListener)
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, holder.adapterPosition) }
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
                     itemView.setOnLongClickListener {
-                        mOnItemLongClickListener?.onItemClick(it, holder.adapterPosition)
+                        mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
                     }
                 }
@@ -78,9 +78,9 @@ class SearchBoardsAdapter(
                         }
                     }
                     like.setOnClickListener(likeOnClickListener)
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, holder.adapterPosition) }
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
                     itemView.setOnLongClickListener {
-                        mOnItemLongClickListener?.onItemClick(it, holder.adapterPosition)
+                        mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
                     }
                 }

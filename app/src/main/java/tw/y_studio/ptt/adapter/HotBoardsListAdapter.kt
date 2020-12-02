@@ -46,9 +46,9 @@ class HotBoardsListAdapter(
                             notNullString(data[position]["onlineColor"])
                         )
                     )
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, holder.adapterPosition) }
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
                     itemView.setOnLongClickListener {
-                        mOnItemLongClickListener?.onItemClick(it, holder.adapterPosition)
+                        mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
                     }
                 }
@@ -58,9 +58,9 @@ class HotBoardsListAdapter(
                     textViewTitle.text = notNullString(data[position]["title"])
                     textViewSubtitle.text = notNullString(data[position]["subtitle"])
                     textViewOnlinePeople.text = notNullString(data[position]["online"])
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, holder.adapterPosition) }
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
                     itemView.setOnLongClickListener {
-                        mOnItemLongClickListener?.onItemClick(it, holder.adapterPosition)
+                        mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
                     }
                 }

@@ -53,9 +53,9 @@ class FavoriteBoardsListAdapter(
                             notNullString(data[position]?.get("onlineColor"))
                         )
                     )
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, holder.adapterPosition) }
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
                     holder.itemView.setOnLongClickListener {
-                        mOnItemLongClickListener?.onItemClick(it, holder.adapterPosition)
+                        mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
                     }
                 }
@@ -72,9 +72,9 @@ class FavoriteBoardsListAdapter(
                     }
                     unfav.tag = notNullString(data[position]?.get("title"))
                     unfav.setOnClickListener(dislikeOnClickListener)
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, holder.adapterPosition) }
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
                     itemView.setOnLongClickListener {
-                        mOnItemLongClickListener?.onItemClick(it, holder.adapterPosition)
+                        mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
                     }
                 }
