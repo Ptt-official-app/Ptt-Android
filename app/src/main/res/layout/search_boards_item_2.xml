@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:foreground="?android:attr/selectableItemBackground"
-    android:paddingLeft="20sp"
+    android:paddingStart="20sp"
     android:paddingTop="8sp"
-    android:paddingRight="5sp"
+    android:paddingEnd="5sp"
     android:paddingBottom="8sp">
 
     <LinearLayout
@@ -47,4 +46,5 @@
         android:padding="15sp"
         android:tint="?attr/slateGrey"
         app:srcCompat="@drawable/ic_home_fragment_item_favorite_24dp" />
+
 </LinearLayout>

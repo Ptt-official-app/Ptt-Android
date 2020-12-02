@@ -51,7 +51,7 @@ public class PersonInfoFragment extends BaseFragment {
         Bundle bundle = getArguments(); // 取得Bundle
         final String title_ = bundle.getString("Title");
 
-        mdapter = new SearchBoardsAdapter(getCurrentActivity(), data);
+        mdapter = new SearchBoardsAdapter(data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
