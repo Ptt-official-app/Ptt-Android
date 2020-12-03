@@ -16,7 +16,7 @@
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:networkSecurityConfig="@xml/network_security_config">
-        <activity android:name=".HomeActivity"
+        <activity android:name=".ui.HomeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize|navigation|screenLayout|smallestScreenSize|fontScale|navigation|keyboard"
             android:launchMode="singleTask">
             <intent-filter>

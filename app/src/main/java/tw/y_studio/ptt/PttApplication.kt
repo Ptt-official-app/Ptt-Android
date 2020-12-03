@@ -11,9 +11,9 @@ import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFact
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.core.ImagePipelineFactory
 import okhttp3.OkHttpClient
-import tw.y_studio.ptt.fresco.LolipopBitmapMemoryCacheSupplier
-import tw.y_studio.ptt.fresco.MyOkHttpNetworkFetcher
 import tw.y_studio.ptt.utils.OkHttpUtils
+import tw.y_studio.ptt.utils.fresco.LolipopBitmapMemoryCacheSupplier
+import tw.y_studio.ptt.utils.fresco.MyOkHttpNetworkFetcher
 
 class PttApplication : MultiDexApplication() {
     private var mOkHttpClient: OkHttpClient? = null

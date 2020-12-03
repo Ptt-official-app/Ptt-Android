@@ -8,7 +8,7 @@ import org.json.JSONException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import tw.y_studio.ptt.api.SearchBoardAPI
+import tw.y_studio.ptt.network.api.SearchBoardAPI
 
 class SearchBoardRemoteDataSourceTest {
 

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.databinding.ArticleListItemBinding
 import tw.y_studio.ptt.databinding.ArticleListItemDeleteBinding
-import tw.y_studio.ptt.model.PartialPost
+import tw.y_studio.ptt.network.model.PartialPost
 
 class ArticleListAdapter(
     private val partialPostList: List<PartialPost>,

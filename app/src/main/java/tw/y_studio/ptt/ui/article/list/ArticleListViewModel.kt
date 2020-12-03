@@ -6,7 +6,7 @@ import android.os.Message
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import tw.y_studio.ptt.model.PartialPost
+import tw.y_studio.ptt.network.model.PartialPost
 import tw.y_studio.ptt.source.remote.post.IPostListRemoteDataSource
 import tw.y_studio.ptt.utils.Log
 import java.util.*

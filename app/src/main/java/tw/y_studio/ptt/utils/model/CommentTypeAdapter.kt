@@ -3,7 +3,7 @@ package tw.y_studio.ptt.utils.model
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import tw.y_studio.ptt.model.Comment
+import tw.y_studio.ptt.network.model.Comment
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

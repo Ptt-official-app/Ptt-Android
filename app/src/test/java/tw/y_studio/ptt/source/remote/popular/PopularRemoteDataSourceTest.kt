@@ -8,7 +8,7 @@ import org.json.JSONException
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import tw.y_studio.ptt.api.PopularBoardListAPI
+import tw.y_studio.ptt.network.api.PopularBoardListAPI
 
 class PopularRemoteDataSourceTest {
     private lateinit var popularRemoteDataSource: IPopularRemoteDataSource

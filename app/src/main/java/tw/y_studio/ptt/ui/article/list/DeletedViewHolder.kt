@@ -3,7 +3,7 @@ package tw.y_studio.ptt.ui.article.list
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
 import tw.y_studio.ptt.databinding.ArticleListItemDeleteBinding
-import tw.y_studio.ptt.model.PartialPost
+import tw.y_studio.ptt.network.model.PartialPost
 import tw.y_studio.ptt.utils.ResourcesUtils
 
 class DeletedViewHolder(private val binding: ArticleListItemDeleteBinding) : RecyclerView.ViewHolder(binding.root) {

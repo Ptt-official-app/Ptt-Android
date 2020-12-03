@@ -12,10 +12,10 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
 import tw.y_studio.ptt.databinding.FragmentSettingBinding
-import tw.y_studio.ptt.fragment.LoginPageFragment
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.ClickFix
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
+import tw.y_studio.ptt.ui.fragment.LoginPageFragment
 import tw.y_studio.ptt.utils.turnOnUrl
 
 class SettingFragment : BaseFragment() {

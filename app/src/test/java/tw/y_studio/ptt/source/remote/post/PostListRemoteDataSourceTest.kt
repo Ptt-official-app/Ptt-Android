@@ -6,8 +6,8 @@ import io.mockk.impl.annotations.MockK
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import tw.y_studio.ptt.api.PostListAPI
-import tw.y_studio.ptt.model.PartialPost
+import tw.y_studio.ptt.network.api.PostListAPI
+import tw.y_studio.ptt.network.model.PartialPost
 
 class PostListRemoteDataSourceTest {
 

@@ -15,17 +15,17 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.api.GetPostRankAPIHelper
-import tw.y_studio.ptt.api.SetPostRankAPIHelper
-import tw.y_studio.ptt.api.SetPostRankAPIHelper.iRank
 import tw.y_studio.ptt.databinding.ArticleReadFragmentLayoutBinding
-import tw.y_studio.ptt.di.Injection
-import tw.y_studio.ptt.fragment.LoginPageFragment
-import tw.y_studio.ptt.ptt.AidConverter
+import tw.y_studio.ptt.network.api.GetPostRankAPIHelper
+import tw.y_studio.ptt.network.api.SetPostRankAPIHelper
+import tw.y_studio.ptt.network.api.SetPostRankAPIHelper.iRank
+import tw.y_studio.ptt.network.ptt.AidConverter
 import tw.y_studio.ptt.source.remote.post.IPostRemoteDataSource
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
+import tw.y_studio.ptt.ui.fragment.LoginPageFragment
 import tw.y_studio.ptt.utils.*
+import tw.y_studio.ptt.utils.di.Injection
 import java.util.*
 import java.util.regex.Pattern
 

@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import tw.y_studio.ptt.R
 import tw.y_studio.ptt.databinding.ArticleListFragmentLayoutBinding
-import tw.y_studio.ptt.di.Injection
-import tw.y_studio.ptt.fragment.ArticleListSearchFragment
-import tw.y_studio.ptt.fragment.PostArticleFragment
-import tw.y_studio.ptt.model.PartialPost
+import tw.y_studio.ptt.network.model.PartialPost
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.ClickFix
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
 import tw.y_studio.ptt.ui.article.read.ArticleReadFragment
+import tw.y_studio.ptt.ui.fragment.ArticleListSearchFragment
+import tw.y_studio.ptt.ui.fragment.PostArticleFragment
 import tw.y_studio.ptt.utils.Log
+import tw.y_studio.ptt.utils.di.Injection
 import tw.y_studio.ptt.utils.observeNotNull
 
 class ArticleListFragment : BaseFragment() {
