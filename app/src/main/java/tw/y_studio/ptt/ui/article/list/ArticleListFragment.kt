@@ -58,7 +58,7 @@ class ArticleListFragment : BaseFragment() {
                 @Suppress("UNCHECKED_CAST")
                 override fun <T : ViewModel> create(modelClass: Class<T>): T {
                     return ArticleListViewModel(
-                        Injection.RemoteDataSource.postListRemoteDataSource,
+                        Injection.RemoteDataSource.postRemoteDataSourceImpl,
                         boardName
                     ) as T
                 }

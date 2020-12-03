@@ -17,7 +17,7 @@ class PostViewHolder(private val binding: ArticleListItemBinding) : RecyclerView
             articleListItemTextViewDate.text = data.date
             articleListItemTextViewClass.text = data.category
             articleListItemTextViewCommit.text = data.comments.toString()
-            articleListItemTextViewLike.text = data.like.toString()
+            articleListItemTextViewLike.text = data.goup.toString()
             articleListItemTextViewAuth.text = data.auth
             if (adapterPosition % 2 == 0) {
                 articleListItemMain.setBackgroundColor(ResourcesUtils.getColor(context, R.attr.darkGreyTwo))
