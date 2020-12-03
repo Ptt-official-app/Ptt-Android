@@ -148,7 +148,7 @@ public class FavoriteBoardsFragment extends BaseFragment {
                     }
                 };
 
-        mAdapter = new FavoriteBoardsListAdapter(getCurrentActivity(), data, mStartDragListener);
+        mAdapter = new FavoriteBoardsListAdapter(data, mStartDragListener);
         // mAdapter.setEditMode(true);
         ItemTouchHelper.Callback callback = new ItemMoveCallback(mAdapter);
         touchHelper = new ItemTouchHelper(callback);

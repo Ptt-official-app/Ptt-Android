@@ -118,7 +118,7 @@ public class SearchBoardsFragment extends BaseFragment {
                     }
                 });
 
-        mdapter = new SearchBoardsAdapter(getCurrentActivity(), data);
+        mdapter = new SearchBoardsAdapter(data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
