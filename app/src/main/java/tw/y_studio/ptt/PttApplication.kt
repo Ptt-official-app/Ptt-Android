@@ -1,6 +1,5 @@
 package tw.y_studio.ptt
 
-import android.app.ActivityManager
 import android.graphics.Bitmap
 import androidx.multidex.MultiDexApplication
 import com.facebook.cache.disk.DiskCacheConfig
@@ -11,7 +10,7 @@ import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFact
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.core.ImagePipelineFactory
 import okhttp3.OkHttpClient
-import tw.y_studio.ptt.fresco.LolipopBitmapMemoryCacheSupplier
+import tw.y_studio.ptt.fresco.BitmapMemoryCacheSupplier
 import tw.y_studio.ptt.fresco.MyOkHttpNetworkFetcher
 import tw.y_studio.ptt.utils.OkHttpUtils
 
@@ -63,11 +62,7 @@ class PttApplication : MultiDexApplication() {
                 .setMemoryTrimmableRegistry(NoOpMemoryTrimmableRegistry.getInstance())
                 .experiment()
                 .setUseDownsampligRatioForResizing(true)
-                .setBitmapMemoryCacheParamsSupplier(
-                    LolipopBitmapMemoryCacheSupplier(
-                        getSystemService(ACTIVITY_SERVICE) as ActivityManager
-                    )
-                )
+                .setBitmapMemoryCacheParamsSupplier(BitmapMemoryCacheSupplier())
                 .setResizeAndRotateEnabledForNetwork(true)
                 // .setMemoryChunkType(MemoryChunkType.BUFFER_MEMORY)
                 // .setImageTranscoderType(ImageTranscoderType.JAVA_TRANSCODER)
