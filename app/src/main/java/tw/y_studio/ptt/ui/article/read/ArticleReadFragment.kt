@@ -15,7 +15,6 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.api.GetPostRankAPIHelper
 import tw.y_studio.ptt.api.SetPostRankAPIHelper
 import tw.y_studio.ptt.api.SetPostRankAPIHelper.iRank
 import tw.y_studio.ptt.databinding.ArticleReadFragmentLayoutBinding
@@ -37,6 +36,7 @@ class ArticleReadFragment : BaseFragment() {
     private val data: MutableList<ArticleReadAdapter.Item> = ArrayList()
     private var fileName = ""
     private var board = ""
+    private var aid = ""
     private var articleTitle = ""
     private var articleBoard = ""
     private var articleAuth = " "
@@ -117,6 +117,7 @@ class ArticleReadFragment : BaseFragment() {
         if (matcher.find()) {
             board = matcher.group(1)
             fileName = matcher.group(2)
+            aid = AidConverter.urlToAid(orgUrl).aid
         }
         articleBoard = bundle.getString("board", "")
         articleTitle = bundle.getString("title", "")
@@ -135,38 +136,21 @@ class ArticleReadFragment : BaseFragment() {
     private lateinit var r1: Runnable
     private var orgUrl = ""
     private var floorNum = 0
-    private val dataTemp = mutableListOf<ArticleReadAdapter.Item>()
-    private var pushCount = 0
-    private val gettedUrl = false
     private var postRemoteDataSource: IPostRemoteDataSource = Injection.RemoteDataSource.postRemoteDataSourceImpl
-    private var getPostRankAPI: GetPostRankAPIHelper? = null
 
     // mAdapter.notifyDataSetChanged();
     private val dataFromApi: Unit
         private get() {
-            if (getPostRankAPI == null) {
-                val p = Pattern.compile(
-                    "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm"
-                )
-                val m = p.matcher(orgUrl)
-                if (m.find()) {
-                    val aid = AidConverter.urlToAid(orgUrl)
-                    getPostRankAPI = GetPostRankAPIHelper(context, aid.boardTitle, aid.aid)
-                } else {
-                    Log("onAR", "not match")
-                }
-            }
             r1 = Runnable {
                 runOnUI { binding.articleReadFragmentRefreshLayout.isRefreshing = true }
                 GattingData = true
                 Log("onAR", "get data from web start")
                 try {
-                    val post = postRemoteDataSource.getPostData(board, fileName)
-                    getPostRankAPI!!.get()
-                    pushCount = getPostRankAPI!!.like
+                    val post = postRemoteDataSource.getPost(board, fileName)
+                    val postRank = postRemoteDataSource.getPostRank(board, aid)
                     floorNum = post.comments.size
                     originalArticleTitle = post.title
-
+                    val dataTemp = mutableListOf<ArticleReadAdapter.Item>()
                     dataTemp.add(
                         ArticleReadAdapter.Item.HeaderItem(
                             post.title,
@@ -200,7 +184,7 @@ class ArticleReadFragment : BaseFragment() {
                     if (contentTemp.toString().isNotEmpty()) {
                         dataTemp.add(ArticleReadAdapter.Item.ContentLineItem(contentTemp.toString()))
                     }
-                    dataTemp.add(ArticleReadAdapter.Item.CenterBarItem(pushCount.toString(), floorNum.toString()))
+                    dataTemp.add(ArticleReadAdapter.Item.CenterBarItem(postRank.getLike().toString(), floorNum.toString()))
                     post.comments.forEachIndexed { index, comment ->
                         dataTemp.add(ArticleReadAdapter.Item.CommentItem(index, comment.content, comment.userid))
                         val imageUrl: List<String> = StringUtils.getImgUrl(StringUtils.notNullString(comment.content))
@@ -222,7 +206,7 @@ class ArticleReadFragment : BaseFragment() {
                         data.addAll(dataTemp)
                         mAdapter!!.notifyDataSetChanged()
                         binding.articleReadFragmentRefreshLayout.isRefreshing = false
-                        binding.articleReadItemTextViewLike.text = pushCount.toString() + ""
+                        binding.articleReadItemTextViewLike.text = postRank.getLike().toString()
                     }
                     Log("onAL", "get data from web over")
                 } catch (e: Exception) {
@@ -293,34 +277,21 @@ class ArticleReadFragment : BaseFragment() {
     }
 
     private fun rehreshRank() {
-        if (getPostRankAPI == null) {
-            val p = Pattern.compile(
-                "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm"
-            )
-            val m = p.matcher(orgUrl)
-            if (m.find()) {
-                val aid = AidConverter.urlToAid(orgUrl)
-                getPostRankAPI = GetPostRankAPIHelper(context, aid.boardTitle, aid.aid)
-            } else {
-                Log("onAR", "not match")
-            }
-        }
         r1 = Runnable {
             runOnUI { binding.articleReadFragmentRefreshLayout.isRefreshing = true }
             GattingData = true
             try {
-                getPostRankAPI!!.get()
-                pushCount = getPostRankAPI!!.like
+                val postRank = postRemoteDataSource.getPostRank(board, aid)
                 for (i in data.indices) {
                     val item = data[i]
                     if (item !is ArticleReadAdapter.Item.CenterBarItem) continue
-                    data[i] = ArticleReadAdapter.Item.CenterBarItem(pushCount.toString(), item.floor)
+                    data[i] = ArticleReadAdapter.Item.CenterBarItem(postRank.getLike().toString(), item.floor)
                     break
                 }
                 runOnUI {
                     binding.articleReadFragmentRefreshLayout.isRefreshing = false
                     mAdapter!!.notifyDataSetChanged()
-                    binding.articleReadItemTextViewLike.text = pushCount.toString() + ""
+                    binding.articleReadItemTextViewLike.text = postRank.getLike().toString()
                 }
                 Log("onAL", "get data from web over")
             } catch (e: Exception) {
