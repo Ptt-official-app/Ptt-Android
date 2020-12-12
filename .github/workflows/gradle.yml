@@ -6,6 +6,11 @@ on:
       - '*'
       - '!master'
       - '!release*'
+  pull_request:
+    branches:
+      - 'master'
+      - 'release*'
+      - 'dev'    
 
 jobs:
   test:
@@ -18,5 +23,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Build tests
-      run: bash ./gradlew assembleDebug
+    - name: Spotless Check
+      run: bash ./gradlew spotlessCheck    
+    - name: Build Test
+      run: bash ./gradlew assembleDebug testDebug
+    - name: Unit Test
+      run: bash ./gradlew testDebug
