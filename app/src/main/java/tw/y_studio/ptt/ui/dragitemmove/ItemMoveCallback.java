@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import tw.y_studio.ptt.adapter.FavoriteBoardsListAdapter;
-
 public class ItemMoveCallback extends ItemTouchHelper.Callback {
 
     private final ItemTouchHelperContract mAdapter;
@@ -33,14 +31,6 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
         return makeMovementFlags(dragFlags, 0);
     }
 
-    private void changeTag(RecyclerView.ViewHolder viewHolder, int position) {
-        if (viewHolder instanceof FavoriteBoardsListAdapter.ViewHolderEdit) {
-            FavoriteBoardsListAdapter.ViewHolderEdit view =
-                    (FavoriteBoardsListAdapter.ViewHolderEdit) viewHolder;
-            view.getUnfav().setTag(position);
-        }
-    }
-
     @Override
     public boolean onMove(
             RecyclerView recyclerView,
@@ -48,24 +38,15 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
             RecyclerView.ViewHolder target) {
         viewHolder.itemView.setTag(target.getAdapterPosition());
         target.itemView.setTag(viewHolder.getAdapterPosition());
-        // changeTag(viewHolder,target.getAdapterPosition());
-        // changeTag(target,viewHolder.getAdapterPosition());
 
         mAdapter.onRowMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-        // viewHolder.itemView.setTag(target.getAdapterPosition());
-        // target.itemView.setTag(viewHolder.getAdapterPosition());
         return true;
     }
 
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            if (viewHolder instanceof FavoriteBoardsListAdapter.ViewHolderEdit) {
-                FavoriteBoardsListAdapter.ViewHolderEdit myViewHolder =
-                        (FavoriteBoardsListAdapter.ViewHolderEdit) viewHolder;
-                mAdapter.onRowSelected(myViewHolder);
-            }
+            mAdapter.onRowSelected(viewHolder);
         }
 
         super.onSelectedChanged(viewHolder, actionState);
@@ -75,19 +56,15 @@ public class ItemMoveCallback extends ItemTouchHelper.Callback {
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
 
-        if (viewHolder instanceof FavoriteBoardsListAdapter.ViewHolderEdit) {
-            FavoriteBoardsListAdapter.ViewHolderEdit myViewHolder =
-                    (FavoriteBoardsListAdapter.ViewHolderEdit) viewHolder;
-            mAdapter.onRowClear(myViewHolder);
-        }
+        mAdapter.onRowClear(viewHolder);
     }
 
     public interface ItemTouchHelperContract {
 
         void onRowMoved(int fromPosition, int toPosition);
 
-        void onRowSelected(FavoriteBoardsListAdapter.ViewHolderEdit myViewHolder);
+        void onRowSelected(RecyclerView.ViewHolder myViewHolder);
 
-        void onRowClear(FavoriteBoardsListAdapter.ViewHolderEdit myViewHolder);
+        void onRowClear(RecyclerView.ViewHolder myViewHolder);
     }
 }
