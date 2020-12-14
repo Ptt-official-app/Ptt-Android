@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
 class ItemMoveCallback(
-    private val mAdapter: ItemTouchHelperContract
+    private val helperContract: ItemTouchHelperContract
 ) : ItemTouchHelper.Callback() {
     override fun isLongPressDragEnabled(): Boolean {
         return false
@@ -32,25 +32,25 @@ class ItemMoveCallback(
     ): Boolean {
         viewHolder.itemView.tag = target.adapterPosition
         target.itemView.tag = viewHolder.adapterPosition
-        mAdapter.onRowMoved(viewHolder.adapterPosition, target.adapterPosition)
+        helperContract.onRowMoved(viewHolder.adapterPosition, target.adapterPosition)
         return true
     }
 
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            mAdapter.onRowSelected(viewHolder)
+            helperContract.onRowSelected(viewHolder)
         }
         super.onSelectedChanged(viewHolder, actionState)
     }
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
         super.clearView(recyclerView, viewHolder)
-        mAdapter.onRowClear(viewHolder)
+        helperContract.onRowClear(viewHolder)
     }
 
     interface ItemTouchHelperContract {
         fun onRowMoved(fromPosition: Int, toPosition: Int)
-        fun onRowSelected(myViewHolder: RecyclerView.ViewHolder?)
-        fun onRowClear(myViewHolder: RecyclerView.ViewHolder?)
+        fun onRowSelected(viewHolder: RecyclerView.ViewHolder?)
+        fun onRowClear(viewHolder: RecyclerView.ViewHolder?)
     }
 }
