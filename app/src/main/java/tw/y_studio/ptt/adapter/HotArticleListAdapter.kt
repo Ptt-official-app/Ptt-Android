@@ -257,7 +257,6 @@ class HotArticleListAdapter(private val context: Context, private val data: List
         val textViewDate: TextView = v.findViewById(R.id.article_list_item_textView_date)
         val like: AppCompatImageButton = v.findViewById(R.id.article_list_item_imageButton_like)
         val dislike: AppCompatImageButton = v.findViewById(R.id.article_list_item_imageButton_dislike)
-        val more: AppCompatImageButton = v.findViewById(R.id.article_list_item_imageButton_more)
         val image: SimpleDraweeView = v.findViewById(R.id.article_list_item_picture)
     }
 
