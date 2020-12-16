@@ -99,9 +99,11 @@ class FavoriteBoardsListAdapter(
         notifyItemMoved(fromPosition, toPosition)
     }
 
-    override fun onRowSelected(myViewHolder: ViewHolderEdit) {}
+    override fun onRowSelected(viewHolder: RecyclerView.ViewHolder?) {
+    }
 
-    override fun onRowClear(myViewHolder: ViewHolderEdit) {}
+    override fun onRowClear(viewHolder: RecyclerView.ViewHolder?) {
+    }
 
     fun setDislikeOnClickListener(dislikeOnClickListener: View.OnClickListener?) {
         this.dislikeOnClickListener = dislikeOnClickListener
