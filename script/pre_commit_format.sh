@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env sh
 mkdir .git/hooks/
-echo "#!/bin/sh
+echo "#!/usr/bin/env sh
 #
 # An example hook script to verify what is about to be committed.
 # Called by \"git commit\" with no arguments.  The hook should
@@ -8,7 +8,6 @@ echo "#!/bin/sh
 # it wants to stop the commit.
 #
 # To enable this hook, rename this file to \"pre-commit\".
-source ~/.bash_profile
 ./gradlew formatCheck
 result=\$?
 SLASH='"\\"'
