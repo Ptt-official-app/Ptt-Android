@@ -2,7 +2,9 @@ package tw.y_studio.ptt.api
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import okhttp3.FormBody
 import okhttp3.Request
+import okhttp3.RequestBody
 import org.json.JSONObject
 import tw.y_studio.ptt.model.PartialPost
 import tw.y_studio.ptt.model.Post
@@ -10,6 +12,7 @@ import tw.y_studio.ptt.model.PostRank
 import tw.y_studio.ptt.utils.Log
 import tw.y_studio.ptt.utils.model.PartialPostTypeAdapter
 import tw.y_studio.ptt.utils.model.PostTypeAdapter
+import java.io.IOException
 
 class PostAPI : BaseAPIHelper() {
 
@@ -79,4 +82,34 @@ class PostAPI : BaseAPIHelper() {
         }
         return data
     }
+
+    @Throws(Exception::class)
+    fun setPostRank(
+        boardName: String,
+        aid: String,
+        pttId: String,
+        rank: PostRankMark
+    ) {
+        val body: RequestBody = FormBody.Builder().build()
+        val request = Request.Builder()
+            .post(body)
+            .url(
+                "$hostUrl/api/Rank/$boardName/$aid?pttid=$pttId&rank=${rank.value}"
+            )
+            .build()
+        Log("SetPostRankAPIHelper", "" + request.toString())
+        val call = okHttpClient!!.newCall(request)
+        val response = call.execute()
+        val code = response.code // can be any value
+        if (!response.isSuccessful && code != 200) {
+            // error
+            throw Exception("Error Code : $code")
+        } else {
+            response.body ?: throw IOException("No response body!")
+        }
+    }
+}
+
+enum class PostRankMark(val value: Int) {
+    Like(1), Dislike(-1), None(0)
 }

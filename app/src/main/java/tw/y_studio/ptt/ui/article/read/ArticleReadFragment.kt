@@ -15,8 +15,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.api.SetPostRankAPIHelper
-import tw.y_studio.ptt.api.SetPostRankAPIHelper.iRank
+import tw.y_studio.ptt.api.PostRankMark
 import tw.y_studio.ptt.databinding.ArticleReadFragmentLayoutBinding
 import tw.y_studio.ptt.di.Injection
 import tw.y_studio.ptt.fragment.LoginPageFragment
@@ -264,11 +263,11 @@ class ArticleReadFragment : BaseFragment() {
         val popupMenu = PopupMenu(currentActivity, view)
         popupMenu.menuInflater.inflate(R.menu.post_article_rank_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
-            var rank = iRank.non
+            var rank = PostRankMark.None
             when (item.itemId) {
-                R.id.post_article_rank_like -> rank = iRank.like
-                R.id.post_article_rank_dislike -> rank = iRank.dislike
-                R.id.post_article_rank_non -> rank = iRank.non
+                R.id.post_article_rank_like -> rank = PostRankMark.Like
+                R.id.post_article_rank_dislike -> rank = PostRankMark.Dislike
+                R.id.post_article_rank_non -> rank = PostRankMark.None
             }
             setRank(rank)
             true
@@ -276,7 +275,7 @@ class ArticleReadFragment : BaseFragment() {
         popupMenu.show()
     }
 
-    private fun rehreshRank() {
+    private fun refreshRank() {
         r1 = Runnable {
             runOnUI { binding.articleReadFragmentRefreshLayout.isRefreshing = true }
             GattingData = true
@@ -315,36 +314,36 @@ class ArticleReadFragment : BaseFragment() {
     }
 
     private var mDialog: ProgressDialog? = null
-    private fun setRank(rank_: iRank) {
+    private fun setRank(rank: PostRankMark) {
         mDialog = ProgressDialog.show(currentActivity, "", "Please wait.").apply {
             getWindow()!!.setBackgroundDrawableResource(R.drawable.dialog_background)
             object : Thread() {
                 override fun run() {
                     try {
-                        val setPostRankAPI: SetPostRankAPIHelper
+                        val id = currentActivity
+                            .getSharedPreferences("MainSetting", Context.MODE_PRIVATE)
+                            .getString("APIPTTID", "")
+                        if (id.isNullOrEmpty()) {
+                            throw Exception("No Ptt id")
+                        }
                         val p = Pattern.compile(
                             "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm"
                         )
                         val m = p.matcher(orgUrl)
-                        setPostRankAPI = if (m.find()) {
+                        if (m.find()) {
                             val aid = AidConverter.urlToAid(orgUrl)
-                            SetPostRankAPIHelper(
-                                context, aid.boardTitle, aid.aid
+                            postRemoteDataSource.setPostRank(
+                                aid.boardTitle,
+                                aid.aid,
+                                id,
+                                rank
                             )
                         } else {
                             throw Exception("error")
-                            // DebugUtils.Log("onAR", "not match");
                         }
-                        val id = currentActivity
-                            .getSharedPreferences("MainSetting", Context.MODE_PRIVATE)
-                            .getString("APIPTTID", "")
-                        if (id!!.length == 0) {
-                            throw Exception("No Ptt id")
-                        }
-                        setPostRankAPI[id, rank_]
                         runOnUI {
                             dismiss()
-                            rehreshRank()
+                            refreshRank()
                         }
                     } catch (e: Exception) {
                         runOnUI {
