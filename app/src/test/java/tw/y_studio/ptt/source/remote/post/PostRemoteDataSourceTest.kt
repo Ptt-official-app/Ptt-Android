@@ -7,6 +7,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import tw.y_studio.ptt.api.PostAPI
+import tw.y_studio.ptt.api.PostRankMark
 import tw.y_studio.ptt.model.PartialPost
 import tw.y_studio.ptt.model.Post
 
@@ -59,12 +60,12 @@ class PostRemoteDataSourceTest {
         Truth.assertThat(
             result == Post(
                 title = "",
-                "",
-                "",
-                "",
-                "",
-                "",
-                emptyList()
+                classString = "",
+                date = "",
+                auth = "",
+                authNickName = "",
+                content = "",
+                comments = emptyList()
             )
         )
     }
@@ -73,6 +74,13 @@ class PostRemoteDataSourceTest {
     fun get_post_list_data_then_throw_exception() {
         every { postAPI.getPostList(any(), any()) } throws Exception()
         postRemoteDataSource.getPostList("", 0)
+    }
+
+    @Test
+    fun set_post_rank_then_success() {
+        every { postAPI.setPostRank(any(), any(), any(), any()) } just Runs
+        postRemoteDataSource.setPostRank("", "", "", PostRankMark.None)
+        verify { postAPI.setPostRank(any(), any(), any(), any()) }
     }
 
     @Test
