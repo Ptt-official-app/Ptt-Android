@@ -74,7 +74,7 @@ public class RecyclerItemClickListener extends RecyclerView.SimpleOnItemTouchLis
 
             View childView = rv.findChildViewUnder(e.getX(), e.getY());
             if (childView != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
-                if (e.getY() > 0 && e.getY() > decorator.getStickyHolderHight()) {
+                if (e.getY() > 0 && e.getY() > decorator.getStickyHolderHeight()) {
                     clickListener.onItemClick(childView, rv.getChildAdapterPosition(childView));
                 } else {
                     clickListener.onItemClick(childView, 0);

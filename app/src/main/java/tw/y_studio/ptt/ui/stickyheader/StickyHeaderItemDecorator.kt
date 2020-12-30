@@ -1,209 +1,185 @@
-package tw.y_studio.ptt.ui.stickyheader;
+package tw.y_studio.ptt.ui.stickyheader
 
-import android.graphics.Canvas;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
+import android.graphics.Canvas
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class StickyHeaderItemDecorator(
+    private val adapter: StickyAdapter<RecyclerView.ViewHolder?, RecyclerView.ViewHolder?>
+) : ItemDecoration() {
 
-public class StickyHeaderItemDecorator extends RecyclerView.ItemDecoration {
-    private StickyAdapter adapter;
-    private int currentStickyPosition = RecyclerView.NO_POSITION;
-    private RecyclerView recyclerView;
-    private RecyclerView.ViewHolder currentStickyHolder;
-    private View lastViewOverlappedByHeader = null;
-    private int stickyHolderHight = 0;
+    private var currentStickyPosition = RecyclerView.NO_POSITION
+    private var recyclerView: RecyclerView? = null
+    private var currentStickyHolder: RecyclerView.ViewHolder? = null
+    private var lastViewOverlappedByHeader: View? = null
 
-    public int getStickyHolderHight() {
-        return stickyHolderHight;
-    }
+    var stickyHolderHeight = 0
 
-    public StickyHeaderItemDecorator(@NonNull StickyAdapter adapter) {
-        this.adapter = adapter;
-    }
-
-    public void attachToRecyclerView(@Nullable RecyclerView recyclerView) {
-        if (this.recyclerView == recyclerView) {
-            return; // nothing to do
+    fun attachToRecyclerView(recyclerView: RecyclerView?) {
+        if (this.recyclerView === recyclerView) {
+            return
         }
         if (this.recyclerView != null) {
-            destroyCallbacks(this.recyclerView);
+            destroyCallbacks(this.recyclerView)
         }
-        this.recyclerView = recyclerView;
+        this.recyclerView = recyclerView
         if (recyclerView != null) {
-            currentStickyHolder = adapter.onCreateHeaderViewHolder(recyclerView);
-            fixLayoutSize();
-            setupCallbacks();
+            currentStickyHolder = adapter.onCreateHeaderViewHolder(recyclerView)
+            fixLayoutSize()
+            setupCallbacks()
         }
     }
 
-    private void setupCallbacks() {
-        recyclerView.addItemDecoration(this);
+    private fun setupCallbacks() {
+        recyclerView?.addItemDecoration(this)
     }
 
-    private void destroyCallbacks(RecyclerView recyclerView) {
-        recyclerView.removeItemDecoration(this);
+    private fun destroyCallbacks(recyclerView: RecyclerView?) {
+        recyclerView?.removeItemDecoration(this)
     }
 
-    @Override
-    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        super.onDrawOver(c, parent, state);
-
-        RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
-        if (layoutManager == null) {
-            return;
-        }
-
-        int topChildPosition = RecyclerView.NO_POSITION;
-        if (layoutManager instanceof LinearLayoutManager) {
-            topChildPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
+    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDrawOver(c, parent, state)
+        val layoutManager = parent.layoutManager ?: return
+        var topChildPosition = RecyclerView.NO_POSITION
+        if (layoutManager is LinearLayoutManager) {
+            topChildPosition = layoutManager.findFirstVisibleItemPosition()
         } else {
-            View topChild = parent.getChildAt(0);
+            val topChild = parent.getChildAt(0)
             if (topChild != null) {
-                topChildPosition = parent.getChildAdapterPosition(topChild);
+                topChildPosition = parent.getChildAdapterPosition(topChild)
             }
         }
-
         if (topChildPosition == RecyclerView.NO_POSITION) {
-            return;
+            return
         }
 
-        View viewOverlappedByHeader =
-                getChildInContact(parent, currentStickyHolder.itemView.getBottom());
-        if (viewOverlappedByHeader == null) {
-            if (lastViewOverlappedByHeader != null) {
-                viewOverlappedByHeader = lastViewOverlappedByHeader;
-            } else {
-                viewOverlappedByHeader = parent.getChildAt(topChildPosition);
-            }
-        }
-        lastViewOverlappedByHeader = viewOverlappedByHeader;
-
-        int overlappedByHeaderPosition = parent.getChildAdapterPosition(viewOverlappedByHeader);
-        int overlappedHeaderPosition;
-        int preOverlappedPosition;
+        val viewOverlappedByHeader = getChildInContact(parent, currentStickyHolder!!.itemView.bottom)
+        lastViewOverlappedByHeader =
+            viewOverlappedByHeader ?: lastViewOverlappedByHeader ?: parent.getChildAt(topChildPosition)
+        val overlappedByHeaderPosition = parent.getChildAdapterPosition(viewOverlappedByHeader!!)
+        val overlappedHeaderPosition: Int
+        val preOverlappedPosition: Int
         if (overlappedByHeaderPosition > 0) {
-            preOverlappedPosition =
-                    adapter.getHeaderPositionForItem(overlappedByHeaderPosition - 1);
-            overlappedHeaderPosition = adapter.getHeaderPositionForItem(overlappedByHeaderPosition);
+            preOverlappedPosition = adapter.getHeaderPositionForItem(overlappedByHeaderPosition - 1)
+            overlappedHeaderPosition = adapter.getHeaderPositionForItem(overlappedByHeaderPosition)
         } else {
-            preOverlappedPosition = adapter.getHeaderPositionForItem(topChildPosition);
-            overlappedHeaderPosition = preOverlappedPosition;
+            preOverlappedPosition = adapter.getHeaderPositionForItem(topChildPosition)
+            overlappedHeaderPosition = preOverlappedPosition
         }
-
         if (preOverlappedPosition == RecyclerView.NO_POSITION) {
-            return;
+            return
         }
-
-        if (preOverlappedPosition != overlappedHeaderPosition
-                && shouldMoveHeader(viewOverlappedByHeader)) {
-            updateStickyHeader(topChildPosition, overlappedByHeaderPosition);
-            moveHeader(c, viewOverlappedByHeader);
+        if (preOverlappedPosition != overlappedHeaderPosition && shouldMoveHeader(viewOverlappedByHeader)) {
+            updateStickyHeader(topChildPosition, overlappedByHeaderPosition)
+            moveHeader(c, viewOverlappedByHeader)
         } else {
-            updateStickyHeader(topChildPosition, RecyclerView.NO_POSITION);
-            drawHeader(c);
+            updateStickyHeader(topChildPosition, RecyclerView.NO_POSITION)
+            drawHeader(c)
         }
     }
 
     // shouldMoveHeader returns the sticky header should move or not.
     // This method is for avoiding sinking/departing the sticky header into/from top of screen
-    private boolean shouldMoveHeader(View viewOverlappedByHeader) {
-        int dy = (viewOverlappedByHeader.getTop() - viewOverlappedByHeader.getHeight());
-        return (viewOverlappedByHeader.getTop() >= 0 && dy <= 0);
+    private fun shouldMoveHeader(viewOverlappedByHeader: View?): Boolean {
+        return viewOverlappedByHeader?.let {
+            val dy = it.top - it.height
+            it.top >= 0 && dy <= 0
+        } ?: false
     }
 
-    @SuppressWarnings("unchecked")
-    private void updateStickyHeader(int topChildPosition, int contactChildPosition) {
-        int headerPositionForItem = adapter.getHeaderPositionForItem(topChildPosition);
-        if (headerPositionForItem != currentStickyPosition
-                && headerPositionForItem != RecyclerView.NO_POSITION) {
-            adapter.onBindHeaderViewHolder(currentStickyHolder, headerPositionForItem);
-            currentStickyPosition = headerPositionForItem;
+    private fun updateStickyHeader(
+        topChildPosition: Int,
+        @Suppress("UNUSED_PARAMETER") contactChildPosition: Int
+    ) {
+        val headerPositionForItem = adapter.getHeaderPositionForItem(topChildPosition)
+        if (headerPositionForItem != currentStickyPosition && headerPositionForItem != RecyclerView.NO_POSITION) {
+            adapter.onBindHeaderViewHolder(currentStickyHolder, headerPositionForItem)
+            currentStickyPosition = headerPositionForItem
         } else if (headerPositionForItem != RecyclerView.NO_POSITION) {
-            adapter.onBindHeaderViewHolder(currentStickyHolder, headerPositionForItem);
+            adapter.onBindHeaderViewHolder(currentStickyHolder, headerPositionForItem)
         }
     }
 
-    private void drawHeader(Canvas c) {
-        c.save();
-        c.translate(0, 0);
-        currentStickyHolder.itemView.draw(c);
-        c.restore();
+    private fun drawHeader(c: Canvas) {
+        currentStickyHolder?.let { viewHolder ->
+            c.save()
+            c.translate(0f, 0f)
+            viewHolder.itemView.draw(c)
+            c.restore()
+        }
     }
 
-    private void moveHeader(Canvas c, View nextHeader) {
-        c.save();
-        c.translate(0, nextHeader.getTop() - nextHeader.getHeight());
-        currentStickyHolder.itemView.draw(c);
-        c.restore();
+    private fun moveHeader(c: Canvas, nextHeader: View) {
+        currentStickyHolder?.let { viewHolder ->
+            c.save()
+            c.translate(0f, (nextHeader.top - nextHeader.height).toFloat())
+            viewHolder.itemView.draw(c)
+            c.restore()
+        }
     }
 
-    private View getChildInContact(RecyclerView parent, int contactPoint) {
-        View childInContact = null;
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            View child = parent.getChildAt(i);
-            if (child.getBottom() > contactPoint) {
-                if (child.getTop() <= contactPoint) {
+    private fun getChildInContact(parent: RecyclerView, contactPoint: Int): View? {
+        var childInContact: View? = null
+        for (i in 0 until parent.childCount) {
+            val child = parent.getChildAt(i)
+            if (child.bottom > contactPoint) {
+                if (child.top <= contactPoint) {
                     // This child overlaps the contactPoint
-                    childInContact = child;
-                    break;
+                    childInContact = child
+                    break
                 }
             }
         }
-        return childInContact;
+        return childInContact
     }
 
-    private void fixLayoutSize() {
+    private fun fixLayoutSize() {
         recyclerView
-                .getViewTreeObserver()
-                .addOnGlobalLayoutListener(
-                        new ViewTreeObserver.OnGlobalLayoutListener() {
+            ?.viewTreeObserver
+            ?.addOnGlobalLayoutListener(
+                object : OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        recyclerView!!
+                            .viewTreeObserver
+                            .removeOnGlobalLayoutListener(this)
+                        // Specs for parent (RecyclerView)
+                        val widthSpec = View.MeasureSpec.makeMeasureSpec(
+                            recyclerView!!.width, View.MeasureSpec.EXACTLY
+                        )
+                        val heightSpec = View.MeasureSpec.makeMeasureSpec(
+                            recyclerView!!.height,
+                            View.MeasureSpec.UNSPECIFIED
+                        )
 
-                            @Override
-                            public void onGlobalLayout() {
-                                recyclerView
-                                        .getViewTreeObserver()
-                                        .removeOnGlobalLayoutListener(this);
-                                // Specs for parent (RecyclerView)
-                                int widthSpec =
-                                        View.MeasureSpec.makeMeasureSpec(
-                                                recyclerView.getWidth(), View.MeasureSpec.EXACTLY);
-                                int heightSpec =
-                                        View.MeasureSpec.makeMeasureSpec(
-                                                recyclerView.getHeight(),
-                                                View.MeasureSpec.UNSPECIFIED);
-
-                                // Specs for children (headers)
-                                int childWidthSpec =
-                                        ViewGroup.getChildMeasureSpec(
-                                                widthSpec,
-                                                recyclerView.getPaddingLeft()
-                                                        + recyclerView.getPaddingRight(),
-                                                currentStickyHolder.itemView.getLayoutParams()
-                                                        .width);
-                                int childHeightSpec =
-                                        ViewGroup.getChildMeasureSpec(
-                                                heightSpec,
-                                                recyclerView.getPaddingTop()
-                                                        + recyclerView.getPaddingBottom(),
-                                                currentStickyHolder.itemView.getLayoutParams()
-                                                        .height);
-
-                                currentStickyHolder.itemView.measure(
-                                        childWidthSpec, childHeightSpec);
-
-                                currentStickyHolder.itemView.layout(
-                                        0,
-                                        0,
-                                        currentStickyHolder.itemView.getMeasuredWidth(),
-                                        currentStickyHolder.itemView.getMeasuredHeight());
-                                stickyHolderHight =
-                                        currentStickyHolder.itemView.getMeasuredHeight();
-                            }
-                        });
+                        // Specs for children (headers)
+                        val childWidthSpec = ViewGroup.getChildMeasureSpec(
+                            widthSpec,
+                            recyclerView!!.paddingLeft +
+                                recyclerView!!.paddingRight,
+                            currentStickyHolder!!.itemView.layoutParams.width
+                        )
+                        val childHeightSpec = ViewGroup.getChildMeasureSpec(
+                            heightSpec,
+                            recyclerView!!.paddingTop +
+                                recyclerView!!.paddingBottom,
+                            currentStickyHolder!!.itemView.layoutParams.height
+                        )
+                        currentStickyHolder!!.itemView.measure(
+                            childWidthSpec, childHeightSpec
+                        )
+                        currentStickyHolder!!.itemView.layout(
+                            0,
+                            0,
+                            currentStickyHolder!!.itemView.measuredWidth,
+                            currentStickyHolder!!.itemView.measuredHeight
+                        )
+                        stickyHolderHeight = currentStickyHolder!!.itemView.measuredHeight
+                    }
+                })
     }
 }
