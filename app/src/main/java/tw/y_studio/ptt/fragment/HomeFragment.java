@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.ui.BaseFragment;
+import tw.y_studio.ptt.ui.hot_board.HotBoardsFragment;
 import tw.y_studio.ptt.ui.setting.SettingFragment;
 
 import java.util.HashMap;

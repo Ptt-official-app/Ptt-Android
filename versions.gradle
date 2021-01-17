@@ -12,6 +12,7 @@ ext.buildConfig = [
 
 ext.versions = [
         'androidGradle'             : '4.1.0',
+        'koin'                    : '2.2.0',
         'kotlin'                    : '1.4.10',
         'androidXAppCompat'         : '1.2.0',
         'androidXBrowser'         : '1.2.0',
@@ -53,6 +54,12 @@ ext.deps = [
                         'core': "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
                         'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}"
                 ]
+        ],
+        'koin': [
+                'android': "org.koin:koin-android:${versions.koin}",
+                'scope': "org.koin:koin-androidx-scope:${versions.koin}",
+                'viewModel': "org.koin:koin-androidx-viewmodel:${versions.koin}",
+                'fragment': "org.koin:koin-androidx-fragment:${versions.koin}"
         ],
         'androidX': [
                 'appcompat'         : "androidx.appcompat:appcompat:${versions.androidXAppCompat}",

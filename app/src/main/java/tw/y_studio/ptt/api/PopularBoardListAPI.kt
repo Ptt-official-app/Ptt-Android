@@ -2,13 +2,14 @@ package tw.y_studio.ptt.api
 
 import okhttp3.Request
 import org.json.JSONArray
+import tw.y_studio.ptt.model.HotBoard
 import java.util.*
 
 class PopularBoardListAPI : BaseAPIHelper(), IBaseAPI {
-    private val _data: MutableList<Map<String, Any>> = mutableListOf()
+    private val _data: MutableList<HotBoard> = mutableListOf()
 
     @Throws(Exception::class)
-    fun refresh(page: Int, count: Int): MutableList<Map<String, Any>> {
+    fun refresh(page: Int, count: Int): MutableList<HotBoard> {
         _data.clear()
         val request = Request.Builder()
             .url("$hostUrl/api/Board/Popular?page=$page&count=$count")
@@ -28,16 +29,15 @@ class PopularBoardListAPI : BaseAPIHelper(), IBaseAPI {
             while (!list.isNull(i)) {
                 val m3 = list.getJSONObject(i)
                 i++
-                val item: MutableMap<String, Any> = HashMap()
-                item["number"] = m3.getInt("sn")
-                item["title"] = m3.getString("name")
-                item["subtitle"] = m3.getString("title")
-                item["boardType"] = m3.getInt("boardType")
-                item["moderators"] = ""
-                item["class"] = ""
-                item["online"] = m3.getInt("onlineCount")
-                item["onlineColor"] = 7
-                _data.add(item)
+                val hotboard = HotBoard(
+                    number = m3.getInt("sn"),
+                    title = m3.getString("name"),
+                    subtitle = m3.getString("title"),
+                    boardType = m3.getInt("boardType"),
+                    online = m3.getInt("onlineCount"),
+                    onlineColor = "7"
+                )
+                _data.add(hotboard)
             }
         }
         return _data
