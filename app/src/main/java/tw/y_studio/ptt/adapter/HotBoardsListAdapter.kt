@@ -7,15 +7,13 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
+import tw.y_studio.ptt.model.HotBoardsItem
 import tw.y_studio.ptt.ptt.PttColor
-import tw.y_studio.ptt.utils.StringUtils.notNullString
 
 class HotBoardsListAdapter(
-    private val data: List<Map<String, Any>>
+    private val data: List<HotBoardsItem>,
+    private val onItemClickListener: OnItemClickListener,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
-
-    private var mOnItemClickListener: OnItemClickListener? = null
-    private var mOnItemLongClickListener: OnItemLongClickListener? = null
     private val editMode = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -38,31 +36,23 @@ class HotBoardsListAdapter(
         when (getItemViewType(position)) {
             TYPE_NORMAL -> {
                 (holder as? ViewHolder)?.apply {
-                    textViewTitle.text = notNullString(data[position]["title"])
-                    textViewSubtitle.text = notNullString(data[position]["subtitle"])
-                    textViewOnlinePeople.text = notNullString(data[position]["online"])
+                    textViewTitle.text = data[position].title
+                    textViewSubtitle.text = data[position].subtitle
+                    textViewOnlinePeople.text = data[position].online
                     person.setColorFilter(
                         PttColor.ColorTrans(
-                            notNullString(data[position]["onlineColor"])
+                            data[position].onlineColor
                         )
                     )
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
-                    itemView.setOnLongClickListener {
-                        mOnItemLongClickListener?.onItemClick(it, adapterPosition)
-                        true
-                    }
+                    itemView.setOnClickListener { onItemClickListener.onItemClick(data[position]) }
                 }
             }
             TYPE_EDIT -> {
                 (holder as? ViewHolderEdit)?.apply {
-                    textViewTitle.text = notNullString(data[position]["title"])
-                    textViewSubtitle.text = notNullString(data[position]["subtitle"])
-                    textViewOnlinePeople.text = notNullString(data[position]["online"])
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
-                    itemView.setOnLongClickListener {
-                        mOnItemLongClickListener?.onItemClick(it, adapterPosition)
-                        true
-                    }
+                    textViewTitle.text = data[position].title
+                    textViewSubtitle.text = data[position].subtitle
+                    textViewOnlinePeople.text = data[position].online
+                    itemView.setOnClickListener { onItemClickListener.onItemClick(data[position]) }
                 }
             }
         }
@@ -70,14 +60,6 @@ class HotBoardsListAdapter(
 
     override fun getItemCount(): Int {
         return data.size
-    }
-
-    fun setOnItemClickListener(listener: OnItemClickListener?) {
-        mOnItemClickListener = listener
-    }
-
-    fun setOnItemLongClickListener(listener: OnItemLongClickListener?) {
-        mOnItemLongClickListener = listener
     }
 
     private inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -95,11 +77,7 @@ class HotBoardsListAdapter(
 
     // define interface
     interface OnItemClickListener {
-        fun onItemClick(view: View?, position: Int)
-    }
-
-    interface OnItemLongClickListener {
-        fun onItemClick(view: View?, position: Int)
+        fun onItemClick(item: HotBoardsItem)
     }
 
     companion object {

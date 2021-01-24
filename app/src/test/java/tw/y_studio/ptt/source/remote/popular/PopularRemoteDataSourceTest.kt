@@ -9,6 +9,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import tw.y_studio.ptt.api.PopularBoardListAPI
+import tw.y_studio.ptt.model.HotBoard
 
 class PopularRemoteDataSourceTest {
     private lateinit var popularRemoteDataSource: IPopularRemoteDataSource
@@ -25,7 +26,7 @@ class PopularRemoteDataSourceTest {
     @Test
     fun get_popular_board_data_then_return_data() {
         // GIVEN
-        val data = mapOf("foo" to "bar")
+        val data = HotBoard(1, "foo", "bar", 1, 1, "")
         every { popularBoardListAPI.refresh(any(), any()) } returns mutableListOf(data)
 
         // WHEN

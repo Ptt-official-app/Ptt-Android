@@ -94,6 +94,11 @@ dependencies {
     // Jsoup
     implementation deps.jsoup
 
+    implementation deps.koin.android
+    implementation deps.koin.scope
+    implementation deps.koin.viewModel
+    implementation deps.koin.fragment
+
     // Kotlin
     implementation deps.kotlin.stdlib.jdk8
     implementation deps.kotlin.coroutines.core
