@@ -5,13 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.R
 import tw.y_studio.ptt.databinding.ArticleListFragmentLayoutBinding
-import tw.y_studio.ptt.di.Injection
 import tw.y_studio.ptt.fragment.ArticleListSearchFragment
 import tw.y_studio.ptt.fragment.PostArticleFragment
 import tw.y_studio.ptt.model.PartialPost
@@ -31,13 +29,14 @@ class ArticleListFragment : BaseFragment() {
     private var boardSubName = ""
     private val mClickFix = ClickFix()
 
-    private lateinit var articleListViewModel: ArticleListViewModel
+    private val articleListViewModel: ArticleListViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bundle = arguments // 取得Bundle
         boardName = bundle?.getString("title", getString(R.string.board_list_title_empty)) ?: ""
-        boardSubName = bundle?.getString("subtitle", getString(R.string.board_list_subtitle_empty)) ?: ""
+        boardSubName = bundle?.getString("subtitle", getString(R.string.board_list_subtitle_empty))
+            ?: ""
     }
 
     override fun onCreateView(
@@ -51,20 +50,6 @@ class ArticleListFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        articleListViewModel = ViewModelProvider(
-            this,
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return ArticleListViewModel(
-                        Injection.RemoteDataSource.postRemoteDataSourceImpl,
-                        boardName
-                    ) as T
-                }
-            }
-        ).get(ArticleListViewModel::class.java)
-
         binding.apply {
             articleListFragmentTextViewTitle.text = boardName
             articleListFragmentRecyclerView.apply {
@@ -100,7 +85,7 @@ class ArticleListFragment : BaseFragment() {
                         val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                         val totalItemCount = layoutManager.itemCount
                         if (lastVisibleItem >= totalItemCount - 30) {
-                            articleListViewModel.loadNextData()
+                            articleListViewModel.loadNextData(boardName)
                         }
                     }
                 })
@@ -112,13 +97,13 @@ class ArticleListFragment : BaseFragment() {
                     android.R.color.holo_green_light,
                     android.R.color.holo_orange_light
                 )
-                setOnRefreshListener { articleListViewModel.loadData() }
+                setOnRefreshListener { articleListViewModel.loadData(boardName) }
             }
             articleListFragmentBottomNavigation.setOnNavigationItemSelectedListener(
                 BottomNavigationView.OnNavigationItemSelectedListener { item ->
                     when (item.itemId) {
                         R.id.article_list_navigation_item_refresh -> {
-                            articleListViewModel.loadData()
+                            articleListViewModel.loadData(boardName)
                             return@OnNavigationItemSelectedListener false
                         }
                         R.id.article_list_navigation_item_post -> {
@@ -158,7 +143,7 @@ class ArticleListFragment : BaseFragment() {
     }
 
     override fun onAnimOver() {
-        articleListViewModel.loadData()
+        articleListViewModel.loadData(boardName)
         binding.articleListFragmentRecyclerView.adapter?.notifyDataSetChanged()
     }
 

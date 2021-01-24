@@ -2,37 +2,37 @@ package tw.y_studio.ptt.ui.article.read
 
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.R
 import tw.y_studio.ptt.api.PostRankMark
 import tw.y_studio.ptt.databinding.ArticleReadFragmentLayoutBinding
-import tw.y_studio.ptt.di.Injection
 import tw.y_studio.ptt.fragment.LoginPageFragment
 import tw.y_studio.ptt.ptt.AidConverter
-import tw.y_studio.ptt.source.remote.post.IPostRemoteDataSource
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
-import tw.y_studio.ptt.utils.*
-import java.util.*
+import tw.y_studio.ptt.utils.ResourcesUtils
+import tw.y_studio.ptt.utils.observeNotNull
+import tw.y_studio.ptt.utils.shareTo
+import tw.y_studio.ptt.utils.useApi
 import java.util.regex.Pattern
 
 class ArticleReadFragment : BaseFragment() {
     private var _binding: ArticleReadFragmentLayoutBinding? = null
     private val binding get() = _binding!!
     private val urlPattern = Pattern.compile("www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm")
-    private var mAdapter: ArticleReadAdapter? = null
-    private val data: MutableList<ArticleReadAdapter.Item> = ArrayList()
+    private var adapter: ArticleReadAdapter? = null
     private var fileName = ""
     private var board = ""
     private var aid = ""
@@ -41,13 +41,21 @@ class ArticleReadFragment : BaseFragment() {
     private var articleAuth = " "
     private var articleTime = ""
     private var articleClass = ""
-    private var originalArticleTitle = ""
+    private var orgUrl = ""
+
+    private val haveApi = true
+
+    private var progressDialog: ProgressDialog? = null
+
+    private val viewModel: ArticleReadViewModel by viewModel()
+
+    private val preferences: SharedPreferences by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return ArticleReadFragmentLayoutBinding.inflate(inflater, container, false).apply {
             _binding = this
         }.root
@@ -78,21 +86,21 @@ class ArticleReadFragment : BaseFragment() {
             articleReadItemImageButtonShare.setOnClickListener {
                 shareTo(
                     requireContext(),
-                    originalArticleTitle,
+                    viewModel.originalArticleTitle,
                     """
-                                $originalArticleTitle
+                                ${viewModel.originalArticleTitle}
                                 $orgUrl
                     """.trimIndent(),
                     "分享文章"
                 )
             }
             articleReadFragmentRecyclerView.apply {
-                mAdapter = ArticleReadAdapter(data)
+                this@ArticleReadFragment.adapter = ArticleReadAdapter(viewModel.data)
                 setHasFixedSize(true)
                 val layoutManager = CustomLinearLayoutManager(context)
                 layoutManager.orientation = RecyclerView.VERTICAL
                 setLayoutManager(layoutManager)
-                adapter = mAdapter
+                adapter = this@ArticleReadFragment.adapter
             }
             articleReadFragmentRefreshLayout.apply {
                 setColorSchemeResources(
@@ -102,8 +110,23 @@ class ArticleReadFragment : BaseFragment() {
                     android.R.color.holo_orange_light
                 )
                 setOnRefreshListener {
-                    loadData()
+                    viewModel.loadData(board, fileName, aid, articleBoard)
                 }
+            }
+        }
+        viewModel.apply {
+            observeNotNull(loadingState) {
+                binding.articleReadFragmentRefreshLayout.isRefreshing = it
+                binding.articleReadFragmentRecyclerView.adapter?.notifyDataSetChanged()
+            }
+            observeNotNull(errorMessage) {
+                Toast.makeText(currentActivity, "Error : $it", Toast.LENGTH_SHORT).show()
+            }
+            observeNotNull(progressDialogState) {
+                progressDialog?.dismiss()
+            }
+            observeNotNull(likeNumber) {
+                binding.articleReadItemTextViewLike.text = it
             }
         }
 
@@ -123,139 +146,19 @@ class ArticleReadFragment : BaseFragment() {
         articleAuth = bundle.getString("auth", "")
         articleClass = bundle.getString("class", "")
         articleTime = bundle.getString("date", "")
-        putDefaultHeader()
+        viewModel.createDefaultHeader(articleTitle, articleAuth, articleTime, articleClass, articleBoard)
+        viewModel.putDefaultHeader()
     }
 
     override fun onAnimOver() {
-        loadData()
-    }
-
-    private var mThreadHandler: Handler? = null
-    private var mThread: HandlerThread? = null
-    private lateinit var r1: Runnable
-    private var orgUrl = ""
-    private var floorNum = 0
-    private var postRemoteDataSource: IPostRemoteDataSource = Injection.RemoteDataSource.postRemoteDataSourceImpl
-
-    // mAdapter.notifyDataSetChanged();
-    private val dataFromApi: Unit
-        private get() {
-            r1 = Runnable {
-                runOnUI { binding.articleReadFragmentRefreshLayout.isRefreshing = true }
-                GattingData = true
-                Log("onAR", "get data from web start")
-                try {
-                    val post = postRemoteDataSource.getPost(board, fileName)
-                    val postRank = postRemoteDataSource.getPostRank(board, aid)
-                    floorNum = post.comments.size
-                    originalArticleTitle = post.title
-                    val dataTemp = mutableListOf<ArticleReadAdapter.Item>()
-                    dataTemp.add(
-                        ArticleReadAdapter.Item.HeaderItem(
-                            post.title,
-                            "${post.auth} (${post.authNickName})",
-                            post.date,
-                            post.classString,
-                            articleBoard
-                        )
-                    )
-
-                    val contents = post.content.split("\r\n".toRegex()).toTypedArray()
-                    var contentTemp = StringBuilder()
-                    for (i in contents.indices) {
-                        val cmd = contents[i]
-                        val urlM = StringUtils.UrlPattern.matcher(cmd)
-                        if (urlM.find()) {
-                            dataTemp.add(ArticleReadAdapter.Item.ContentLineItem(contentTemp.toString()))
-                            contentTemp = StringBuilder()
-                            dataTemp.add(ArticleReadAdapter.Item.ContentLineItem(cmd))
-                            val imageUrl = StringUtils.getImgUrl(cmd)
-                            for (urlString in imageUrl) {
-                                dataTemp.add(ArticleReadAdapter.Item.ImageItem(-2, urlString))
-                            }
-                        } else {
-                            contentTemp.append(cmd)
-                            if (i < contents.size - 1) {
-                                contentTemp.append("\n")
-                            }
-                        }
-                    }
-                    if (contentTemp.toString().isNotEmpty()) {
-                        dataTemp.add(ArticleReadAdapter.Item.ContentLineItem(contentTemp.toString()))
-                    }
-                    dataTemp.add(ArticleReadAdapter.Item.CenterBarItem(postRank.getLike().toString(), floorNum.toString()))
-                    post.comments.forEachIndexed { index, comment ->
-                        dataTemp.add(ArticleReadAdapter.Item.CommentItem(index, comment.content, comment.userid))
-                        val imageUrl: List<String> = StringUtils.getImgUrl(StringUtils.notNullString(comment.content))
-                        for (urlString in imageUrl) {
-                            dataTemp.add(ArticleReadAdapter.Item.ImageItem(index, urlString))
-                        }
-                        dataTemp.add(
-                            ArticleReadAdapter.Item.CommentBarItem(
-                                index,
-                                comment.date,
-                                "${index + 1}F",
-                                "0"
-                            )
-                        )
-                    }
-
-                    runOnUI {
-                        data.clear()
-                        data.addAll(dataTemp)
-                        mAdapter!!.notifyDataSetChanged()
-                        binding.articleReadFragmentRefreshLayout.isRefreshing = false
-                        binding.articleReadItemTextViewLike.text = postRank.getLike().toString()
-                    }
-                    Log("onAL", "get data from web over")
-                } catch (e: Exception) {
-                    Log("onAL", "Error : $e")
-                    runOnUI {
-                        Toast.makeText(
-                            activity,
-                            "Error : $e",
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
-                        binding.articleReadFragmentRefreshLayout.isRefreshing = false
-                    }
-                }
-                GattingData = false
-            }
-            mThread = HandlerThread("name")
-            mThread!!.start()
-            mThreadHandler = Handler(mThread!!.looper)
-            mThreadHandler!!.post(r1)
-        }
-    private val haveApi = true
-    private fun putDefaultHeader() {
-        data.add(
-            ArticleReadAdapter.Item.HeaderItem(
-                articleTitle,
-                articleAuth,
-                articleTime,
-                articleClass,
-                articleBoard
-            )
-        )
-    }
-
-    private var GattingData = false
-    private fun loadData() {
-        if (GattingData) return
-        data.clear()
-        putDefaultHeader()
-        mAdapter!!.notifyDataSetChanged()
-        dataFromApi
+        viewModel.loadData(board, fileName, aid, articleBoard)
     }
 
     private fun setRankMenu(view: View) {
         if (!(haveApi && useApi)) {
             return
         }
-        val id = currentActivity
-            .getSharedPreferences("MainSetting", Context.MODE_PRIVATE)
-            .getString("APIPTTID", "")
+        val id = preferences.getString("APIPTTID", "")
         if (id!!.isEmpty()) {
             loadFragment(LoginPageFragment.newInstance(), currentFragment)
             return
@@ -269,96 +172,17 @@ class ArticleReadFragment : BaseFragment() {
                 R.id.post_article_rank_dislike -> rank = PostRankMark.Dislike
                 R.id.post_article_rank_non -> rank = PostRankMark.None
             }
-            setRank(rank)
+            progressDialog = ProgressDialog.show(
+                currentActivity,
+                "",
+                "Please wait."
+            ).apply {
+                window?.setBackgroundDrawableResource(R.drawable.dialog_background)
+                viewModel.setRank(board, aid, orgUrl, rank)
+            }
             true
         }
         popupMenu.show()
-    }
-
-    private fun refreshRank() {
-        r1 = Runnable {
-            runOnUI { binding.articleReadFragmentRefreshLayout.isRefreshing = true }
-            GattingData = true
-            try {
-                val postRank = postRemoteDataSource.getPostRank(board, aid)
-                for (i in data.indices) {
-                    val item = data[i]
-                    if (item !is ArticleReadAdapter.Item.CenterBarItem) continue
-                    data[i] = ArticleReadAdapter.Item.CenterBarItem(postRank.getLike().toString(), item.floor)
-                    break
-                }
-                runOnUI {
-                    binding.articleReadFragmentRefreshLayout.isRefreshing = false
-                    mAdapter!!.notifyDataSetChanged()
-                    binding.articleReadItemTextViewLike.text = postRank.getLike().toString()
-                }
-                Log("onAL", "get data from web over")
-            } catch (e: Exception) {
-                Log("onAL", "Error : $e")
-                runOnUI {
-                    Toast.makeText(
-                        currentActivity,
-                        "Error : $e",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                    binding.articleReadFragmentRefreshLayout.isRefreshing = false
-                }
-            }
-            GattingData = false
-        }
-        mThread = HandlerThread("name")
-        mThread!!.start()
-        mThreadHandler = Handler(mThread!!.looper)
-        mThreadHandler!!.post(r1)
-    }
-
-    private var mDialog: ProgressDialog? = null
-    private fun setRank(rank: PostRankMark) {
-        mDialog = ProgressDialog.show(currentActivity, "", "Please wait.").apply {
-            getWindow()!!.setBackgroundDrawableResource(R.drawable.dialog_background)
-            object : Thread() {
-                override fun run() {
-                    try {
-                        val id = currentActivity
-                            .getSharedPreferences("MainSetting", Context.MODE_PRIVATE)
-                            .getString("APIPTTID", "")
-                        if (id.isNullOrEmpty()) {
-                            throw Exception("No Ptt id")
-                        }
-                        val p = Pattern.compile(
-                            "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm"
-                        )
-                        val m = p.matcher(orgUrl)
-                        if (m.find()) {
-                            val aid = AidConverter.urlToAid(orgUrl)
-                            postRemoteDataSource.setPostRank(
-                                aid.boardTitle,
-                                aid.aid,
-                                id,
-                                rank
-                            )
-                        } else {
-                            throw Exception("error")
-                        }
-                        runOnUI {
-                            dismiss()
-                            refreshRank()
-                        }
-                    } catch (e: Exception) {
-                        runOnUI {
-                            dismiss()
-                            Toast.makeText(
-                                currentActivity,
-                                "Error : $e",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-                    }
-                }
-            }.start()
-        }
     }
 
     override fun onDestroyView() {
@@ -373,16 +197,7 @@ class ArticleReadFragment : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        postRemoteDataSource.disposeAll()
-        data.clear()
-        // 移除工作
-        if (mThreadHandler != null) {
-            mThreadHandler!!.removeCallbacks(r1!!)
-        }
-        // (關閉Thread)
-        if (mThread != null) {
-            mThread!!.quit()
-        }
+        viewModel.data.clear()
         val typedValue = TypedValue()
         val theme = currentActivity.theme
         theme.resolveAttribute(R.attr.black, typedValue, true)
