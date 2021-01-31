@@ -3,7 +3,7 @@ package tw.y_studio.ptt.utils.model
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
-import tw.y_studio.ptt.model.PartialPost
+import tw.y_studio.ptt.api.model.PartialPost
 import java.util.regex.Pattern
 
 class PartialPostTypeAdapter : TypeAdapter<PartialPost>() {

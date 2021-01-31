@@ -11,7 +11,7 @@ ext.buildConfig = [
 ]
 
 ext.versions = [
-        'androidGradle'             : '4.1.0',
+        'androidGradle'             : '4.1.2',
         'koin'                    : '2.2.0',
         'kotlin'                    : '1.4.10',
         'androidXAppCompat'         : '1.2.0',
@@ -32,6 +32,7 @@ ext.versions = [
         "mockK": '1.10.2',
         'okhttp': '4.9.0',
         'okio': '2.8.0',
+        'retrofit': '2.9.0',
         'truth': '1.1',
         'leakcanary': '2.5',
         'gson' : '2.8.6',
@@ -107,6 +108,10 @@ ext.deps = [
         'square': [
                 'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}",
                 'okio': "com.squareup.okio:okio:${versions.okio}",
-                'leakcanary': "com.squareup.leakcanary:leakcanary-android:${versions.leakcanary}"
+                'leakcanary': "com.squareup.leakcanary:leakcanary-android:${versions.leakcanary}",
+                'retrofit': [
+                        'core': "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+                        'gsonConverter': "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+                ]
         ]
 ]

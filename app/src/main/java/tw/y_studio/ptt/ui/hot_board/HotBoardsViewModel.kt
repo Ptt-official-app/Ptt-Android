@@ -1,10 +1,9 @@
 package tw.y_studio.ptt.ui.hot_board
 
-import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
-import tw.y_studio.ptt.model.HotBoardsItem
-import tw.y_studio.ptt.source.remote.popular.IPopularRemoteDataSource
+import tw.y_studio.ptt.api.model.hot_board.HotBoardsItem
+import tw.y_studio.ptt.source.remote.board.IPopularRemoteDataSource
 
 class HotBoardsViewModel(
     private val popularRemoteDataSource: IPopularRemoteDataSource,
@@ -30,20 +29,18 @@ class HotBoardsViewModel(
 
     private suspend fun getDataFromApi() = withContext(ioDispatcher) {
         try {
-            val boardData = popularRemoteDataSource.getPopularBoardData(1, 128)
-                .map {
-                    HotBoardsItem(
-                        it.title,
-                        it.subtitle,
-                        it.online.toString(),
-                        it.onlineColor
-                    )
-                }
-
+            val popularBoards = popularRemoteDataSource.getPopularBoards()
+            val boardData = popularBoards.list.map {
+                HotBoardsItem(
+                    it.boardName,
+                    it.title,
+                    it.onlineUser.toString(),
+                    "7"
+                )
+            }
             data.addAll(boardData)
-            if (data.isNotEmpty()) Log.d("getDataFromApi", data[0].toString())
         } catch (e: Exception) {
-            _errorMessage.value = "Error: $e"
+            _errorMessage.postValue("Error: $e")
         }
     }
 

@@ -6,9 +6,9 @@ import okhttp3.FormBody
 import okhttp3.Request
 import okhttp3.RequestBody
 import org.json.JSONObject
-import tw.y_studio.ptt.model.PartialPost
-import tw.y_studio.ptt.model.Post
-import tw.y_studio.ptt.model.PostRank
+import tw.y_studio.ptt.api.model.PartialPost
+import tw.y_studio.ptt.api.model.Post
+import tw.y_studio.ptt.api.model.PostRank
 import tw.y_studio.ptt.utils.Log
 import tw.y_studio.ptt.utils.model.PartialPostTypeAdapter
 import tw.y_studio.ptt.utils.model.PostTypeAdapter

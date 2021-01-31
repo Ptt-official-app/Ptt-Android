@@ -2,9 +2,9 @@ package tw.y_studio.ptt.source.remote.post
 
 import tw.y_studio.ptt.api.PostAPI
 import tw.y_studio.ptt.api.PostRankMark
-import tw.y_studio.ptt.model.PartialPost
-import tw.y_studio.ptt.model.Post
-import tw.y_studio.ptt.model.PostRank
+import tw.y_studio.ptt.api.model.PartialPost
+import tw.y_studio.ptt.api.model.Post
+import tw.y_studio.ptt.api.model.PostRank
 
 class PostRemoteDataSourceImpl(
     private val postAPI: PostAPI

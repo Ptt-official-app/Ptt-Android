@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.model.HotBoardsItem
+import tw.y_studio.ptt.api.model.hot_board.HotBoardsItem
 import tw.y_studio.ptt.ptt.PttColor
 
 class HotBoardsListAdapter(
@@ -36,7 +36,7 @@ class HotBoardsListAdapter(
         when (getItemViewType(position)) {
             TYPE_NORMAL -> {
                 (holder as? ViewHolder)?.apply {
-                    textViewTitle.text = data[position].title
+                    textViewTitle.text = data[position].boardName
                     textViewSubtitle.text = data[position].subtitle
                     textViewOnlinePeople.text = data[position].online
                     person.setColorFilter(
@@ -49,7 +49,7 @@ class HotBoardsListAdapter(
             }
             TYPE_EDIT -> {
                 (holder as? ViewHolderEdit)?.apply {
-                    textViewTitle.text = data[position].title
+                    textViewTitle.text = data[position].boardName
                     textViewSubtitle.text = data[position].subtitle
                     textViewOnlinePeople.text = data[position].online
                     itemView.setOnClickListener { onItemClickListener.onItemClick(data[position]) }

@@ -3,9 +3,9 @@ package tw.y_studio.ptt.ui.article.list
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import tw.y_studio.ptt.api.model.PartialPost
 import tw.y_studio.ptt.databinding.ArticleListItemBinding
 import tw.y_studio.ptt.databinding.ArticleListItemDeleteBinding
-import tw.y_studio.ptt.model.PartialPost
 
 class ArticleListAdapter(
     private val partialPostList: List<PartialPost>,

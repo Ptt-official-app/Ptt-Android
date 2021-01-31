@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.source.remote.popular
+package tw.y_studio.ptt.source.remote.board
 
 import com.google.common.truth.Truth
 import io.mockk.MockKAnnotations
@@ -9,7 +9,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import tw.y_studio.ptt.api.PopularBoardListAPI
-import tw.y_studio.ptt.model.HotBoard
+import tw.y_studio.ptt.api.board.BoardApiService
+import tw.y_studio.ptt.api.model.hot_board.HotBoardTemp
 
 class PopularRemoteDataSourceTest {
     private lateinit var popularRemoteDataSource: IPopularRemoteDataSource
@@ -17,16 +18,19 @@ class PopularRemoteDataSourceTest {
     @MockK
     private lateinit var popularBoardListAPI: PopularBoardListAPI
 
+    @MockK
+    private lateinit var boardApi: BoardApiService
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        popularRemoteDataSource = PopularRemoteDataSourceImpl(popularBoardListAPI)
+        popularRemoteDataSource = PopularRemoteDataSourceImpl(boardApi, popularBoardListAPI)
     }
 
     @Test
     fun get_popular_board_data_then_return_data() {
         // GIVEN
-        val data = HotBoard(1, "foo", "bar", 1, 1, "")
+        val data = HotBoardTemp(1, "foo", "bar", 1, 1, "")
         every { popularBoardListAPI.refresh(any(), any()) } returns mutableListOf(data)
 
         // WHEN

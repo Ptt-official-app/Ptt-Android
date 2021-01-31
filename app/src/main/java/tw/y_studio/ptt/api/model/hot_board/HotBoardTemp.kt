@@ -1,6 +1,6 @@
-package tw.y_studio.ptt.model
+package tw.y_studio.ptt.api.model.hot_board
 
-data class HotBoard(
+data class HotBoardTemp(
     val number: Int,
     val title: String,
     val subtitle: String,

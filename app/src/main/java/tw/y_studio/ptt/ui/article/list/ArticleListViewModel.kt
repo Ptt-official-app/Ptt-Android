@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tw.y_studio.ptt.model.PartialPost
+import tw.y_studio.ptt.api.model.PartialPost
 import tw.y_studio.ptt.source.remote.post.IPostRemoteDataSource
 import tw.y_studio.ptt.utils.Log
 import java.util.*

@@ -8,8 +8,8 @@ import org.junit.Before
 import org.junit.Test
 import tw.y_studio.ptt.api.PostAPI
 import tw.y_studio.ptt.api.PostRankMark
-import tw.y_studio.ptt.model.PartialPost
-import tw.y_studio.ptt.model.Post
+import tw.y_studio.ptt.api.model.PartialPost
+import tw.y_studio.ptt.api.model.Post
 
 class PostRemoteDataSourceTest {
 
