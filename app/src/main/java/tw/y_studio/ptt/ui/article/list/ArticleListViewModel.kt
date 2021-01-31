@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tw.y_studio.ptt.model.PartialPost
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class ArticleListViewModel(
     private val postRemoteDataSource: IPostRemoteDataSource,
-    private val boardName: String // TODO: 2020/11/21 need refactor
+    private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     val data: MutableList<PartialPost> = ArrayList()
     private val page = AtomicInteger(1)
@@ -27,7 +27,7 @@ class ArticleListViewModel(
 
     fun getErrorLiveData(): LiveData<Throwable> = errorLiveData
 
-    fun loadData() {
+    fun loadData(boardName: String) {
         viewModelScope.launch {
             if (loadingState.value == true) {
                 return@launch
@@ -35,23 +35,23 @@ class ArticleListViewModel(
             data.clear()
             page.set(1)
             loadingState.value = true
-            getDataFromApi()
+            getDataFromApi(boardName)
             loadingState.value = false
         }
     }
 
-    fun loadNextData() {
+    fun loadNextData(boardName: String) {
         viewModelScope.launch {
             if (loadingState.value == true) {
                 return@launch
             }
             loadingState.value = true
-            getDataFromApi()
+            getDataFromApi(boardName)
             loadingState.value = false
         }
     }
 
-    private suspend fun getDataFromApi() = withContext(Dispatchers.Default) {
+    private suspend fun getDataFromApi(boardName: String) = withContext(ioDispatcher) {
         try {
             val temp = mutableListOf<PartialPost>()
             for (i in 0..2) {
