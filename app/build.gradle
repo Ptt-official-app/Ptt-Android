@@ -44,6 +44,16 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+    }
 }
 
 def domain() {
@@ -129,11 +139,15 @@ dependencies {
     testImplementation deps.google.truth
     testImplementation deps.junit
     testImplementation deps.mockK.core
+    testImplementation deps.androidX.arch
+    testImplementation deps.kotlin.coroutines.test
 
     androidTestImplementation deps.androidX.test.ext.junit
     androidTestImplementation deps.androidX.test.ext.espresso
     androidTestImplementation deps.google.truth
     androidTestImplementation deps.mockK.android
+    androidTestImplementation deps.androidX.arch
+    androidTestImplementation deps.kotlin.coroutines.test
 
     debugImplementation deps.square.leakcanary
 

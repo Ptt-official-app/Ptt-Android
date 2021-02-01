@@ -1,63 +1,66 @@
 package tw.y_studio.ptt.source.remote.board
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
+import com.google.gson.Gson
 import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
-import org.json.JSONException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import tw.y_studio.ptt.api.PopularBoardListAPI
+import tw.y_studio.ptt.MainCoroutineRule
+import tw.y_studio.ptt.TestJsonFileUtils
 import tw.y_studio.ptt.api.board.BoardApiService
-import tw.y_studio.ptt.api.model.hot_board.HotBoardTemp
+import tw.y_studio.ptt.api.model.hot_board.HotBoard
+import tw.y_studio.ptt.utils.fromJson
 
+@ExperimentalCoroutinesApi
 class PopularRemoteDataSourceTest {
     private lateinit var popularRemoteDataSource: IPopularRemoteDataSource
 
     @MockK
-    private lateinit var popularBoardListAPI: PopularBoardListAPI
-
-    @MockK
     private lateinit var boardApi: BoardApiService
+
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
+
+    @get:Rule
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        popularRemoteDataSource = PopularRemoteDataSourceImpl(boardApi, popularBoardListAPI)
+        popularRemoteDataSource = PopularRemoteDataSourceImpl(boardApi)
     }
 
     @Test
-    fun get_popular_board_data_then_return_data() {
+    fun get_popular_board_data_then_return_data() = runBlockingTest {
         // GIVEN
-        val data = HotBoardTemp(1, "foo", "bar", 1, 1, "")
-        every { popularBoardListAPI.refresh(any(), any()) } returns mutableListOf(data)
+        val jsonFile = TestJsonFileUtils.loadJsonFile("api/board/popular_boards.json")
+        val hotBoard = Gson().fromJson<HotBoard>(jsonFile)
+
+        coEvery { boardApi.getPopularBoard() } returns hotBoard
 
         // WHEN
-        val result = popularRemoteDataSource.getPopularBoardData(1, 10)
+        val result = popularRemoteDataSource.getPopularBoards()
 
         // THEN
         Truth.assertThat(result).apply {
-            isNotEmpty()
-            hasSize(1)
-            containsExactly(data)
+            isEqualTo(hotBoard)
         }
     }
 
     private fun createSampleData() = mapOf("foo" to "bar")
 
     @Test(expected = Exception::class)
-    fun get_popular_board_data_then_throw_exception() {
-        every { popularBoardListAPI.refresh(any(), any()) } throws Exception()
+    fun get_popular_board_data_then_throw_exception() = runBlockingTest {
+        coEvery { boardApi.getPopularBoard() } throws Exception()
 
-        popularRemoteDataSource.getPopularBoardData(0, 0)
-    }
-
-    @Test(expected = JSONException::class)
-    fun get_popular_board_data_then_throw_json_exception() {
-        every { popularBoardListAPI.refresh(any(), any()) } throws JSONException("error!")
-
-        popularRemoteDataSource.getPopularBoardData(0, 0)
+        popularRemoteDataSource.getPopularBoards()
     }
 
     @After

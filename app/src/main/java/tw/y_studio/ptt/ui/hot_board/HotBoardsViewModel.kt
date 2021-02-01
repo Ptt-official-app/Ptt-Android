@@ -46,6 +46,5 @@ class HotBoardsViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        popularRemoteDataSource.disposeAll()
     }
 }

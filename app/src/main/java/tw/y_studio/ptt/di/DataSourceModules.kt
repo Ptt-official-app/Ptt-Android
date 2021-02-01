@@ -9,7 +9,7 @@ import tw.y_studio.ptt.source.remote.search.ISearchBoardRemoteDataSource
 import tw.y_studio.ptt.source.remote.search.SearchBoardRemoteDataSourceImpl
 
 val dataSourceModules = module {
-    factory<IPopularRemoteDataSource> { PopularRemoteDataSourceImpl(get(), get()) }
+    factory<IPopularRemoteDataSource> { PopularRemoteDataSourceImpl(get()) }
     factory<ISearchBoardRemoteDataSource> { SearchBoardRemoteDataSourceImpl(get()) }
     factory<IPostRemoteDataSource> { PostRemoteDataSourceImpl(get()) }
 }
