@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.model
+package tw.y_studio.ptt.api.model
 
 data class PartialPost(
     val title: String = "",

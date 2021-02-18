@@ -2,14 +2,13 @@ package tw.y_studio.ptt.api
 
 import okhttp3.Request
 import org.json.JSONArray
-import tw.y_studio.ptt.model.HotBoard
-import java.util.*
+import tw.y_studio.ptt.api.model.hot_board.HotBoardTemp
 
 class PopularBoardListAPI : BaseAPIHelper(), IBaseAPI {
-    private val _data: MutableList<HotBoard> = mutableListOf()
+    private val _data: MutableList<HotBoardTemp> = mutableListOf()
 
     @Throws(Exception::class)
-    fun refresh(page: Int, count: Int): MutableList<HotBoard> {
+    fun refresh(page: Int, count: Int): MutableList<HotBoardTemp> {
         _data.clear()
         val request = Request.Builder()
             .url("$hostUrl/api/Board/Popular?page=$page&count=$count")
@@ -29,7 +28,7 @@ class PopularBoardListAPI : BaseAPIHelper(), IBaseAPI {
             while (!list.isNull(i)) {
                 val m3 = list.getJSONObject(i)
                 i++
-                val hotboard = HotBoard(
+                val hotboard = HotBoardTemp(
                     number = m3.getInt("sn"),
                     title = m3.getString("name"),
                     subtitle = m3.getString("title"),
