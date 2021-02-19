@@ -9,6 +9,6 @@ import tw.y_studio.ptt.ui.hot_board.HotBoardsViewModel
 
 val viewModelModules = module {
     viewModel { HotBoardsViewModel(get(), get(named("IO"))) }
-    viewModel { ArticleListViewModel(get(), get(named("IO"))) }
+    viewModel { ArticleListViewModel(get(), get(), get(named("IO"))) }
     viewModel { ArticleReadViewModel(get(), get(), get(named("IO"))) }
 }

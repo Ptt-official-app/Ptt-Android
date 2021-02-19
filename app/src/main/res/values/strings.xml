@@ -10,6 +10,7 @@
     <string name="board_list_title_default">Gossiping</string>
     <string name="board_list_title_empty">無板名資訊</string>
     <string name="board_list_subtitle_empty">無板標資訊</string>
+    <string name="board_list_bid_empty">無板代號資訊</string>
     <string name="board_list_online_default">10000</string>
     <string name="article_list_navigation_item_refresh">重整</string>
     <string name="article_list_navigation_item_search">搜尋</string>

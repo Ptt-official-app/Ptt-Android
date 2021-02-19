@@ -2,7 +2,7 @@ package tw.y_studio.ptt.api
 
 import okhttp3.Request
 import org.json.JSONArray
-import tw.y_studio.ptt.api.model.hot_board.HotBoardTemp
+import tw.y_studio.ptt.api.model.board.hot_board.HotBoardTemp
 
 class PopularBoardListAPI : BaseAPIHelper(), IBaseAPI {
     private val _data: MutableList<HotBoardTemp> = mutableListOf()

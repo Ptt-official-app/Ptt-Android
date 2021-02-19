@@ -2,11 +2,11 @@ package tw.y_studio.ptt.ui.hot_board
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.*
-import tw.y_studio.ptt.api.model.hot_board.HotBoardsItem
-import tw.y_studio.ptt.source.remote.board.IPopularRemoteDataSource
+import tw.y_studio.ptt.api.model.board.hot_board.HotBoardsItem
+import tw.y_studio.ptt.source.remote.board.IBoardRemoteDataSource
 
 class HotBoardsViewModel(
-    private val popularRemoteDataSource: IPopularRemoteDataSource,
+    private val boardRemoteDataSource: IBoardRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     val data: MutableList<HotBoardsItem> = mutableListOf()
@@ -29,9 +29,10 @@ class HotBoardsViewModel(
 
     private suspend fun getDataFromApi() = withContext(ioDispatcher) {
         try {
-            val popularBoards = popularRemoteDataSource.getPopularBoards()
+            val popularBoards = boardRemoteDataSource.getPopularBoards()
             val boardData = popularBoards.list.map {
                 HotBoardsItem(
+                    it.boardId,
                     it.boardName,
                     it.title,
                     it.onlineUser.toString(),

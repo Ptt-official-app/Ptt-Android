@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.api.model.hot_board
+package tw.y_studio.ptt.api.model.board.hot_board
 
 data class HotBoardTemp(
     val number: Int,
