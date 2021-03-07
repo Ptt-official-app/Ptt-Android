@@ -2,23 +2,23 @@ package tw.y_studio.ptt.ui.article.list
 
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.api.model.PartialPost
+import tw.y_studio.ptt.api.model.board.article.Article
 import tw.y_studio.ptt.databinding.ArticleListItemBinding
 import tw.y_studio.ptt.utils.ResourcesUtils
 import tw.y_studio.ptt.utils.StringUtils
 
 class PostViewHolder(private val binding: ArticleListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun onBind(data: PartialPost, selected: Boolean) {
+    fun onBind(data: Article, selected: Boolean) {
         binding.apply {
             val context = itemView.context
             StringUtils.TextViewAutoSplitFix(articleListItemTextViewTitle)
             articleListItemTextViewTitle.text = data.title
-            articleListItemTextViewDate.text = data.date
-            articleListItemTextViewClass.text = data.category
-            articleListItemTextViewCommit.text = data.comments.toString()
-            articleListItemTextViewLike.text = data.goup.toString()
-            articleListItemTextViewAuth.text = data.auth
+            articleListItemTextViewDate.text = data.createTime.toString()
+            articleListItemTextViewClass.text = data.classX
+            articleListItemTextViewCommit.text = data.nComments.toString()
+            articleListItemTextViewLike.text = data.recommend.toString()
+            articleListItemTextViewAuth.text = data.owner
             if (adapterPosition % 2 == 0) {
                 articleListItemMain.setBackgroundColor(ResourcesUtils.getColor(context, R.attr.darkGreyTwo))
             } else {

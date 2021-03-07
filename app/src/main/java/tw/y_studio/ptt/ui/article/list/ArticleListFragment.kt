@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.api.model.PartialPost
+import tw.y_studio.ptt.api.model.board.article.Article
 import tw.y_studio.ptt.databinding.ArticleListFragmentLayoutBinding
 import tw.y_studio.ptt.fragment.ArticleListSearchFragment
 import tw.y_studio.ptt.fragment.PostArticleFragment
@@ -63,17 +63,17 @@ class ArticleListFragment : BaseFragment() {
                 adapter = ArticleListAdapter(
                     articleListViewModel.data,
                     object : ArticleListAdapter.OnItemClickListener {
-                        override fun onItemClick(partialPost: PartialPost) {
+                        override fun onItemClick(article: Article) {
                             if (mClickFix.isFastDoubleClick) return
                             loadFragment(
                                 ArticleReadFragment.newInstance(
                                     Bundle().apply {
-                                        putString("title", partialPost.title)
-                                        putString("auth", partialPost.auth)
-                                        putString("date", partialPost.date)
-                                        putString("class", partialPost.category)
+                                        putString("title", article.title)
+                                        putString("auth", article.owner)
+                                        putString("date", article.createTime.toString())
+                                        putString("class", article.classX)
                                         putString("board", boardName)
-                                        putString("url", partialPost.url)
+                                        putString("url", article.url)
                                     }
                                 ),
                                 currentFragment

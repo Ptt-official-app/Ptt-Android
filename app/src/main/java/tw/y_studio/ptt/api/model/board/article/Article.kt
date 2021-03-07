@@ -24,7 +24,7 @@ data class Article(
     @SerializedName("n_comments")
     val nComments: Int,
     val owner: String,
-    val read: Boolean,
+    var read: Boolean,
     val recommend: Int,
     val title: String,
     val url: String
