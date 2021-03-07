@@ -5,7 +5,6 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import tw.y_studio.ptt.BuildConfig
-import tw.y_studio.ptt.api.PopularBoardListAPI
 import tw.y_studio.ptt.api.PostAPI
 import tw.y_studio.ptt.api.SearchBoardAPI
 import tw.y_studio.ptt.api.board.BoardApiService
@@ -13,7 +12,6 @@ import tw.y_studio.ptt.utils.OkHttpUtils
 import java.util.concurrent.TimeUnit
 
 val apiModules = module {
-    factory { PopularBoardListAPI() }
     factory { SearchBoardAPI() }
     factory { PostAPI() }
     single { provideOkHttpClient() }
