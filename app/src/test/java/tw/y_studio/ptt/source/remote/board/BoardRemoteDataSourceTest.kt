@@ -15,6 +15,7 @@ import org.junit.Test
 import tw.y_studio.ptt.MainCoroutineRule
 import tw.y_studio.ptt.TestJsonFileUtils
 import tw.y_studio.ptt.api.board.BoardApiService
+import tw.y_studio.ptt.api.model.board.article.ArticleList
 import tw.y_studio.ptt.api.model.board.hot_board.HotBoard
 import tw.y_studio.ptt.utils.fromJson
 
@@ -61,6 +62,49 @@ class BoardRemoteDataSourceTest {
         coEvery { boardApi.getPopularBoard() } throws Exception()
 
         boardRemoteDataSource.getPopularBoards()
+    }
+
+    @Test
+    fun get_post_list_data_then_return_data() = runBlockingTest {
+        val jsonFile = TestJsonFileUtils.loadJsonFile("api/board/articles.json")
+        val articleList = Gson().fromJson<ArticleList>(jsonFile)
+
+        coEvery {
+            boardApi.getArticles(
+                "nba",
+                "foo",
+                "bar",
+                200,
+                true
+            )
+        } returns articleList
+
+        val result = boardRemoteDataSource.getBoardArticles(
+            "nba",
+            "foo",
+            "bar",
+            200,
+            true
+        )
+
+        Truth.assertThat(result).isEqualTo(articleList)
+
+        Truth.assertThat(result.list).apply {
+            isNotEmpty()
+            hasSize(articleList.list.size)
+        }
+    }
+
+    @Test(expected = Exception::class)
+    fun get_post_list_data_then_throw_exception() = runBlockingTest {
+        coEvery { boardApi.getArticles(any(), any(), any(), any(), any()) } throws Exception()
+        boardRemoteDataSource.getBoardArticles(
+            "nba",
+            "foo",
+            "bar",
+            200,
+            true
+        )
     }
 
     @After
