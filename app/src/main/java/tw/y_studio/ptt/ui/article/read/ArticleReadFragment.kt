@@ -18,7 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.R
 import tw.y_studio.ptt.api.PostRankMark
 import tw.y_studio.ptt.databinding.ArticleReadFragmentLayoutBinding
-import tw.y_studio.ptt.fragment.LoginPageFragment
+import tw.y_studio.ptt.fragment.login.LoginPageFragment
 import tw.y_studio.ptt.ptt.AidConverter
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -14,6 +15,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import tw.y_studio.ptt.fragment.*
+import tw.y_studio.ptt.fragment.login.LoginPageFragment
 import tw.y_studio.ptt.ui.BaseActivity
 import tw.y_studio.ptt.ui.StaticValue
 import tw.y_studio.ptt.ui.article.list.ArticleListFragment
@@ -26,6 +28,9 @@ class HomeActivity : BaseActivity() {
     private var themeType = 0
     private var timeTemp: Long = 0
     private var navController: NavController? = null
+
+    var fragmentTouchListener: FragmentTouchListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -177,4 +182,14 @@ class HomeActivity : BaseActivity() {
     public override fun onResume() {
         super.onResume()
     }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        return ev?.let {
+            fragmentTouchListener?.onTouchEvent(it, super.dispatchTouchEvent(it))
+        } ?: super.dispatchTouchEvent(ev)
+    }
+}
+
+interface FragmentTouchListener {
+    fun onTouchEvent(event: MotionEvent, defaultTouchEvent: Boolean): Boolean
 }
