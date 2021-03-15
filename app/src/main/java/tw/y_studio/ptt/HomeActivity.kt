@@ -100,7 +100,7 @@ class HomeActivity : BaseActivity() {
         var id = 0
         when (toFragment) {
             is LoginPageFragment -> {
-                id = R.id.loginPageFragment
+                id = R.id.include_login
             }
             is ArticleListFragment -> {
                 id = R.id.articleListFragment

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/include_login"
+    app:startDestination="@id/navigationLoginPageFragment">
+
+    <fragment
+        android:id="@+id/navigationLoginPageFragment"
+        android:name="tw.y_studio.ptt.fragment.LoginPageFragment"
+        android:label="LoginPageFragment"
+        tools:layout="@layout/login_page_fragment_layout"/>
+</navigation>
