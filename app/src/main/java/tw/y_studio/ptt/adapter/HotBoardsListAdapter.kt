@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.api.model.hot_board.HotBoardsItem
+import tw.y_studio.ptt.api.model.board.hot_board.HotBoardsItem
 import tw.y_studio.ptt.ptt.PttColor
 
 class HotBoardsListAdapter(

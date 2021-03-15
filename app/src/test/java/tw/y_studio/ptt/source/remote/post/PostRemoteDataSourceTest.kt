@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 import tw.y_studio.ptt.api.PostAPI
 import tw.y_studio.ptt.api.PostRankMark
-import tw.y_studio.ptt.api.model.PartialPost
 import tw.y_studio.ptt.api.model.Post
 
 class PostRemoteDataSourceTest {
@@ -24,23 +23,6 @@ class PostRemoteDataSourceTest {
         postRemoteDataSource = PostRemoteDataSourceImpl(
             postAPI
         )
-    }
-
-    @Test
-    fun get_post_list_data_then_return_data() {
-        every { postAPI.getPostList("nba", 1) } returns mutableListOf(
-            PartialPost(
-                title = "this is title"
-            )
-        )
-
-        val result = postRemoteDataSource.getPostList("nba", 1)
-
-        Truth.assertThat(result).apply {
-            isNotEmpty()
-            hasSize(1)
-            containsExactly(PartialPost(title = "this is title"))
-        }
     }
 
     @Test
@@ -68,12 +50,6 @@ class PostRemoteDataSourceTest {
                 comments = emptyList()
             )
         )
-    }
-
-    @Test(expected = Exception::class)
-    fun get_post_list_data_then_throw_exception() {
-        every { postAPI.getPostList(any(), any()) } throws Exception()
-        postRemoteDataSource.getPostList("", 0)
     }
 
     @Test

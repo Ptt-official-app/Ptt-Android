@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.api.model.PartialPost
+import tw.y_studio.ptt.api.model.board.article.Article
 import tw.y_studio.ptt.databinding.ArticleListFragmentLayoutBinding
 import tw.y_studio.ptt.fragment.ArticleListSearchFragment
 import tw.y_studio.ptt.fragment.PostArticleFragment
@@ -27,6 +27,7 @@ class ArticleListFragment : BaseFragment() {
 
     private var boardName = ""
     private var boardSubName = ""
+    private var boardId = ""
     private val mClickFix = ClickFix()
 
     private val articleListViewModel: ArticleListViewModel by viewModel()
@@ -37,6 +38,7 @@ class ArticleListFragment : BaseFragment() {
         boardName = bundle?.getString("title", getString(R.string.board_list_title_empty)) ?: ""
         boardSubName = bundle?.getString("subtitle", getString(R.string.board_list_subtitle_empty))
             ?: ""
+        boardId = bundle?.getString("board_id", getString(R.string.board_list_bid_empty)) ?: ""
     }
 
     override fun onCreateView(
@@ -61,17 +63,17 @@ class ArticleListFragment : BaseFragment() {
                 adapter = ArticleListAdapter(
                     articleListViewModel.data,
                     object : ArticleListAdapter.OnItemClickListener {
-                        override fun onItemClick(partialPost: PartialPost) {
+                        override fun onItemClick(article: Article) {
                             if (mClickFix.isFastDoubleClick) return
                             loadFragment(
                                 ArticleReadFragment.newInstance(
                                     Bundle().apply {
-                                        putString("title", partialPost.title)
-                                        putString("auth", partialPost.auth)
-                                        putString("date", partialPost.date)
-                                        putString("class", partialPost.category)
+                                        putString("title", article.title)
+                                        putString("auth", article.owner)
+                                        putString("date", article.createTime.toString())
+                                        putString("class", article.classX)
                                         putString("board", boardName)
-                                        putString("url", partialPost.url)
+                                        putString("url", article.url)
                                     }
                                 ),
                                 currentFragment
@@ -85,7 +87,7 @@ class ArticleListFragment : BaseFragment() {
                         val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                         val totalItemCount = layoutManager.itemCount
                         if (lastVisibleItem >= totalItemCount - 30) {
-                            articleListViewModel.loadNextData(boardName)
+                            articleListViewModel.loadNextData(boardId, boardName)
                         }
                     }
                 })
@@ -97,13 +99,13 @@ class ArticleListFragment : BaseFragment() {
                     android.R.color.holo_green_light,
                     android.R.color.holo_orange_light
                 )
-                setOnRefreshListener { articleListViewModel.loadData(boardName) }
+                setOnRefreshListener { articleListViewModel.loadData(boardId, boardName) }
             }
             articleListFragmentBottomNavigation.setOnNavigationItemSelectedListener(
                 BottomNavigationView.OnNavigationItemSelectedListener { item ->
                     when (item.itemId) {
                         R.id.article_list_navigation_item_refresh -> {
-                            articleListViewModel.loadData(boardName)
+                            articleListViewModel.loadData(boardId, boardName)
                             return@OnNavigationItemSelectedListener false
                         }
                         R.id.article_list_navigation_item_post -> {
@@ -143,7 +145,7 @@ class ArticleListFragment : BaseFragment() {
     }
 
     override fun onAnimOver() {
-        articleListViewModel.loadData(boardName)
+        articleListViewModel.loadData(boardId, boardName)
         binding.articleListFragmentRecyclerView.adapter?.notifyDataSetChanged()
     }
 

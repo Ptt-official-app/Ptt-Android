@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import tw.y_studio.ptt.api.model.PartialPost
+import tw.y_studio.ptt.api.model.board.article.Article
+import tw.y_studio.ptt.api.model.board.article.ArticleList
+import tw.y_studio.ptt.source.remote.board.IBoardRemoteDataSource
 import tw.y_studio.ptt.source.remote.post.IPostRemoteDataSource
 import tw.y_studio.ptt.utils.Log
 import java.util.*
@@ -15,9 +17,10 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class ArticleListViewModel(
     private val postRemoteDataSource: IPostRemoteDataSource,
+    private val boardRemoteDataSource: IBoardRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
-    val data: MutableList<PartialPost> = ArrayList()
+    val data: MutableList<Article> = ArrayList()
     private val page = AtomicInteger(1)
 
     private val loadingState = MutableLiveData<Boolean>()
@@ -27,7 +30,7 @@ class ArticleListViewModel(
 
     fun getErrorLiveData(): LiveData<Throwable> = errorLiveData
 
-    fun loadData(boardName: String) {
+    fun loadData(boardId: String, boardName: String) {
         viewModelScope.launch {
             if (loadingState.value == true) {
                 return@launch
@@ -35,28 +38,30 @@ class ArticleListViewModel(
             data.clear()
             page.set(1)
             loadingState.value = true
-            getDataFromApi(boardName)
+            getDataFromApi(boardId, boardName)
             loadingState.value = false
         }
     }
 
-    fun loadNextData(boardName: String) {
+    fun loadNextData(boardId: String, boardName: String) {
         viewModelScope.launch {
             if (loadingState.value == true) {
                 return@launch
             }
             loadingState.value = true
-            getDataFromApi(boardName)
+            getDataFromApi(boardId, boardName)
             loadingState.value = false
         }
     }
 
-    private suspend fun getDataFromApi(boardName: String) = withContext(ioDispatcher) {
+    private suspend fun getDataFromApi(boardId: String, boardName: String) = withContext(ioDispatcher) {
         try {
-            val temp = mutableListOf<PartialPost>()
+            val temp = mutableListOf<Article>()
             for (i in 0..2) {
                 try {
-                    temp.addAll(postRemoteDataSource.getPostList(boardName, page.get()))
+                    // TODO: 2021/2/18 getArticleList()
+                    val result: ArticleList = boardRemoteDataSource.getBoardArticles(boardId = boardId)
+                    temp.addAll(result.list)
                 } catch (e: Exception) {
                     if (page.get() > 1) {
                         throw e

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.adapter.HotBoardsListAdapter
-import tw.y_studio.ptt.api.model.hot_board.HotBoardsItem
+import tw.y_studio.ptt.api.model.board.hot_board.HotBoardsItem
 import tw.y_studio.ptt.databinding.HotBoardsFragmentLayoutBinding
 import tw.y_studio.ptt.fragment.SearchBoardsFragment
 import tw.y_studio.ptt.ui.BaseFragment
@@ -61,6 +61,7 @@ class HotBoardsFragment : BaseFragment() {
                                     Bundle().apply {
                                         putString("title", item.boardName)
                                         putString("subtitle", item.subtitle)
+                                        putString("board_id", item.boardId)
                                     }
                                 ),
                                 currentFragment
