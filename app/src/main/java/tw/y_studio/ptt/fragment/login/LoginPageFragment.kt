@@ -1,21 +1,17 @@
 package tw.y_studio.ptt.fragment.login
 
 import android.content.Context
+import android.graphics.Paint
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.method.PasswordTransformationMethod
-import android.text.style.UnderlineSpan
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import tw.y_studio.ptt.FragmentTouchListener
 import tw.y_studio.ptt.HomeActivity
 import tw.y_studio.ptt.R
-import tw.y_studio.ptt.databinding.LoginPageFragmentLayoutBinding
+import tw.y_studio.ptt.databinding.LoginPageFragmentBinding
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.utils.StringUtils.isAccount
 import tw.y_studio.ptt.utils.StringUtils.notNullImageString
@@ -23,7 +19,11 @@ import tw.y_studio.ptt.utils.StringUtils.notNullImageString
 class LoginPageFragment : BaseFragment(), FragmentTouchListener {
     private var isShowPassword = false
 
-    private lateinit var binding: LoginPageFragmentLayoutBinding
+    private lateinit var binding: LoginPageFragmentBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,29 +40,33 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = LoginPageFragmentLayoutBinding.inflate(inflater, container, false)
+        binding = LoginPageFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val bundle = arguments // 取得Bundle
         val id = currentActivity
             .getSharedPreferences("MainSetting", Context.MODE_PRIVATE)
             .getString("APIPTTID", "") ?: ""
-        val forgetTVText = "忘記密碼？"
-        val content = SpannableString(forgetTVText)
-        content.setSpan(UnderlineSpan(), 0, forgetTVText.length, 0)
-
+        binding.root.viewTreeObserver.addOnGlobalFocusChangeListener { oldFocus, newFocus ->
+            if (oldFocus is EditText || newFocus is EditText) {
+                // wait for keyboard has been shown, scroll view to correct place.
+                binding.scrollLoginPage.postDelayed(
+                    {
+                        binding.scrollLoginPage.smoothScrollTo(0, binding.spaceLoginPageTitleToSelector.top)
+                    },
+                    150
+                )
+            }
+        }
         binding.apply {
-
-            loginPageTextViewForgot.text = content
-            loginPageEditTextTextAccount.setText(id)
-            loginPageButton.setBackgroundColor(resources.getColor(R.color.slateGrey))
-            loginPageButton.setOnClickListener(
+            textLoginPageServiceTerms.paintFlags = textLoginPageServiceTerms.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+            editLoginPageAccount.setText(id)
+            btnLoginPageLogin.setOnClickListener(
                 View.OnClickListener {
-                    val text = loginPageEditTextTextAccount.text.toString()
+                    val text = editLoginPageAccount.text.toString()
                     if (!isAccount(text)) {
                         Toast.makeText(context, "format incorrect", Toast.LENGTH_SHORT)
                             .show()
@@ -79,39 +83,39 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener {
             )
 
             if (!isShowPassword) {
-                loginPageImageButtonShowpassword.setImageDrawable(
+                btnLoginPageShowPassword.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext(),
                         R.drawable.ic_baseline_visibility_off_24
                     )
                 )
             } else {
-                loginPageImageButtonShowpassword.setImageDrawable(
+                btnLoginPageShowPassword.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext(),
                         R.drawable.ic_baseline_visibility_24
                     )
                 )
             }
-            loginPageImageButtonShowpassword.setOnClickListener {
+            btnLoginPageShowPassword.setOnClickListener {
                 if (isShowPassword) {
-                    loginPageImageButtonShowpassword.setImageDrawable(
+                    btnLoginPageShowPassword.setImageDrawable(
                         ContextCompat.getDrawable(
                             requireContext(),
                             R.drawable.ic_baseline_visibility_off_24
                         )
                     )
-                    loginPageEditTextTextPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+                    editLoginPagePassword.transformationMethod = PasswordTransformationMethod.getInstance()
                 } else {
-                    loginPageImageButtonShowpassword.setImageDrawable(
+                    btnLoginPageShowPassword.setImageDrawable(
                         ContextCompat.getDrawable(
                             requireContext(),
                             R.drawable.ic_baseline_visibility_24
                         )
                     )
-                    loginPageEditTextTextPassword.transformationMethod = null
+                    editLoginPagePassword.transformationMethod = null
                 }
-                loginPageEditTextTextPassword.setSelection(loginPageEditTextTextPassword.text.length)
+                editLoginPagePassword.text?.length?.let { length -> editLoginPagePassword.setSelection(length) }
                 isShowPassword = !isShowPassword
             }
         }

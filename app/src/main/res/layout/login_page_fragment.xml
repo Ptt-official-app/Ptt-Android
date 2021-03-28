@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollLoginPage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:fillViewport="true"
+    android:fitsSystemWindows="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btnLoginPageLogin"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:backgroundTint="@color/black"
+            android:text="@string/login"
+            android:textColor="@color/tangerine"
+            android:textSize="12sp"
+            app:cornerRadius="16sp"
+            app:layout_constraintDimensionRatio="h, 265:48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spaceLoginPagePasswordToLogin"
+            app:layout_constraintWidth_percent="0.706"
+            app:rippleColor="@color/black"
+            app:strokeColor="@color/tangerine"
+            app:strokeWidth="1dp" />
+
+        <Button
+            android:id="@+id/btnLoginPageForgot"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/slateGrey"
+            android:text="@string/forgot_account_or_password"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:cornerRadius="16sp"
+            app:layout_constraintDimensionRatio="h, 265:48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dividerLoginPageForgot"
+            app:layout_constraintWidth_percent="0.706"
+            app:rippleColor="@color/black" />
+
+        <EditText
+            android:id="@+id/editLoginPageAccount"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autofillHints="useraccount"
+            android:background="@drawable/edittext_background"
+            android:ems="10"
+            android:hint="@string/login_page_user_id"
+            android:inputType="textVisiblePassword"
+            android:textColor="@color/paleGrey"
+            android:textColorHint="@color/slateGrey"
+            app:layout_constraintDimensionRatio="h, 265:48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spaceLoginPageSelectorToAccount"
+            app:layout_constraintWidth_percent="0.706" />
+
+        <TextView
+            android:id="@+id/textLoginPageAccountMessage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingHorizontal="16dp"
+            android:gravity="center|end"
+            android:textColor="@color/tangerine"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="h, 265:48"
+            app:layout_constraintStart_toStartOf="@id/editLoginPageAccount"
+            app:layout_constraintEnd_toEndOf="@id/editLoginPageAccount"
+            app:layout_constraintTop_toTopOf="@id/editLoginPageAccount"
+            app:layout_constraintBottom_toBottomOf="@id/editLoginPageAccount"
+            tools:text="此帳號尚未註冊" />
+
+        <EditText
+            android:id="@+id/editLoginPagePassword"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:autofillHints="password"
+            android:background="@drawable/edittext_background"
+            android:ems="10"
+            android:hint="@string/login_page_password"
+            android:inputType="textPassword"
+            android:textColor="@color/paleGrey"
+            android:textColorHint="@color/slateGrey"
+            app:layout_constraintDimensionRatio="h, 265:48"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spaceLoginPageAccountToPassword"
+            app:layout_constraintWidth_percent="0.706" />
+
+        <TextView
+            android:id="@+id/textLoginPagePasswordMessage"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center|end"
+            android:textColor="@color/tangerine"
+            android:textSize="16sp"
+            android:visibility="gone"
+            app:layout_constraintDimensionRatio="h, 265:48"
+            app:layout_constraintStart_toStartOf="@id/editLoginPagePassword"
+            app:layout_constraintEnd_toStartOf="@id/btnLoginPageShowPassword"
+            app:layout_constraintTop_toTopOf="@id/editLoginPagePassword"
+            app:layout_constraintBottom_toBottomOf="@id/editLoginPagePassword"
+            tools:text="不是這組密碼" />
+
+        <ImageButton
+            android:id="@+id/btnLoginPageShowPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:foreground="?selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/editLoginPagePassword"
+            app:layout_constraintEnd_toEndOf="@id/editLoginPagePassword"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toStartOf="@+id/guideLoginPageTitleStart"
+            app:layout_constraintTop_toTopOf="@id/editLoginPagePassword"
+            app:srcCompat="@drawable/ic_baseline_visibility_24" />
+
+        <Space
+            android:id="@+id/spaceLoginPageTopToTitle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h, 375:100"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Space
+            android:id="@+id/spaceLoginPageTitleToSelector"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h, 375:64"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textLoginPageTitle" />
+
+        <Space
+            android:id="@+id/spaceLoginPageSelectorToAccount"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h, 375:56"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textLoginPageLoginType" />
+
+        <Space
+            android:id="@+id/spaceLoginPageAccountToPassword"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h, 375:24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editLoginPageAccount" />
+
+        <Space
+            android:id="@+id/spaceLoginPagePasswordToLogin"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h, 375:36"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editLoginPagePassword" />
+
+        <Space
+            android:id="@+id/spaceLoginPageLoginToForgotDivider"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="h, 375:60"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textLoginPageServiceTerms" />
+
+        <TextView
+            android:id="@+id/textLoginPageTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_page_title"
+            android:textColor="@color/paleGrey"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@id/guideLoginPageTitleStart"
+            app:layout_constraintTop_toBottomOf="@id/spaceLoginPageTopToTitle" />
+
+        <TextView
+            android:id="@+id/textLoginPageLoginType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@id/dividerLoginPageLoginToRegister"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@id/guideLoginPageTitleStart"
+            app:layout_constraintTop_toBottomOf="@id/spaceLoginPageTitleToSelector"
+            tools:textColor="@color/paleGrey" />
+
+        <TextView
+            android:id="@+id/textLoginPageRegisterType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/register"
+            android:textSize="16sp"
+            android:textColor="@color/slateGrey"
+            app:layout_constraintBottom_toBottomOf="@id/textLoginPageLoginType"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dividerLoginPageLoginToRegister"
+            app:layout_constraintTop_toTopOf="@id/textLoginPageLoginType" />
+
+        <TextView
+            android:id="@+id/textLoginPageServiceTerms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/service_terms_agree"
+            android:textColor="@color/slateGrey"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/btnLoginPageLogin"
+            app:layout_constraintStart_toStartOf="@id/btnLoginPageLogin"
+            app:layout_constraintTop_toBottomOf="@id/btnLoginPageLogin" />
+
+        <View
+            android:id="@+id/dividerLoginPageLoginToRegister"
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@color/slateGrey"
+            app:layout_constraintBottom_toBottomOf="@id/textLoginPageLoginType"
+            app:layout_constraintEnd_toStartOf="@id/textLoginPageRegisterType"
+            app:layout_constraintStart_toEndOf="@id/textLoginPageLoginType"
+            app:layout_constraintTop_toTopOf="@id/textLoginPageLoginType" />
+
+        <View
+            android:id="@+id/dividerLoginPageForgot"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/charcoalGrey"
+            app:layout_constraintEnd_toEndOf="@id/btnLoginPageLogin"
+            app:layout_constraintStart_toStartOf="@id/btnLoginPageLogin"
+            app:layout_constraintTop_toBottomOf="@id/spaceLoginPageLoginToForgotDivider" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideLoginPageTitleStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.149" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
