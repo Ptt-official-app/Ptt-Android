@@ -17,6 +17,7 @@ import tw.y_studio.ptt.R
 import tw.y_studio.ptt.databinding.LoginPageFragmentBinding
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.utils.KeyboardUtils
+import kotlin.math.absoluteValue
 
 class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickListener {
     private val viewModel by viewModel<LoginPageViewModel>()
@@ -54,15 +55,11 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickLis
         val id = currentActivity
             .getSharedPreferences("MainSetting", Context.MODE_PRIVATE)
             .getString("APIPTTID", "") ?: ""
-        binding.root.viewTreeObserver.addOnGlobalFocusChangeListener { oldFocus, newFocus ->
-            if (oldFocus is EditText || newFocus is EditText) {
-                // wait for keyboard has been shown, scroll view to correct place.
-                binding.scrollLoginPage.postDelayed(
-                    {
-                        binding.scrollLoginPage.smoothScrollTo(0, binding.spaceLoginPageTitleToSelector.top)
-                    },
-                    150
-                )
+        binding.root.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
+            if ((bottom - top).absoluteValue < (oldBottom - oldTop)) {
+                binding.scrollLoginPage.post {
+                    binding.scrollLoginPage.smoothScrollTo(0, binding.spaceLoginPageTitleToSelector.top)
+                }
             }
         }
         binding.apply {
