@@ -1,14 +1,12 @@
-package tw.y_studio.ptt.api.model.user
+package tw.y_studio.ptt.api.model.user.exist_user
 
 import com.google.gson.annotations.SerializedName
 
-data class LoginRequest(
+data class ExistUserRequest(
     @SerializedName("client_id")
     val clientId: String,
     @SerializedName("client_secret")
     val clientSecret: String,
     @SerializedName("username")
-    val userName: String,
-    @SerializedName("password")
-    val password: String
+    val userName: String
 )

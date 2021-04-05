@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.api.model.user
+package tw.y_studio.ptt.api.model.user.login
 import com.google.gson.annotations.SerializedName
 
 data class Login(

@@ -31,6 +31,12 @@ class LoginPageViewModel(private val source: IUserRemoteDataSource) : ViewModel(
             return@launch
         }
         try {
+            // TODO: 4/5/21 wait for api fixed
+//            source.existUser(
+//                "test_client_id",
+//                "test_client_secret",
+//                account
+//            )
             val login = source.login(
                 "test_client_id",
                 "test_client_secret",
