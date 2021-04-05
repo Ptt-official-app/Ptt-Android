@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -14,11 +15,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import tw.y_studio.ptt.fragment.*
+import tw.y_studio.ptt.fragment.login.LoginPageFragment
 import tw.y_studio.ptt.ui.BaseActivity
 import tw.y_studio.ptt.ui.StaticValue
 import tw.y_studio.ptt.ui.article.list.ArticleListFragment
 import tw.y_studio.ptt.ui.article.read.ArticleReadFragment
 import tw.y_studio.ptt.ui.common.extension.navigateForward
+import tw.y_studio.ptt.utils.PreferenceConstants
 import java.util.*
 import kotlin.math.abs
 
@@ -26,11 +29,14 @@ class HomeActivity : BaseActivity() {
     private var themeType = 0
     private var timeTemp: Long = 0
     private var navController: NavController? = null
+
+    var fragmentTouchListener: FragmentTouchListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        val preference2 = getSharedPreferences("MainSetting", MODE_PRIVATE)
-        themeType = preference2.getInt("THEME", 0)
+        val preference2 = getSharedPreferences(PreferenceConstants.prefName, MODE_PRIVATE)
+        themeType = preference2.getInt(PreferenceConstants.theme, 0)
         StaticValue.ThemMode = themeType
         when (themeType) {
             1 -> {
@@ -100,7 +106,7 @@ class HomeActivity : BaseActivity() {
         var id = 0
         when (toFragment) {
             is LoginPageFragment -> {
-                id = R.id.loginPageFragment
+                id = R.id.include_login
             }
             is ArticleListFragment -> {
                 id = R.id.articleListFragment
@@ -177,4 +183,14 @@ class HomeActivity : BaseActivity() {
     public override fun onResume() {
         super.onResume()
     }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        return ev?.let {
+            fragmentTouchListener?.onTouchEvent(it, super.dispatchTouchEvent(it))
+        } ?: super.dispatchTouchEvent(ev)
+    }
+}
+
+interface FragmentTouchListener {
+    fun onTouchEvent(event: MotionEvent, defaultTouchEvent: Boolean): Boolean
 }

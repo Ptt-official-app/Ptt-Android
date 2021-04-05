@@ -25,11 +25,7 @@
         android:name="tw.y_studio.ptt.ui.article.read.ArticleReadFragment"
         android:label="ArticleReadFragment"
         tools:layout="@layout/article_read_fragment_layout"/>
-    <fragment
-        android:id="@+id/loginPageFragment"
-        android:name="tw.y_studio.ptt.fragment.LoginPageFragment"
-        android:label="LoginPageFragment"
-        tools:layout="@layout/login_page_fragment_layout"/>
+
     <fragment
         android:id="@+id/articleListFragment"
         android:name="tw.y_studio.ptt.ui.article.list.ArticleListFragment"
@@ -53,5 +49,7 @@
         android:label="HotArticleFilterFragment"
         tools:layout="@layout/hot_article_list_fragment_layout"/>
 
+    <include
+        app:graph="@navigation/include_login" />
 
 </navigation>

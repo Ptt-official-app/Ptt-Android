@@ -66,9 +66,15 @@
     <string name="persion_page_tabs_info">個人資訊</string>
     <string name="persion_page_tabs_articles">歷史文章</string>
     <string name="persion_page_tabs_comments">歷史留言</string>
-    <string name="login_page_user_id">User ID</string>
-    <string name="login_page_password">Password</string>
+    <string name="login_page_user_id">使用者帳號</string>
+    <string name="login_page_password">密碼</string>
     <string name="login_page_title">批踢踢實業坊\nPtt.cc</string>
+    <string name="login">登入</string>
+    <string name="register">註冊</string>
+    <string name="service_terms_agree">使用本服務即表示您同意使用者條款</string>
+    <string name="forgot_account_or_password">忘記帳號/密碼？</string>
+    <string name="not_this_password">不是這個密碼</string>
+    <string name="server_error">伺服器錯誤</string>
     <string-array name="setting_post_bottom_style_array">
         <item>含標籤</item>
         <item>僅圖示</item>

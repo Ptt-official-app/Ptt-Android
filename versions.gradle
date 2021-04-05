@@ -110,6 +110,8 @@ ext.deps = [
         ],
         'square'  : [
                 'okhttp'    : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+                'log': "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
+
                 'okio'      : "com.squareup.okio:okio:${versions.okio}",
                 'leakcanary': "com.squareup.leakcanary:leakcanary-android:${versions.leakcanary}",
                 'retrofit'  : [

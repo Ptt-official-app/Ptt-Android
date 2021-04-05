@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
+import tw.y_studio.ptt.utils.PreferenceConstants
 import tw.y_studio.ptt.utils.StringUtils.TextViewAutoSplitFix
 import tw.y_studio.ptt.utils.StringUtils.notNullString
 
@@ -35,7 +36,7 @@ class SearchBoardsAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return ctx?.getSharedPreferences("MainSetting", Context.MODE_PRIVATE)?.getInt("SEARCHSTYLE", TYPE0) ?: TYPE0
+        return ctx?.getSharedPreferences(PreferenceConstants.prefName, Context.MODE_PRIVATE)?.getInt("SEARCHSTYLE", TYPE0) ?: TYPE0
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

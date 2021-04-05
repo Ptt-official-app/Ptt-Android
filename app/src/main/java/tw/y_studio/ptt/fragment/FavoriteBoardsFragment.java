@@ -28,7 +28,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.adapter.FavoriteBoardsListAdapter;
-import tw.y_studio.ptt.dataBase.FavoriteDBHelper;
+import tw.y_studio.ptt.database.FavoriteDBHelper;
 import tw.y_studio.ptt.ui.BaseFragment;
 import tw.y_studio.ptt.ui.ClickFix;
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager;

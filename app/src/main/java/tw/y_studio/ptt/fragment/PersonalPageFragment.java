@@ -33,6 +33,7 @@ import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.adapter.GeneralFragmentStatePagerAdapter;
 import tw.y_studio.ptt.ui.BaseFragment;
 import tw.y_studio.ptt.ui.ImageLoadingDrawable;
+import tw.y_studio.ptt.utils.PreferenceConstants;
 
 import java.util.ArrayList;
 
@@ -159,8 +160,8 @@ public class PersonalPageFragment extends BaseFragment {
 
         String id =
                 getCurrentActivity()
-                        .getSharedPreferences("MainSetting", MODE_PRIVATE)
-                        .getString("APIPTTID", "Guest");
+                        .getSharedPreferences(PreferenceConstants.prefName, MODE_PRIVATE)
+                        .getString(PreferenceConstants.id, "Guest");
         personIDTextView.setText(id);
         personIDTextViewMini.setText(id);
         personNickTextView.setText("匿名訪客");

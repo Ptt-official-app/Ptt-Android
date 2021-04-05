@@ -1,4 +1,4 @@
-package tw.y_studio.ptt.dataBase;
+package tw.y_studio.ptt.database;
 
 import android.content.ContentValues;
 import android.content.Context;

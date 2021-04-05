@@ -132,6 +132,7 @@ dependencies {
     implementation deps.kotlin.coroutines.android
     // Square
     implementation deps.square.okhttp
+    implementation deps.square.log
     implementation deps.square.okio
     implementation deps.square.retrofit.core
     implementation deps.square.retrofit.gsonConverter
