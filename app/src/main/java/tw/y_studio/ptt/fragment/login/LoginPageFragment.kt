@@ -17,6 +17,7 @@ import tw.y_studio.ptt.R
 import tw.y_studio.ptt.databinding.LoginPageFragmentBinding
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.utils.KeyboardUtils
+import tw.y_studio.ptt.utils.PreferenceConstants
 import kotlin.math.absoluteValue
 
 class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickListener {
@@ -53,8 +54,8 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickLis
         super.onViewCreated(view, savedInstanceState)
         val bundle = arguments // 取得Bundle
         val id = currentActivity
-            .getSharedPreferences("MainSetting", Context.MODE_PRIVATE)
-            .getString("APIPTTID", "") ?: ""
+            .getSharedPreferences(PreferenceConstants.prefName, Context.MODE_PRIVATE)
+            .getString(PreferenceConstants.id, "") ?: ""
         binding.root.addOnLayoutChangeListener { _, _, top, _, bottom, _, oldTop, _, oldBottom ->
             if ((bottom - top).absoluteValue < (oldBottom - oldTop)) {
                 binding.scrollLoginPage.post {
@@ -116,6 +117,7 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickLis
                     binding.textLoginPagePasswordMessage.isVisible = true
                 }
                 loginSuccess.observe(viewLifecycleOwner) {
+                    Toast.makeText(requireActivity(), "登入成功！", Toast.LENGTH_SHORT).show()
                     currentActivity.onBackPressed()
                 }
             }

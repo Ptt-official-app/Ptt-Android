@@ -12,6 +12,7 @@ import tw.y_studio.ptt.api.PostRankMark
 import tw.y_studio.ptt.ptt.AidConverter
 import tw.y_studio.ptt.source.remote.post.IPostRemoteDataSource
 import tw.y_studio.ptt.utils.Log
+import tw.y_studio.ptt.utils.PreferenceConstants
 import tw.y_studio.ptt.utils.StringUtils
 import java.util.regex.Pattern
 
@@ -167,7 +168,7 @@ class ArticleReadViewModel(
         orgUrl: String,
         rank: PostRankMark
     ) = withContext(ioDispatcher) {
-        val id = preferences.getString("APIPTTID", "")
+        val id = preferences.getString(PreferenceConstants.id, "")
         if (id.isNullOrEmpty()) {
             throw Exception("No Ptt id")
         }

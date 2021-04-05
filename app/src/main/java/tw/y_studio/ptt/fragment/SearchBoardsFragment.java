@@ -29,7 +29,7 @@ import okhttp3.OkHttpClient;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.adapter.SearchBoardsAdapter;
 import tw.y_studio.ptt.api.SearchBoardAPI;
-import tw.y_studio.ptt.dataBase.FavoriteDBHelper;
+import tw.y_studio.ptt.database.FavoriteDBHelper;
 import tw.y_studio.ptt.di.Injection;
 import tw.y_studio.ptt.source.remote.search.ISearchBoardRemoteDataSource;
 import tw.y_studio.ptt.ui.BaseFragment;

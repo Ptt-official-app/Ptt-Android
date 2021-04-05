@@ -22,10 +22,7 @@ import tw.y_studio.ptt.fragment.login.LoginPageFragment
 import tw.y_studio.ptt.ptt.AidConverter
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
-import tw.y_studio.ptt.utils.ResourcesUtils
-import tw.y_studio.ptt.utils.observeNotNull
-import tw.y_studio.ptt.utils.shareTo
-import tw.y_studio.ptt.utils.useApi
+import tw.y_studio.ptt.utils.*
 import java.util.regex.Pattern
 
 class ArticleReadFragment : BaseFragment() {
@@ -158,7 +155,7 @@ class ArticleReadFragment : BaseFragment() {
         if (!(haveApi && useApi)) {
             return
         }
-        val id = preferences.getString("APIPTTID", "")
+        val id = preferences.getString(PreferenceConstants.id, "")
         if (id!!.isEmpty()) {
             loadFragment(LoginPageFragment.newInstance(), currentFragment)
             return

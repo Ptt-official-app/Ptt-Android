@@ -21,6 +21,7 @@ import tw.y_studio.ptt.ui.StaticValue
 import tw.y_studio.ptt.ui.article.list.ArticleListFragment
 import tw.y_studio.ptt.ui.article.read.ArticleReadFragment
 import tw.y_studio.ptt.ui.common.extension.navigateForward
+import tw.y_studio.ptt.utils.PreferenceConstants
 import java.util.*
 import kotlin.math.abs
 
@@ -34,8 +35,8 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        val preference2 = getSharedPreferences("MainSetting", MODE_PRIVATE)
-        themeType = preference2.getInt("THEME", 0)
+        val preference2 = getSharedPreferences(PreferenceConstants.prefName, MODE_PRIVATE)
+        themeType = preference2.getInt(PreferenceConstants.theme, 0)
         StaticValue.ThemMode = themeType
         when (themeType) {
             1 -> {

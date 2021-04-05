@@ -27,6 +27,7 @@ import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.ui.BaseFragment;
 import tw.y_studio.ptt.ui.ClickFix;
 import tw.y_studio.ptt.ui.StaticValue;
+import tw.y_studio.ptt.utils.PreferenceConstants;
 
 public class PostArticleFragment extends BaseFragment {
 
@@ -119,8 +120,8 @@ public class PostArticleFragment extends BaseFragment {
                 };
 
         if (getContext()
-                        .getSharedPreferences("MainSetting", MODE_PRIVATE)
-                        .getInt("POSTBOTTOMSTYLE", 0)
+                        .getSharedPreferences(PreferenceConstants.prefName, MODE_PRIVATE)
+                        .getInt(PreferenceConstants.postBottomStyle, 0)
                 == 0) {
             navigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         } else {

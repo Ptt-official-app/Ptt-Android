@@ -12,5 +12,5 @@ val viewModelModules = module {
     viewModel { HotBoardsViewModel(get(), get(named("IO"))) }
     viewModel { ArticleListViewModel(get(), get(), get(named("IO"))) }
     viewModel { ArticleReadViewModel(get(), get(), get(named("IO"))) }
-    viewModel { LoginPageViewModel() }
+    viewModel { LoginPageViewModel(get()) }
 }
