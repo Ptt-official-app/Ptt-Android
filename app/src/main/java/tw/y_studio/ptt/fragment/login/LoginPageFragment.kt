@@ -18,6 +18,7 @@ import tw.y_studio.ptt.databinding.LoginPageFragmentBinding
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.utils.KeyboardUtils
 import tw.y_studio.ptt.utils.PreferenceConstants
+import tw.y_studio.ptt.utils.observeEventNotNull
 import kotlin.math.absoluteValue
 
 class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickListener {
@@ -115,6 +116,9 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickLis
                 passwordMessage.observe(viewLifecycleOwner) {
                     binding.textLoginPagePasswordMessage.setText(it)
                     binding.textLoginPagePasswordMessage.isVisible = true
+                }
+                errorMessage.observeEventNotNull(viewLifecycleOwner) {
+                    Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
                 }
                 loginSuccess.observe(viewLifecycleOwner) {
                     Toast.makeText(requireActivity(), "登入成功！", Toast.LENGTH_SHORT).show()
