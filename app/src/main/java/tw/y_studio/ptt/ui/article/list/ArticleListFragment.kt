@@ -68,12 +68,7 @@ class ArticleListFragment : BaseFragment() {
                             loadFragment(
                                 ArticleReadFragment.newInstance(
                                     Bundle().apply {
-                                        putString("title", article.title)
-                                        putString("auth", article.owner)
-                                        putString("date", article.createTime.toString())
-                                        putString("class", article.classX)
-                                        putString("board", boardName)
-                                        putString("url", article.url)
+                                        putParcelable("article", article)
                                     }
                                 ),
                                 currentFragment

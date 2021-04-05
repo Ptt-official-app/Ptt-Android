@@ -17,28 +17,19 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.R
 import tw.y_studio.ptt.api.PostRankMark
+import tw.y_studio.ptt.api.model.board.article.Article
 import tw.y_studio.ptt.databinding.ArticleReadFragmentLayoutBinding
 import tw.y_studio.ptt.fragment.login.LoginPageFragment
-import tw.y_studio.ptt.ptt.AidConverter
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
 import tw.y_studio.ptt.utils.*
-import java.util.regex.Pattern
 
 class ArticleReadFragment : BaseFragment() {
     private var _binding: ArticleReadFragmentLayoutBinding? = null
     private val binding get() = _binding!!
-    private val urlPattern = Pattern.compile("www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm")
     private var adapter: ArticleReadAdapter? = null
-    private var fileName = ""
-    private var board = ""
-    private var aid = ""
-    private var articleTitle = ""
-    private var articleBoard = ""
-    private var articleAuth = " "
-    private var articleTime = ""
-    private var articleClass = ""
-    private var orgUrl = ""
+
+    private val article by bundleDelegate<Article>()
 
     private val haveApi = true
 
@@ -86,7 +77,7 @@ class ArticleReadFragment : BaseFragment() {
                     viewModel.originalArticleTitle,
                     """
                                 ${viewModel.originalArticleTitle}
-                                $orgUrl
+                                ${article.url}
                     """.trimIndent(),
                     "分享文章"
                 )
@@ -107,7 +98,7 @@ class ArticleReadFragment : BaseFragment() {
                     android.R.color.holo_orange_light
                 )
                 setOnRefreshListener {
-                    viewModel.loadData(board, fileName, aid, articleBoard)
+//                    viewModel.loadData(article.boardId, fileName, aid, articleBoard)
                 }
             }
         }
@@ -130,25 +121,15 @@ class ArticleReadFragment : BaseFragment() {
         val window = currentActivity.window
         window.statusBarColor = ResourcesUtils.getColor(requireContext(), R.attr.article_header)
 
-        val bundle = arguments // 取得Bundle
-        orgUrl = bundle!!.getString("url", "")
-        val matcher = urlPattern.matcher(orgUrl)
-        if (matcher.find()) {
-            board = matcher.group(1)
-            fileName = matcher.group(2)
-            aid = AidConverter.urlToAid(orgUrl).aid
-        }
-        articleBoard = bundle.getString("board", "")
-        articleTitle = bundle.getString("title", "")
-        articleAuth = bundle.getString("auth", "")
-        articleClass = bundle.getString("class", "")
-        articleTime = bundle.getString("date", "")
-        viewModel.createDefaultHeader(articleTitle, articleAuth, articleTime, articleClass, articleBoard)
+        // 取得Bundle
+        viewModel.createDefaultHeader(
+            article.title, article.owner, article.createTime, article.classX, article.boardId
+        )
         viewModel.putDefaultHeader()
     }
 
     override fun onAnimOver() {
-        viewModel.loadData(board, fileName, aid, articleBoard)
+//        viewModel.loadData(board, fileName, aid, articleBoard)
     }
 
     private fun setRankMenu(view: View) {
@@ -175,7 +156,7 @@ class ArticleReadFragment : BaseFragment() {
                 "Please wait."
             ).apply {
                 window?.setBackgroundDrawableResource(R.drawable.dialog_background)
-                viewModel.setRank(board, aid, orgUrl, rank)
+//                viewModel.setRank(board, aid, orgUrl, rank)
             }
             true
         }
@@ -204,13 +185,6 @@ class ArticleReadFragment : BaseFragment() {
     }
 
     companion object {
-        fun newInstance(): ArticleReadFragment {
-            val args = Bundle()
-            val fragment = ArticleReadFragment()
-            fragment.arguments = args
-            return fragment
-        }
-
         @JvmStatic
         fun newInstance(args: Bundle?): ArticleReadFragment {
             val fragment = ArticleReadFragment()

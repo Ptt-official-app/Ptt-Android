@@ -45,14 +45,14 @@ class ArticleReadViewModel(
     fun createDefaultHeader(
         articleTitle: String,
         articleAuth: String,
-        articleTime: String,
+        articleTime: Int,
         articleClass: String,
         articleBoard: String
     ) {
         headerItem = ArticleReadAdapter.Item.HeaderItem(
             articleTitle,
             articleAuth,
-            articleTime,
+            articleTime.toString(),
             articleClass,
             articleBoard
         )

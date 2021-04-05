@@ -13,7 +13,7 @@ ext.buildConfig = [
 ext.versions = [
         'androidGradle'                : '4.1.2',
         'koin'                         : '2.2.0',
-        'kotlin'                       : '1.4.10',
+        'kotlin'                       : '1.4.32',
         'androidXAppCompat'            : '1.2.0',
         'androidXArch'                 : '2.1.0',
         'androidXBrowser'              : '1.2.0',
