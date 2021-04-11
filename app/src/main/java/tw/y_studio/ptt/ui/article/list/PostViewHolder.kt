@@ -6,15 +6,21 @@ import tw.y_studio.ptt.api.model.board.article.Article
 import tw.y_studio.ptt.databinding.ArticleListItemBinding
 import tw.y_studio.ptt.utils.ResourcesUtils
 import tw.y_studio.ptt.utils.StringUtils
+import tw.y_studio.ptt.utils.date.DateFormatUtils
+import tw.y_studio.ptt.utils.date.DatePatternConstants
 
 class PostViewHolder(private val binding: ArticleListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun onBind(data: Article, selected: Boolean) {
         binding.apply {
             val context = itemView.context
+            val dateTime = DateFormatUtils.secondsToDateTime(
+                data.createTime.toLong(),
+                DatePatternConstants.articleDateTime
+            )
             StringUtils.TextViewAutoSplitFix(articleListItemTextViewTitle)
             articleListItemTextViewTitle.text = data.title
-            articleListItemTextViewDate.text = data.createTime.toString()
+            articleListItemTextViewDate.text = dateTime
             articleListItemTextViewClass.text = data.classX
             articleListItemTextViewCommit.text = data.nComments.toString()
             articleListItemTextViewLike.text = data.recommend.toString()

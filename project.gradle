@@ -1,6 +1,7 @@
 static def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
+    handler.mavenCentral()
 }
 
 ext.addRepos = this.&addRepos
@@ -8,6 +9,7 @@ ext.addRepos = this.&addRepos
 static def addAllRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
+    handler.mavenCentral()
 }
 
 ext.addAllRepos = this.&addAllRepos

@@ -14,6 +14,8 @@ import tw.y_studio.ptt.source.remote.post.IPostRemoteDataSource
 import tw.y_studio.ptt.utils.Log
 import tw.y_studio.ptt.utils.PreferenceConstants
 import tw.y_studio.ptt.utils.StringUtils
+import tw.y_studio.ptt.utils.date.DateFormatUtils
+import tw.y_studio.ptt.utils.date.DatePatternConstants
 import java.util.regex.Pattern
 
 class ArticleReadViewModel(
@@ -49,10 +51,14 @@ class ArticleReadViewModel(
         articleClass: String,
         articleBoard: String
     ) {
+
         headerItem = ArticleReadAdapter.Item.HeaderItem(
             articleTitle,
             articleAuth,
-            articleTime.toString(),
+            DateFormatUtils.secondsToDateTime(
+                articleTime.toLong(),
+                DatePatternConstants.articleDateTime
+            ),
             articleClass,
             articleBoard
         )

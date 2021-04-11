@@ -18,6 +18,7 @@ android {
         buildConfigField "String", "develop_domain", "\"${developDomain()}\""
         buildConfigField "String", "demo_hot_article_url", "\"${demoHotArticleUrl()}\""
         testInstrumentationRunner buildConfig.runner
+        multiDexEnabled true
         ndk {
             abiFilters 'armeabi-v7a', 'arm64-v8a' , 'x86', 'x86_64'
         }
@@ -42,6 +43,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility = buildConfig.jdk
         targetCompatibility = buildConfig.jdk
     }
@@ -140,6 +142,8 @@ dependencies {
     implementation deps.square.okio
     implementation deps.square.retrofit.core
     implementation deps.square.retrofit.gsonConverter
+
+    coreLibraryDesugaring deps.desugar
 
     testImplementation deps.google.truth
     testImplementation deps.junit

@@ -37,7 +37,8 @@ ext.versions = [
         'truth'                        : '1.1',
         'leakcanary'                   : '2.5',
         'gson'                         : '2.8.6',
-        'coroutines'                   : '1.4.2'
+        'coroutines'                   : '1.4.2',
+        'desugar'                      : '1.0.9'
 ]
 
 ext.projectDeps = [
@@ -110,7 +111,7 @@ ext.deps = [
         ],
         'square'  : [
                 'okhttp'    : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
-                'log': "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
+                'log'       : "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
 
                 'okio'      : "com.squareup.okio:okio:${versions.okio}",
                 'leakcanary': "com.squareup.leakcanary:leakcanary-android:${versions.leakcanary}",
@@ -118,5 +119,6 @@ ext.deps = [
                         'core'         : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
                         'gsonConverter': "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
                 ]
-        ]
+        ],
+        'desugar' : "com.android.tools:desugar_jdk_libs:${versions.desugar}"
 ]
