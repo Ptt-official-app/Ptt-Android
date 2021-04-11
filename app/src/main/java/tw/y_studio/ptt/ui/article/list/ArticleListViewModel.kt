@@ -9,14 +9,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tw.y_studio.ptt.api.model.board.article.Article
 import tw.y_studio.ptt.api.model.board.article.ArticleList
+import tw.y_studio.ptt.source.remote.article.IArticleRemoteDataSource
 import tw.y_studio.ptt.source.remote.board.IBoardRemoteDataSource
-import tw.y_studio.ptt.source.remote.post.IPostRemoteDataSource
 import tw.y_studio.ptt.utils.Log
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class ArticleListViewModel(
-    private val postRemoteDataSource: IPostRemoteDataSource,
+    private val articleRemoteDataSource: IArticleRemoteDataSource,
     private val boardRemoteDataSource: IBoardRemoteDataSource,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -78,6 +78,6 @@ class ArticleListViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        postRemoteDataSource.disposeAll()
+        articleRemoteDataSource.disposeAll()
     }
 }

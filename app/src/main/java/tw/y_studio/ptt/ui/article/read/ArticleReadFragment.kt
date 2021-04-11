@@ -31,6 +31,8 @@ class ArticleReadFragment : BaseFragment() {
 
     private val article by bundleDelegate<Article>()
 
+    private val boardName by bundleDelegate<String>()
+
     private val haveApi = true
 
     private var progressDialog: ProgressDialog? = null
@@ -74,9 +76,9 @@ class ArticleReadFragment : BaseFragment() {
             articleReadItemImageButtonShare.setOnClickListener {
                 shareTo(
                     requireContext(),
-                    viewModel.originalArticleTitle,
+                    viewModel.originalTitle(article.classX, article.title),
                     """
-                                ${viewModel.originalArticleTitle}
+                                ${viewModel.originalTitle(article.classX, article.title)}
                                 ${article.url}
                     """.trimIndent(),
                     "分享文章"
@@ -98,7 +100,7 @@ class ArticleReadFragment : BaseFragment() {
                     android.R.color.holo_orange_light
                 )
                 setOnRefreshListener {
-//                    viewModel.loadData(article.boardId, fileName, aid, articleBoard)
+                    viewModel.loadData(article)
                 }
             }
         }
@@ -123,13 +125,13 @@ class ArticleReadFragment : BaseFragment() {
 
         // 取得Bundle
         viewModel.createDefaultHeader(
-            article.title, article.owner, article.createTime, article.classX, article.boardId
+            article.title, article.owner, article.createTime, article.classX, boardName
         )
         viewModel.putDefaultHeader()
     }
 
     override fun onAnimOver() {
-//        viewModel.loadData(board, fileName, aid, articleBoard)
+        viewModel.loadData(article)
     }
 
     private fun setRankMenu(view: View) {
@@ -144,11 +146,11 @@ class ArticleReadFragment : BaseFragment() {
         val popupMenu = PopupMenu(currentActivity, view)
         popupMenu.menuInflater.inflate(R.menu.post_article_rank_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
-            var rank = PostRankMark.None
-            when (item.itemId) {
-                R.id.post_article_rank_like -> rank = PostRankMark.Like
-                R.id.post_article_rank_dislike -> rank = PostRankMark.Dislike
-                R.id.post_article_rank_non -> rank = PostRankMark.None
+            var rank = when (item.itemId) {
+                R.id.post_article_rank_like -> PostRankMark.Like
+                R.id.post_article_rank_dislike -> PostRankMark.Dislike
+                R.id.post_article_rank_non -> PostRankMark.None
+                else -> PostRankMark.None
             }
             progressDialog = ProgressDialog.show(
                 currentActivity,
@@ -156,7 +158,7 @@ class ArticleReadFragment : BaseFragment() {
                 "Please wait."
             ).apply {
                 window?.setBackgroundDrawableResource(R.drawable.dialog_background)
-//                viewModel.setRank(board, aid, orgUrl, rank)
+                viewModel.setRank(article, rank)
             }
             true
         }

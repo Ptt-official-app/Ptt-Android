@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import tw.y_studio.ptt.api.PostRankMark
+import tw.y_studio.ptt.api.model.article.ArticleDetail
+import tw.y_studio.ptt.api.model.board.article.Article
 import tw.y_studio.ptt.ptt.AidConverter
-import tw.y_studio.ptt.source.remote.post.IPostRemoteDataSource
+import tw.y_studio.ptt.source.remote.article.IArticleRemoteDataSource
 import tw.y_studio.ptt.utils.Log
 import tw.y_studio.ptt.utils.PreferenceConstants
 import tw.y_studio.ptt.utils.StringUtils
@@ -19,7 +19,7 @@ import tw.y_studio.ptt.utils.date.DatePatternConstants
 import java.util.regex.Pattern
 
 class ArticleReadViewModel(
-    private val postRemoteDataSource: IPostRemoteDataSource,
+    private val articleRemoteDataSource: IArticleRemoteDataSource,
     private val preferences: SharedPreferences,
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
@@ -40,9 +40,11 @@ class ArticleReadViewModel(
     private val _likeNumber = MutableLiveData<String>()
     val likeNumber: LiveData<String> = _likeNumber
 
-    private var floorNum = 0
-
-    var originalArticleTitle = ""
+    fun originalTitle(classX: String, title: String) = if (classX.isBlank()) {
+        title
+    } else {
+        "[$classX] $title"
+    }
 
     fun createDefaultHeader(
         articleTitle: String,
@@ -69,81 +71,103 @@ class ArticleReadViewModel(
     }
 
     private suspend fun dataFromApi(
-        board: String,
-        fileName: String,
-        aid: String,
-        articleBoard: String
+        article: Article
     ) = withContext(ioDispatcher) {
         Log("onAR", "get data from web start")
-        val post = postRemoteDataSource.getPost(board, fileName)
-        val postRank = postRemoteDataSource.getPostRank(board, aid)
-        floorNum = post.comments.size
-        originalArticleTitle = post.title
+        val asyncDetail: Deferred<ArticleDetail> = async {
+            articleRemoteDataSource.getArticleDetail(article.boardId, article.articleId)
+        }
+        val asyncComments = async {
+            articleRemoteDataSource.getArticleComments(article.boardId, article.articleId)
+        }
+        val articleDetail = asyncDetail.await()
+        val articleComments = asyncComments.await()
+
         data.add(
             ArticleReadAdapter.Item.HeaderItem(
-                post.title,
-                "${post.auth} (${post.authNickName})",
-                post.date,
-                post.classString,
-                articleBoard
+                articleDetail.title,
+                articleDetail.owner,
+                DateFormatUtils.secondsToDateTime(
+                    articleDetail.createTime.toLong(),
+                    DatePatternConstants.articleDateTime
+                ),
+                articleDetail.classX,
+                articleDetail.boardName
             )
         )
+        val contentBuilder = StringBuilder()
+        articleDetail.content.forEach listContent@{ listContent ->
+            if (listContent.isEmpty()) {
+                contentBuilder.appendLine()
+                data.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
+                contentBuilder.clear()
+                return@listContent
+            }
+            listContent.forEach { content ->
+                val urlM = StringUtils.UrlPattern.matcher(content.text)
+                if (urlM.find()) {
+                    data.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
+                    contentBuilder.clear()
+                    data.add(ArticleReadAdapter.Item.ContentLineItem(content.text))
+                    val imageUrl = StringUtils.getImgUrl(content.text)
+                    for (urlString in imageUrl) {
+                        data.add(ArticleReadAdapter.Item.ImageItem(-2, urlString))
+                    }
+                } else {
+                    contentBuilder.append(content.text)
+                }
+            }
+            data.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
+            contentBuilder.clear()
+        }
 
-        val contents = post.content.split("\r\n".toRegex()).toTypedArray()
-        var contentTemp = StringBuilder()
-        for (i in contents.indices) {
-            val cmd = contents[i]
-            val urlM = StringUtils.UrlPattern.matcher(cmd)
-            if (urlM.find()) {
-                data.add(ArticleReadAdapter.Item.ContentLineItem(contentTemp.toString()))
-                contentTemp = StringBuilder()
-                data.add(ArticleReadAdapter.Item.ContentLineItem(cmd))
-                val imageUrl = StringUtils.getImgUrl(cmd)
-                for (urlString in imageUrl) {
-                    data.add(ArticleReadAdapter.Item.ImageItem(-2, urlString))
-                }
-            } else {
-                contentTemp.append(cmd)
-                if (i < contents.size - 1) {
-                    contentTemp.append("\n")
-                }
-            }
-        }
-        if (contentTemp.toString().isNotEmpty()) {
-            data.add(ArticleReadAdapter.Item.ContentLineItem(contentTemp.toString()))
-        }
-        data.add(ArticleReadAdapter.Item.CenterBarItem(postRank.getLike().toString(), floorNum.toString()))
-        post.comments.forEachIndexed { index, comment ->
-            data.add(ArticleReadAdapter.Item.CommentItem(index, comment.content, comment.userid))
-            val imageUrl: List<String> = StringUtils.getImgUrl(StringUtils.notNullString(comment.content))
-            for (urlString in imageUrl) {
-                data.add(ArticleReadAdapter.Item.ImageItem(index, urlString))
-            }
-            data.add(
-                ArticleReadAdapter.Item.CommentBarItem(
-                    index,
-                    comment.date,
-                    "${index + 1}F",
-                    "0"
-                )
+        data.add(
+            ArticleReadAdapter.Item.CenterBarItem(
+                articleDetail.recommend.toString(),
+                articleDetail.nComments.toString()
             )
+        )
+        for ((index, articleComment) in articleComments.list.withIndex()) {
+            articleComment.content.forEach { listContent ->
+                listContent.forEach { content ->
+                    data.add(
+                        ArticleReadAdapter.Item.CommentItem(
+                            index,
+                            content.text,
+                            articleComment.owner
+                        )
+                    )
+                    val imageUrl: List<String> = StringUtils.getImgUrl(
+                        StringUtils.notNullString(content.text)
+                    )
+                    for (urlString in imageUrl) {
+                        data.add(ArticleReadAdapter.Item.ImageItem(index, urlString))
+                    }
+                    data.add(
+                        ArticleReadAdapter.Item.CommentBarItem(
+                            index,
+                            DateFormatUtils.secondsToDateTime(
+                                articleComment.createTime.toLong(),
+                                DatePatternConstants.articleCommentDateTime
+                            ),
+                            "${index + 1}F",
+                            "0"
+                        )
+                    )
+                }
+            }
         }
-        postRank
     }
 
     fun loadData(
-        board: String,
-        fileName: String,
-        aid: String,
-        articleBoard: String
+        article: Article
     ) = viewModelScope.launch {
         if (_loadingState.value == true) return@launch
         data.clear()
         _loadingState.value = true
-        putDefaultHeader()
         try {
-            val postRank = dataFromApi(board, fileName, aid, articleBoard)
-            _likeNumber.value = postRank.getLike().toString()
+            dataFromApi(article)
+            _likeNumber.value = article.recommend.toString()
             Log("onAL", "get data from web over")
         } catch (e: Exception) {
             Log("onAL", "Error : $e")
@@ -154,13 +178,13 @@ class ArticleReadViewModel(
     }
 
     fun setRank(
-        board: String,
-        aid: String,
-        orgUrl: String,
+        article: Article,
         rank: PostRankMark
     ) = viewModelScope.launch {
         try {
-            loadRankData(board, aid, orgUrl, rank)
+            // TODO: 4/11/21 post rank api
+            delay(3000)
+//            loadRankData(board, aid, orgUrl, rank)
             _progressDialogState.value = false
         } catch (e: Exception) {
             _progressDialogState.value = false
@@ -184,7 +208,7 @@ class ArticleReadViewModel(
         val m = p.matcher(orgUrl)
         if (m.find()) {
             val aidBean = AidConverter.urlToAid(orgUrl)
-            postRemoteDataSource.setPostRank(
+            articleRemoteDataSource.setPostRank(
                 aidBean.boardTitle,
                 aidBean.aid,
                 id,
@@ -199,7 +223,7 @@ class ArticleReadViewModel(
     private suspend fun refreshRank(board: String, aid: String) = withContext(ioDispatcher) {
         _loadingState.value = true
         try {
-            val postRank = postRemoteDataSource.getPostRank(board, aid)
+            val postRank = articleRemoteDataSource.getPostRank(board, aid)
             for (i in data.indices) {
                 val item = data[i]
                 if (item !is ArticleReadAdapter.Item.CenterBarItem) continue
@@ -216,7 +240,7 @@ class ArticleReadViewModel(
     }
 
     override fun onCleared() {
-        postRemoteDataSource.disposeAll()
+        articleRemoteDataSource.disposeAll()
         super.onCleared()
     }
 }

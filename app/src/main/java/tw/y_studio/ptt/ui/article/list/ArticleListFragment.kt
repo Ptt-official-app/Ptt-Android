@@ -69,6 +69,7 @@ class ArticleListFragment : BaseFragment() {
                                 ArticleReadFragment.newInstance(
                                     Bundle().apply {
                                         putParcelable("article", article)
+                                        putString("boardName", boardName)
                                     }
                                 ),
                                 currentFragment
