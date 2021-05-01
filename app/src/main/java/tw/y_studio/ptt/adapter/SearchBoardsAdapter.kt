@@ -13,12 +13,13 @@ import tw.y_studio.ptt.utils.StringUtils.TextViewAutoSplitFix
 import tw.y_studio.ptt.utils.StringUtils.notNullString
 
 class SearchBoardsAdapter(
-    private val data: List<Map<String, Any>>
+    private val data: List<Map<String, Any>>,
+    private val mOnItemClickListener: SearchBoardsAdapter.OnItemClickListener,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var ctx: Context? = null
     private var likeOnClickListener: View.OnClickListener? = null
-    private var mOnItemClickListener: OnItemClickListener? = null
-    private var mOnItemLongClickListener: OnItemLongClickListener? = null
+    // private var mOnItemClickListener: OnItemClickListener? = null
+    // private var mOnItemLongClickListener: OnItemLongClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         ctx = parent.context
@@ -56,11 +57,11 @@ class SearchBoardsAdapter(
                         }
                     }
                     like.setOnClickListener(likeOnClickListener)
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
-                    itemView.setOnLongClickListener {
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(data[position]) }
+                    /*itemView.setOnLongClickListener {
                         mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
-                    }
+                    }*/
                 }
             }
             TYPE1 -> {
@@ -79,11 +80,11 @@ class SearchBoardsAdapter(
                         }
                     }
                     like.setOnClickListener(likeOnClickListener)
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
-                    itemView.setOnLongClickListener {
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(data[position]) }
+                    /*itemView.setOnLongClickListener {
                         mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
-                    }
+                    }*/
                 }
             }
         }
@@ -93,13 +94,13 @@ class SearchBoardsAdapter(
         return data.size
     }
 
-    fun setOnItemClickListener(listener: OnItemClickListener?) {
+    /*fun setOnItemClickListener(listener: OnItemClickListener?) {
         mOnItemClickListener = listener
     }
 
     fun setOnItemLongClickListener(listener: OnItemLongClickListener?) {
         mOnItemLongClickListener = listener
-    }
+    }*/
 
     fun setLikeOnClickListener(likeOnClickListener: View.OnClickListener?) {
         this.likeOnClickListener = likeOnClickListener
@@ -118,12 +119,12 @@ class SearchBoardsAdapter(
 
     // define interface
     interface OnItemClickListener {
-        fun onItemClick(view: View?, position: Int)
+        fun onItemClick(item: Map<String, Any>)
     }
 
-    interface OnItemLongClickListener {
-        fun onItemClick(view: View?, position: Int)
-    }
+    /*interface OnItemLongClickListener {
+        fun onItemClick(item : Map<String, Any>, position: Int)
+    }*/
 
     companion object {
         private const val TYPE0 = 0
