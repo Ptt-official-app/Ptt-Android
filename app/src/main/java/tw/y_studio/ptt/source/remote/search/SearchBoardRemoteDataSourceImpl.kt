@@ -1,13 +1,23 @@
 package tw.y_studio.ptt.source.remote.search
 
-import tw.y_studio.ptt.api.SearchBoardAPI
+import tw.y_studio.ptt.api.board.BoardApiService
+import tw.y_studio.ptt.api.model.board.hot_board.HotBoard
 
 class SearchBoardRemoteDataSourceImpl(
-    private val searchBoardAPI: SearchBoardAPI
+    private val boardApiService: BoardApiService
 ) : ISearchBoardRemoteDataSource {
 
-    @Throws(Exception::class)
-    override fun searchBoardByKeyword(keyword: String): MutableList<Map<String, Any>> {
-        return searchBoardAPI.searchBoard(keyword)
+    override suspend fun searchBoardByKeyword(
+        keyword: String,
+        startIndex: String,
+        limit: Int,
+        aces: Boolean
+    ): HotBoard {
+        return boardApiService.searchBoards(
+            keyword = keyword,
+            start_idx = startIndex,
+            limit = limit,
+            asc = aces
+        )
     }
 }

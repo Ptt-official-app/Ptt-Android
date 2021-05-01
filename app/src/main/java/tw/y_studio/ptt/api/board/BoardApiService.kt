@@ -18,4 +18,12 @@ interface BoardApiService {
         @Query("limit") limit: Int,
         @Query("desc") desc: Boolean
     ): ArticleList
+
+    @GET("api/boards")
+    suspend fun searchBoards(
+        @Query("keyword") keyword: String,
+        @Query("start_idx") start_idx: String,
+        @Query("limit") limit: Int,
+        @Query("asc") asc: Boolean
+    ): HotBoard
 }

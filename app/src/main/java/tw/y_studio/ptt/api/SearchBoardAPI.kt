@@ -2,14 +2,15 @@ package tw.y_studio.ptt.api
 
 import okhttp3.Request
 import org.json.JSONArray
+import tw.y_studio.ptt.api.model.board.search_board.SearchBoardsItem
 import java.net.URLEncoder
 import java.util.*
 
 class SearchBoardAPI() : BaseAPIHelper(), IBaseAPI {
-    private val _data = mutableListOf<Map<String, Any>>()
+    private val _data = mutableListOf<SearchBoardsItem>()
 
     @Throws(Exception::class)
-    fun searchBoard(keyword: String): MutableList<Map<String, Any>> {
+    fun searchBoard(keyword: String): MutableList<SearchBoardsItem> {
         _data.clear()
         val text = URLEncoder.encode(keyword, "UTF-8").toString()
         val request = Request.Builder().url("$hostUrl/api/Board/Search?keyword=$text").build()
@@ -27,16 +28,13 @@ class SearchBoardAPI() : BaseAPIHelper(), IBaseAPI {
             while (!List.isNull(i)) {
                 val m3 = List.getJSONObject(i)
                 i++
-                val item: MutableMap<String, Any> = HashMap()
-                item["number"] = m3.getInt("sn")
-                item["title"] = m3.getString("name")
-                item["subtitle"] = m3.getString("title")
-                item["boardType"] = m3.getInt("boardType")
-                item["like"] = false
-                item["moderators"] = ""
-                item["class"] = ""
-                item["online"] = m3.getInt("onlineCount")
-                item["onlineColor"] = 7
+                val item: SearchBoardsItem = SearchBoardsItem(
+                    number = m3.getInt("sn"),
+                    title = m3.getString("name"),
+                    subtitle = m3.getString("title"),
+                    boardType = m3.getInt("boardType"),
+                    online = m3.getInt("onlineCount")
+                )
                 _data.add(item)
             }
         }

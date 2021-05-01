@@ -1,6 +1,12 @@
 package tw.y_studio.ptt.source.remote.search
 
-interface ISearchBoardRemoteDataSource {
+import tw.y_studio.ptt.api.model.board.hot_board.HotBoard
 
-    fun searchBoardByKeyword(keyword: String): MutableList<Map<String, Any>>
+interface ISearchBoardRemoteDataSource {
+    suspend fun searchBoardByKeyword(
+        keyword: String,
+        startIndex: String = "",
+        limit: Int = 200,
+        aces: Boolean = true
+    ): HotBoard
 }

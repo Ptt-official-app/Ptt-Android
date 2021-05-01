@@ -14,6 +14,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.adapter.SearchBoardsAdapter
+import tw.y_studio.ptt.api.model.board.search_board.SearchBoardsItem
 import tw.y_studio.ptt.databinding.SearchBoardsFragmentLayoutBinding
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.ClickFix
@@ -76,15 +77,15 @@ class SearchBoardsFragment : BaseFragment() {
                 adapter = SearchBoardsAdapter(
                     viewModel.data,
                     object : SearchBoardsAdapter.OnItemClickListener {
-                        override fun onItemClick(item: Map<String, Any>) {
+                        override fun onItemClick(item: SearchBoardsItem) {
                             if (mClickFix.isFastDoubleClick) return
 
                             loadFragment(
                                 ArticleListFragment.newInstance(
                                     Bundle().apply {
-                                        putString("title", item.get("title") as? String)
-                                        putString("subtitle", item.get("subtitle") as? String)
-                                        putString("board_id", item.get("boardId") as? String)
+                                        putString("title", item.title as? String)
+                                        putString("subtitle", item.subtitle as? String)
+                                        putString("board_id", item.boardId as? String)
                                     }
                                 ),
                                 currentFragment
@@ -170,108 +171,3 @@ class SearchBoardsFragment : BaseFragment() {
         }
     }
 }
-
-/*   private void insertBoard(
-            final String board,
-            final String title,
-            final String category,
-            final int index,
-            final int position) {
-        r3 =
-                new Runnable() {
-
-                    public void run() {
-                        runOnUI(
-                                () -> {
-                                    mSwipeRefreshLayout.setRefreshing(true);
-                                });
-
-                        GattingData = true;
-
-                        FavoriteDBHelper mDBHelper =
-                                new FavoriteDBHelper(getCurrentActivity(), "Favorite.db", null, 1);
-                        try {
-                            mDBHelper.insertBoard(board, title, category, index + 1);
-                            runOnUI(
-                                    () -> {
-                                        data.get(position).put("like", true);
-                                        mdapter.notifyItemChanged(position);
-                                        myBoardIndex++;
-                                        mSwipeRefreshLayout.setRefreshing(false);
-                                    });
-
-                            DebugUtils.Log("onAL", "insert over");
-                        } catch (final Exception e) {
-                            runOnUI(
-                                    () -> {
-                                        Toast.makeText(
-                                                        getCurrentActivity(),
-                                                        "Error : " + e.toString(),
-                                                        Toast.LENGTH_SHORT)
-                                                .show();
-                                        mSwipeRefreshLayout.setRefreshing(false);
-                                    });
-                        } finally {
-                            mDBHelper.close();
-                        }
-
-                        GattingData = false;
-                    }
-                };
-
-        mThread3 = new HandlerThread("name");
-        mThread3.start();
-        mThreadHandler3 = new Handler(mThread3.getLooper());
-        mThreadHandler3.post(r3);
-    }
-
-    private void deleteBoard(final String board, final int position) {
-        r3 =
-                new Runnable() {
-
-                    public void run() {
-                        runOnUI(
-                                () -> {
-                                    mSwipeRefreshLayout.setRefreshing(true);
-                                });
-
-                        GattingData = true;
-
-                        FavoriteDBHelper mDBHelper =
-                                new FavoriteDBHelper(getCurrentActivity(), "Favorite.db", null, 1);
-                        try {
-                            mDBHelper.delebyBoard(board);
-
-                            runOnUI(
-                                    () -> {
-                                        data.get(position).put("like", false);
-                                        mdapter.notifyItemChanged(position);
-                                        myBoardIndex--;
-                                        mSwipeRefreshLayout.setRefreshing(false);
-                                    });
-
-                            DebugUtils.Log("onAL", board + " delete over");
-                        } catch (final Exception e) {
-                            runOnUI(
-                                    () -> {
-                                        Toast.makeText(
-                                                        getCurrentActivity(),
-                                                        "Error : " + e.getLocalizedMessage(),
-                                                        Toast.LENGTH_SHORT)
-                                                .show();
-                                        mSwipeRefreshLayout.setRefreshing(false);
-                                    });
-                        } finally {
-                            mDBHelper.close();
-                        }
-
-                        GattingData = false;
-                    }
-                };
-
-        mThread3 = new HandlerThread("name");
-        mThread3.start();
-        mThreadHandler3 = new Handler(mThread3.getLooper());
-        mThreadHandler3.post(r3);
-    }
-*/

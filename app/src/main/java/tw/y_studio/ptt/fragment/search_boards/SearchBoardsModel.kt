@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import tw.y_studio.ptt.api.model.board.search_board.SearchBoardsItem
 import tw.y_studio.ptt.source.remote.search.ISearchBoardRemoteDataSource
-import tw.y_studio.ptt.utils.Log
 import java.util.*
 
 class SearchBoardsModel(
@@ -16,7 +16,7 @@ class SearchBoardsModel(
     private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-    val data: MutableList<Map<String, Any>> = mutableListOf()
+    val data: MutableList<SearchBoardsItem> = mutableListOf()
 
     private val _loadingState = MutableLiveData<Boolean>()
     val loadingState: LiveData<Boolean> = _loadingState
@@ -54,24 +54,17 @@ class SearchBoardsModel(
 
     private suspend fun getDataFromApi() = withContext(ioDispatcher) {
         try {
-
-            // val mDBHelper = FavoriteDBHelper(getCurrentActivity(), "Favorite.db", null, 1)
-            var dataTemp: List<Map<String, Any>> = ArrayList()
-            Log("onAL", "get data from web start")
-
-            // myBoard.addAll(mDBHelper.getAllSet())
-            // myBoardIndex = mDBHelper.getMaxIndex()
-            dataTemp += searchBoardRemoteDataSource.searchBoardByKeyword(
+            val boards = searchBoardRemoteDataSource.searchBoardByKeyword(
                 (_nowSearchText.value ?: "").replace(" ", "")
             )
-            /*for (item in dataTemp) {
-                if (myBoard.contains(item["title"].toString())) {
-                    item["like"] = true
-                } else {
-                    item["like"] = false
-                }
-            }*/
-            data += dataTemp
+            val boardData = boards.list.map {
+                SearchBoardsItem(
+                    boardId = it.boardId,
+                    title = it.boardName,
+                    subtitle = it.title
+                )
+            }
+            data += boardData
         } catch (e: Exception) {
             _errorMessage.postValue("Error: $e")
         }

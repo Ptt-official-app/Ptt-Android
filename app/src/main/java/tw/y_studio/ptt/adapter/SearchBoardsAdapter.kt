@@ -8,12 +8,13 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
+import tw.y_studio.ptt.api.model.board.search_board.SearchBoardsItem
 import tw.y_studio.ptt.utils.PreferenceConstants
 import tw.y_studio.ptt.utils.StringUtils.TextViewAutoSplitFix
 import tw.y_studio.ptt.utils.StringUtils.notNullString
 
 class SearchBoardsAdapter(
-    private val data: List<Map<String, Any>>,
+    private val data: List<SearchBoardsItem>,
     private val mOnItemClickListener: SearchBoardsAdapter.OnItemClickListener,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var ctx: Context? = null
@@ -44,11 +45,11 @@ class SearchBoardsAdapter(
         when (getItemViewType(position)) {
             TYPE0 -> {
                 (holder as? ViewHolder)?.apply {
-                    textViewTitle.text = notNullString(data[position]["title"])
+                    textViewTitle.text = notNullString(data[position].title)
                     TextViewAutoSplitFix(holder.textViewTitle)
                     like.tag = position
                     ctx?.apply {
-                        (data[position]["like"] as? Boolean)?.let {
+                        (data[position].like as? Boolean)?.let {
                             if (it) {
                                 like.setColorFilter(this.resources.getColor(R.color.tangerine, this.theme))
                             } else {
@@ -66,12 +67,12 @@ class SearchBoardsAdapter(
             }
             TYPE1 -> {
                 (holder as? ViewHolder2)?.apply {
-                    textViewTitle.text = notNullString(data[position]["title"])
-                    holder.textViewSubtitle.text = notNullString(data[position]["subtitle"])
+                    textViewTitle.text = notNullString(data[position].title)
+                    holder.textViewSubtitle.text = notNullString(data[position].subtitle)
                     TextViewAutoSplitFix(holder.textViewTitle)
                     holder.like.tag = position
                     ctx?.apply {
-                        (data[position]["like"] as? Boolean)?.let {
+                        (data[position].like as? Boolean)?.let {
                             if (it) {
                                 like.setColorFilter(this.resources.getColor(R.color.tangerine, this.theme))
                             } else {
@@ -119,7 +120,7 @@ class SearchBoardsAdapter(
 
     // define interface
     interface OnItemClickListener {
-        fun onItemClick(item: Map<String, Any>)
+        fun onItemClick(item: SearchBoardsItem)
     }
 
     /*interface OnItemLongClickListener {
