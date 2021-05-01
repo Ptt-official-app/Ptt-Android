@@ -5,11 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import tw.y_studio.ptt.R;
-import tw.y_studio.ptt.adapter.SearchBoardsAdapter;
 import tw.y_studio.ptt.ui.BaseFragment;
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager;
 
@@ -33,7 +33,7 @@ public class PersonInfoFragment extends BaseFragment {
     }
 
     private RecyclerView recyclerView;
-    private SearchBoardsAdapter mdapter;
+    // private SearchBoardsAdapter mdapter;
     private List<Map<String, Object>> data = new ArrayList<>();
 
     @Nullable
@@ -51,13 +51,30 @@ public class PersonInfoFragment extends BaseFragment {
         Bundle bundle = getArguments(); // 取得Bundle
         final String title_ = bundle.getString("Title");
 
-        mdapter = new SearchBoardsAdapter(data);
+        // mdapter = new GeneralFragmentStatePagerAdapter();
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(mdapter);
+        recyclerView.setAdapter(
+                new RecyclerView.Adapter() {
+                    @NonNull
+                    @Override
+                    public RecyclerView.ViewHolder onCreateViewHolder(
+                            @NonNull ViewGroup parent, int viewType) {
+                        return null;
+                    }
+
+                    @Override
+                    public void onBindViewHolder(
+                            @NonNull RecyclerView.ViewHolder holder, int position) {}
+
+                    @Override
+                    public int getItemCount() {
+                        return 0;
+                    }
+                });
 
         return view;
     }
