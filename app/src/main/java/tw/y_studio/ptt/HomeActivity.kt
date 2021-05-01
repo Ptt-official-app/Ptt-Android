@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import tw.y_studio.ptt.fragment.*
 import tw.y_studio.ptt.fragment.login.LoginPageFragment
+import tw.y_studio.ptt.fragment.search_boards.SearchBoardsFragment
 import tw.y_studio.ptt.ui.BaseActivity
 import tw.y_studio.ptt.ui.StaticValue
 import tw.y_studio.ptt.ui.article.list.ArticleListFragment

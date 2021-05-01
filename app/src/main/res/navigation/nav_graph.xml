@@ -40,7 +40,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchBoardsFragment"
-        android:name="tw.y_studio.ptt.fragment.SearchBoardsFragment"
+        android:name="tw.y_studio.ptt.fragment.search_boards.SearchBoardsFragment"
         android:label="SearchBoardsFragment"
         tools:layout="@layout/search_boards_fragment_layout"/>
     <fragment
