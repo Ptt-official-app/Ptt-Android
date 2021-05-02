@@ -19,8 +19,6 @@ class SearchBoardsAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var ctx: Context? = null
     private var likeOnClickListener: View.OnClickListener? = null
-    // private var mOnItemClickListener: OnItemClickListener? = null
-    // private var mOnItemLongClickListener: OnItemLongClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         ctx = parent.context
@@ -95,14 +93,6 @@ class SearchBoardsAdapter(
         return data.size
     }
 
-    /*fun setOnItemClickListener(listener: OnItemClickListener?) {
-        mOnItemClickListener = listener
-    }
-
-    fun setOnItemLongClickListener(listener: OnItemLongClickListener?) {
-        mOnItemLongClickListener = listener
-    }*/
-
     fun setLikeOnClickListener(likeOnClickListener: View.OnClickListener?) {
         this.likeOnClickListener = likeOnClickListener
     }
@@ -122,10 +112,6 @@ class SearchBoardsAdapter(
     interface OnItemClickListener {
         fun onItemClick(item: SearchBoardsItem)
     }
-
-    /*interface OnItemLongClickListener {
-        fun onItemClick(item : Map<String, Any>, position: Int)
-    }*/
 
     companion object {
         private const val TYPE0 = 0

@@ -33,7 +33,6 @@ public class PersonInfoFragment extends BaseFragment {
     }
 
     private RecyclerView recyclerView;
-    // private SearchBoardsAdapter mdapter;
     private List<Map<String, Object>> data = new ArrayList<>();
 
     @Nullable
@@ -50,8 +49,6 @@ public class PersonInfoFragment extends BaseFragment {
 
         Bundle bundle = getArguments(); // 取得Bundle
         final String title_ = bundle.getString("Title");
-
-        // mdapter = new GeneralFragmentStatePagerAdapter();
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);

@@ -33,7 +33,6 @@ public class EmptyFragment extends BaseFragment {
     }
 
     private RecyclerView recyclerView;
-    // private SearchBoardsAdapter mdapter;
     private List<Map<String, Object>> data = new ArrayList<>();
 
     @Nullable
@@ -49,8 +48,6 @@ public class EmptyFragment extends BaseFragment {
         recyclerView = findViewById(R.id.recyclerView_empty);
 
         Bundle bundle = getArguments(); // 取得Bundle
-
-        // mdapter = new SearchBoardsAdapter(data);
 
         final CustomLinearLayoutManager layoutManager = new CustomLinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
