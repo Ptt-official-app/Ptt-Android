@@ -8,6 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import tw.y_studio.ptt.BuildConfig
 import tw.y_studio.ptt.api.PostAPI
 import tw.y_studio.ptt.api.SearchBoardAPI
+import tw.y_studio.ptt.api.article.ArticleApiService
 import tw.y_studio.ptt.api.board.BoardApiService
 import tw.y_studio.ptt.api.user.UserApiService
 import java.util.concurrent.TimeUnit
@@ -20,6 +21,7 @@ val apiModules = module {
     factory { provideLogInterceptor() }
     factory { provideBoardApiService(get()) }
     factory { provideUserApiService(get()) }
+    factory { provideArticleApiService(get()) }
 }
 
 private fun provideRetrofit(client: OkHttpClient): Retrofit {
@@ -49,4 +51,8 @@ private fun provideBoardApiService(retrofit: Retrofit): BoardApiService {
 
 private fun provideUserApiService(retrofit: Retrofit): UserApiService {
     return retrofit.create(UserApiService::class.java)
+}
+
+private fun provideArticleApiService(retrofit: Retrofit): ArticleApiService {
+    return retrofit.create(ArticleApiService::class.java)
 }

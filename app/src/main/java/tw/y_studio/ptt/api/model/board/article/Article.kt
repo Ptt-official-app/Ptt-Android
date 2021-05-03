@@ -1,11 +1,14 @@
 package tw.y_studio.ptt.api.model.board.article
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Michael.Lien
  * on 2021/2/18
  */
+@Parcelize
 data class Article(
     @SerializedName("aid")
     val articleId: String,
@@ -28,4 +31,4 @@ data class Article(
     val recommend: Int,
     val title: String,
     val url: String
-)
+) : Parcelable
