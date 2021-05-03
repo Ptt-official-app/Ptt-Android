@@ -10,7 +10,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.y_studio.ptt.adapter.HotBoardsListAdapter
 import tw.y_studio.ptt.api.model.board.hot_board.HotBoardsItem
 import tw.y_studio.ptt.databinding.HotBoardsFragmentLayoutBinding
-import tw.y_studio.ptt.fragment.SearchBoardsFragment
+import tw.y_studio.ptt.fragment.search_boards.SearchBoardsFragment
 import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.ClickFix
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager

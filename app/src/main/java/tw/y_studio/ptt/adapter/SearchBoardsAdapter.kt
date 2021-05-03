@@ -8,17 +8,17 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
+import tw.y_studio.ptt.api.model.board.search_board.SearchBoardsItem
 import tw.y_studio.ptt.utils.PreferenceConstants
 import tw.y_studio.ptt.utils.StringUtils.TextViewAutoSplitFix
 import tw.y_studio.ptt.utils.StringUtils.notNullString
 
 class SearchBoardsAdapter(
-    private val data: List<Map<String, Any>>
+    private val data: List<SearchBoardsItem>,
+    private val mOnItemClickListener: SearchBoardsAdapter.OnItemClickListener,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private var ctx: Context? = null
     private var likeOnClickListener: View.OnClickListener? = null
-    private var mOnItemClickListener: OnItemClickListener? = null
-    private var mOnItemLongClickListener: OnItemLongClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         ctx = parent.context
@@ -43,11 +43,11 @@ class SearchBoardsAdapter(
         when (getItemViewType(position)) {
             TYPE0 -> {
                 (holder as? ViewHolder)?.apply {
-                    textViewTitle.text = notNullString(data[position]["title"])
+                    textViewTitle.text = notNullString(data[position].title)
                     TextViewAutoSplitFix(holder.textViewTitle)
                     like.tag = position
                     ctx?.apply {
-                        (data[position]["like"] as? Boolean)?.let {
+                        (data[position].like as? Boolean)?.let {
                             if (it) {
                                 like.setColorFilter(this.resources.getColor(R.color.tangerine, this.theme))
                             } else {
@@ -56,21 +56,21 @@ class SearchBoardsAdapter(
                         }
                     }
                     like.setOnClickListener(likeOnClickListener)
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
-                    itemView.setOnLongClickListener {
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(data[position]) }
+                    /*itemView.setOnLongClickListener {
                         mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
-                    }
+                    }*/
                 }
             }
             TYPE1 -> {
                 (holder as? ViewHolder2)?.apply {
-                    textViewTitle.text = notNullString(data[position]["title"])
-                    holder.textViewSubtitle.text = notNullString(data[position]["subtitle"])
+                    textViewTitle.text = notNullString(data[position].title)
+                    holder.textViewSubtitle.text = notNullString(data[position].subtitle)
                     TextViewAutoSplitFix(holder.textViewTitle)
                     holder.like.tag = position
                     ctx?.apply {
-                        (data[position]["like"] as? Boolean)?.let {
+                        (data[position].like as? Boolean)?.let {
                             if (it) {
                                 like.setColorFilter(this.resources.getColor(R.color.tangerine, this.theme))
                             } else {
@@ -79,11 +79,11 @@ class SearchBoardsAdapter(
                         }
                     }
                     like.setOnClickListener(likeOnClickListener)
-                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
-                    itemView.setOnLongClickListener {
+                    itemView.setOnClickListener { mOnItemClickListener?.onItemClick(data[position]) }
+                    /*itemView.setOnLongClickListener {
                         mOnItemLongClickListener?.onItemClick(it, adapterPosition)
                         true
-                    }
+                    }*/
                 }
             }
         }
@@ -91,14 +91,6 @@ class SearchBoardsAdapter(
 
     override fun getItemCount(): Int {
         return data.size
-    }
-
-    fun setOnItemClickListener(listener: OnItemClickListener?) {
-        mOnItemClickListener = listener
-    }
-
-    fun setOnItemLongClickListener(listener: OnItemLongClickListener?) {
-        mOnItemLongClickListener = listener
     }
 
     fun setLikeOnClickListener(likeOnClickListener: View.OnClickListener?) {
@@ -118,11 +110,7 @@ class SearchBoardsAdapter(
 
     // define interface
     interface OnItemClickListener {
-        fun onItemClick(view: View?, position: Int)
-    }
-
-    interface OnItemLongClickListener {
-        fun onItemClick(view: View?, position: Int)
+        fun onItemClick(item: SearchBoardsItem)
     }
 
     companion object {
