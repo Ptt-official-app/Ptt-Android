@@ -5,6 +5,7 @@ import tw.y_studio.ptt.api.model.Post
 import tw.y_studio.ptt.api.model.PostRank
 import tw.y_studio.ptt.api.model.article.ArticleCommentsList
 import tw.y_studio.ptt.api.model.article.ArticleDetail
+import tw.y_studio.ptt.api.model.article.ArticleRank
 
 interface IArticleRemoteDataSource {
     suspend fun getArticleDetail(boardId: String, articleId: String): ArticleDetail
@@ -14,6 +15,12 @@ interface IArticleRemoteDataSource {
         articleId: String,
         desc: Boolean = false
     ): ArticleCommentsList
+
+    suspend fun postArticleRank(
+        rank: Int,
+        boardId: String,
+        articleId: String
+    ): ArticleRank
 
     fun getPost(board: String, fileName: String): Post
 

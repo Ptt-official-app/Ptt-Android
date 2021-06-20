@@ -28,16 +28,27 @@ data class ArticleDetail(
     val modified: Int,
     @SerializedName("money")
     val money: Int,
+    /**
+     * 文章回覆數
+     */
     @SerializedName("n_comments")
     val nComments: Int,
     @SerializedName("owner")
     val owner: String,
     @SerializedName("read")
     val read: Boolean,
+    /**
+     * PTT 推噓數量
+     */
     @SerializedName("recommend")
     val recommend: Int,
     @SerializedName("title")
     val title: String,
     @SerializedName("url")
-    val url: String
+    val url: String,
+    /**
+     * 文章按讚數量
+     */
+    @SerializedName("Rank")
+    val rank: Int
 )

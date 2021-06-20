@@ -9,14 +9,11 @@ import kotlinx.coroutines.*
 import tw.y_studio.ptt.api.PostRankMark
 import tw.y_studio.ptt.api.model.article.ArticleDetail
 import tw.y_studio.ptt.api.model.board.article.Article
-import tw.y_studio.ptt.ptt.AidConverter
 import tw.y_studio.ptt.source.remote.article.IArticleRemoteDataSource
 import tw.y_studio.ptt.utils.Log
-import tw.y_studio.ptt.utils.PreferenceConstants
 import tw.y_studio.ptt.utils.StringUtils
 import tw.y_studio.ptt.utils.date.DateFormatUtils
 import tw.y_studio.ptt.utils.date.DatePatternConstants
-import java.util.regex.Pattern
 
 class ArticleReadViewModel(
     private val articleRemoteDataSource: IArticleRemoteDataSource,
@@ -157,6 +154,8 @@ class ArticleReadViewModel(
                 }
             }
         }
+
+        _likeNumber.postValue(articleDetail.rank.toString())
     }
 
     fun loadData(
@@ -167,7 +166,6 @@ class ArticleReadViewModel(
         _loadingState.value = true
         try {
             dataFromApi(article)
-            _likeNumber.value = article.recommend.toString()
             Log("onAL", "get data from web over")
         } catch (e: Exception) {
             Log("onAL", "Error : $e")
@@ -183,8 +181,11 @@ class ArticleReadViewModel(
     ) = viewModelScope.launch {
         try {
             // TODO: 4/11/21 post rank api
-            delay(3000)
-//            loadRankData(board, aid, orgUrl, rank)
+            setArticleRank(article, rank)
+            _loadingState.value = true
+            val newRank = refreshRank(article.boardId, article.articleId)
+            _likeNumber.value = newRank.toString()
+            _loadingState.value = false
             _progressDialogState.value = false
         } catch (e: Exception) {
             _progressDialogState.value = false
@@ -192,51 +193,46 @@ class ArticleReadViewModel(
         }
     }
 
-    private suspend fun loadRankData(
-        board: String,
-        aid: String,
-        orgUrl: String,
-        rank: PostRankMark
+    private suspend fun setArticleRank(
+        article: Article,
+        rankMark: PostRankMark
     ) = withContext(ioDispatcher) {
-        val id = preferences.getString(PreferenceConstants.id, "")
-        if (id.isNullOrEmpty()) {
-            throw Exception("No Ptt id")
-        }
-        val p = Pattern.compile(
-            "www.ptt.cc/bbs/([-a-zA-Z0-9_]{2,})/([M|G].[-a-zA-Z0-9._]{1,30}).htm"
-        )
-        val m = p.matcher(orgUrl)
-        if (m.find()) {
-            val aidBean = AidConverter.urlToAid(orgUrl)
-            articleRemoteDataSource.setPostRank(
-                aidBean.boardTitle,
-                aidBean.aid,
-                id,
-                rank
-            )
-            refreshRank(board, aid)
-        } else {
-            throw Exception("error")
-        }
-    }
-
-    private suspend fun refreshRank(board: String, aid: String) = withContext(ioDispatcher) {
-        _loadingState.value = true
         try {
-            val postRank = articleRemoteDataSource.getPostRank(board, aid)
-            for (i in data.indices) {
-                val item = data[i]
-                if (item !is ArticleReadAdapter.Item.CenterBarItem) continue
-                data[i] = ArticleReadAdapter.Item.CenterBarItem(postRank.getLike().toString(), item.floor)
-                break
+            _likeNumber.value.apply {
+                if (this == null) {
+                    val rank = refreshRank(article.boardId, article.articleId)
+                    articleRemoteDataSource.postArticleRank(
+                        rank = rank + rankMark.value,
+                        boardId = article.boardId,
+                        articleId = article.articleId
+                    )
+                } else {
+                    articleRemoteDataSource.postArticleRank(
+                        rank = this.toInt() + rankMark.value,
+                        boardId = article.boardId,
+                        articleId = article.articleId
+                    )
+                }
             }
-            _likeNumber.value = postRank.getLike().toString()
-            Log("onAL", "get data from web over")
         } catch (e: Exception) {
             Log("onAL", "Error : $e")
             _errorMessage.value = "Error : $e"
         }
-        _loadingState.value = false
+    }
+
+    private suspend fun refreshRank(
+        boardId: String,
+        articleId: String
+    ): Int = withContext(ioDispatcher) {
+        val detail = articleRemoteDataSource.getArticleDetail(boardId, articleId)
+        for (i in data.indices) {
+            val item = data[i]
+            if (item !is ArticleReadAdapter.Item.CenterBarItem) continue
+            data[i] = ArticleReadAdapter.Item.CenterBarItem(detail.recommend.toString(), item.floor)
+            break
+        }
+        Log("onAL", "get data from web over")
+        return@withContext detail.rank
     }
 
     override fun onCleared() {
