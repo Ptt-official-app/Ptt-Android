@@ -49,6 +49,6 @@ data class ArticleDetail(
     /**
      * 文章按讚數量
      */
-    @SerializedName("Rank")
+    @SerializedName("rank")
     val rank: Int
 )
