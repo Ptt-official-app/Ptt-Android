@@ -199,20 +199,11 @@ class ArticleReadViewModel(
     ) = withContext(ioDispatcher) {
         try {
             _likeNumber.value.apply {
-                if (this == null) {
-                    val rank = refreshRank(article.boardId, article.articleId)
-                    articleRemoteDataSource.postArticleRank(
-                        rank = rank + rankMark.value,
-                        boardId = article.boardId,
-                        articleId = article.articleId
-                    )
-                } else {
-                    articleRemoteDataSource.postArticleRank(
-                        rank = this.toInt() + rankMark.value,
-                        boardId = article.boardId,
-                        articleId = article.articleId
-                    )
-                }
+                articleRemoteDataSource.postArticleRank(
+                    rank = rankMark.value,
+                    boardId = article.boardId,
+                    articleId = article.articleId
+                )
             }
         } catch (e: Exception) {
             Log("onAL", "Error : $e")
