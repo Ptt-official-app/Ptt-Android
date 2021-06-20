@@ -1,5 +1,6 @@
 package tw.y_studio.ptt.di
 
+import android.content.SharedPreferences
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
@@ -11,12 +12,13 @@ import tw.y_studio.ptt.api.SearchBoardAPI
 import tw.y_studio.ptt.api.article.ArticleApiService
 import tw.y_studio.ptt.api.board.BoardApiService
 import tw.y_studio.ptt.api.user.UserApiService
+import tw.y_studio.ptt.utils.TokenInterceptor
 import java.util.concurrent.TimeUnit
 
 val apiModules = module {
     factory { SearchBoardAPI() }
     factory { PostAPI() }
-    single { provideOkHttpClient(get()) }
+    single { provideOkHttpClient(get(), get()) }
     single { provideRetrofit(get()) }
     factory { provideLogInterceptor() }
     factory { provideBoardApiService(get()) }
@@ -32,12 +34,12 @@ private fun provideRetrofit(client: OkHttpClient): Retrofit {
         .build()
 }
 
-private fun provideOkHttpClient(logInterceptor: HttpLoggingInterceptor): OkHttpClient {
+private fun provideOkHttpClient(logInterceptor: HttpLoggingInterceptor, preferences: SharedPreferences): OkHttpClient {
     return OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(logInterceptor)
-//        .addInterceptor(OkHttpUtils.GzipRequestInterceptor()) // TODO: 2021/1/31 add TokenInterceptor
+        .addInterceptor(TokenInterceptor(preferences))
         .build()
 }
 
