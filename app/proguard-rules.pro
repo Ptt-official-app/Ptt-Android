@@ -129,3 +129,4 @@
 -dontwarn com.android.volley.toolbox.**
 -dontwarn com.facebook.infer.**
 # -------------Fresco-----------------
+-keep class tw.y_studio.ptt.api.model.** { *; }
