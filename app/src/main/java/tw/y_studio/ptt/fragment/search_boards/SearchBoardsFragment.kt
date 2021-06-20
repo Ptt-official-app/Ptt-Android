@@ -143,8 +143,20 @@ class SearchBoardsFragment : BaseFragment() {
         }
     }
 
+    private fun expandSoftInput(view: View) {
+        try {
+            val inputMethodManager = currentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.showSoftInput(view, 0)
+        } catch (e: Exception) {
+        }
+    }
+
     override fun onAnimOver() {
         viewModel.loadData()
+        binding?.searchBoardsFragmentEditTextSearch?.let {
+            it.requestFocus()
+            expandSoftInput(it)
+        }
     }
 
     override fun onDestroyView() {
