@@ -26,4 +26,13 @@ interface BoardApiService {
         @Query("limit") limit: Int,
         @Query("asc") asc: Boolean
     ): HotBoard
+
+    @GET("api/user/{user_id}/favorites")
+    suspend fun favoriteBoards(
+        @Path("user_id") user_id: String,
+        @Query("level_idx") level_idx: String,
+        @Query("start_idx") start_idx: String,
+        @Query("limit") limit: Int,
+        @Query("asc") asc: Boolean
+    ): HotBoard
 }
