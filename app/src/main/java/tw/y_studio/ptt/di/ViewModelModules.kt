@@ -3,6 +3,7 @@ package tw.y_studio.ptt.di
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import tw.y_studio.ptt.fragment.favorite_boards.FavoriteBoardsViewModel
 import tw.y_studio.ptt.fragment.login.LoginPageViewModel
 import tw.y_studio.ptt.fragment.search_boards.SearchBoardsModel
 import tw.y_studio.ptt.ui.article.list.ArticleListViewModel
@@ -15,4 +16,5 @@ val viewModelModules = module {
     viewModel { ArticleReadViewModel(get(), get(), get(named("IO"))) }
     viewModel { LoginPageViewModel(get()) }
     viewModel { SearchBoardsModel(get(), get(named("IO"))) }
+    viewModel { FavoriteBoardsViewModel(get(), get(named("IO")), get()) }
 }

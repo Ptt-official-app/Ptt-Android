@@ -9,14 +9,14 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
+import tw.y_studio.ptt.api.model.board.hot_board.HotBoardsItem
 import tw.y_studio.ptt.ptt.PttColor
 import tw.y_studio.ptt.ui.dragitemmove.ItemMoveCallback.ItemTouchHelperContract
 import tw.y_studio.ptt.ui.dragitemmove.StartDragListener
-import tw.y_studio.ptt.utils.StringUtils.notNullString
 import java.util.*
 
 class FavoriteBoardsListAdapter(
-    private val data: List<Map<String, Any>?>,
+    private val data: MutableList<HotBoardsItem>,
     private val mStartDragListener: StartDragListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperContract {
     private var mOnItemClickListener: OnItemClickListener? = null
@@ -45,12 +45,12 @@ class FavoriteBoardsListAdapter(
         when (getItemViewType(position)) {
             TYPE_NORMAL -> {
                 (holder as? ViewHolder)?.apply {
-                    textViewTitle.text = notNullString(data[position]?.get("title"))
-                    textViewSubtitle.text = notNullString(data[position]?.get("subtitle"))
-                    textViewOnlinePeople.text = notNullString(data[position]?.get("online"))
+                    textViewTitle.text = data[position].boardName ?: ""
+                    textViewSubtitle.text = data[position].subtitle ?: ""
+                    textViewOnlinePeople.text = data[position].online ?: ""
                     person.setColorFilter(
                         PttColor.ColorTrans(
-                            notNullString(data[position]?.get("onlineColor"))
+                            data[position].onlineColor ?: ""
                         )
                     )
                     itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
@@ -62,15 +62,15 @@ class FavoriteBoardsListAdapter(
             }
             TYPE_EDIT -> {
                 (holder as? ViewHolderEdit)?.apply {
-                    textViewTitle.text = notNullString(data[position]?.get("title"))
-                    textViewSubtitle.text = notNullString(data[position]?.get("subtitle"))
+                    textViewTitle.text = data[position].boardName ?: ""
+                    textViewSubtitle.text = data[position].subtitle ?: ""
                     drag.setOnTouchListener { _: View?, event: MotionEvent ->
                         if (event.action == MotionEvent.ACTION_DOWN) {
                             mStartDragListener.requestDrag(holder)
                         }
                         false
                     }
-                    unfav.tag = notNullString(data[position]?.get("title"))
+                    unfav.tag = position
                     unfav.setOnClickListener(dislikeOnClickListener)
                     itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
                     itemView.setOnLongClickListener {
