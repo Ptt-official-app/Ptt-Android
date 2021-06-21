@@ -26,6 +26,6 @@ jobs:
     - name: Spotless Check
       run: bash ./gradlew spotlessCheck    
     - name: Build Test
-      run: bash ./gradlew assembleDebug testDebug
+      run: bash ./gradlew clean assembleDebug
     - name: Unit Test
       run: bash ./gradlew testDebug
