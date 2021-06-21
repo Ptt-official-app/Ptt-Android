@@ -1,6 +1,5 @@
 package tw.y_studio.ptt.fragment.search_boards
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -9,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -20,6 +18,7 @@ import tw.y_studio.ptt.ui.BaseFragment
 import tw.y_studio.ptt.ui.ClickFix
 import tw.y_studio.ptt.ui.CustomLinearLayoutManager
 import tw.y_studio.ptt.ui.article.list.ArticleListFragment
+import tw.y_studio.ptt.utils.KeyboardUtils
 import tw.y_studio.ptt.utils.observeNotNull
 
 class SearchBoardsFragment : BaseFragment() {
@@ -45,11 +44,6 @@ class SearchBoardsFragment : BaseFragment() {
             searchBoardsItemImageViewLike.setOnClickListener {
                 if (mClickFix.isFastDoubleClick(300)) return@setOnClickListener
                 if (searchBoardsFragmentEditTextSearch.text.isEmpty()) {
-                    try {
-                        val inputMethodManager = currentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        inputMethodManager.hideSoftInputFromWindow(searchBoardsFragmentEditTextSearch?.windowToken, 0)
-                    } catch (e: Exception) {
-                    }
                     currentActivity.onBackPressed()
                 } else {
                     searchBoardsFragmentEditTextSearch.text.clear()
@@ -135,21 +129,17 @@ class SearchBoardsFragment : BaseFragment() {
         context?.let { LocalBroadcastManager.getInstance(it).sendBroadcast(intent) }
     }
 
-    private fun closeSoftInput() {
-        try {
-            val inputMethodManager = currentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(_binding?.root?.windowToken, 0)
-        } catch (e: Exception) {
-        }
-    }
-
     override fun onAnimOver() {
         viewModel.loadData()
+        binding?.searchBoardsFragmentEditTextSearch?.let {
+            it.requestFocus()
+            KeyboardUtils.showSoftInput(requireActivity())
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        closeSoftInput()
+        KeyboardUtils.hideSoftInput(requireActivity())
         _binding = null
         sendChangeMessage()
     }

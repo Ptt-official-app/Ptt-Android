@@ -5,7 +5,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 
 object KeyboardUtils {
-    @JvmStatic
+
     fun hideSoftInput(activity: Activity) {
         val inputMethodManager: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             ?: return
@@ -16,6 +16,8 @@ object KeyboardUtils {
     fun showSoftInput(activity: Activity) {
         val inputMethodManager: InputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             ?: return
+        val view = activity.currentFocus ?: View(activity)
+        inputMethodManager.showSoftInput(view, 0)
         inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
     }
 }
