@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import tw.y_studio.ptt.R
@@ -49,6 +50,9 @@ class SettingFragment : BaseFragment() {
                         SettingItem.Policy -> {
                             turnOnUrl(context!!, "https://www.ptt.cc/index.ua.html")
                         }
+                        SettingItem.ApiDomain -> {
+                            showEditTextDialog(data)
+                        }
                         else -> showSingleChoiceDialog(data)
                     }
                 }
@@ -82,6 +86,41 @@ class SettingFragment : BaseFragment() {
                     isRefreshing = false
                 }
             }
+        }
+    }
+
+    private fun showEditTextDialog(data: SettingItem) {
+        val context = context ?: return
+        val preference = currentActivity.getSharedPreferences(PreferenceConstants.prefName, Context.MODE_PRIVATE)
+        AlertDialog.Builder(context).apply {
+            setTitle(data.titleResId)
+            val editText = AppCompatEditText(context).apply {
+                setText(preference.getString(data.key, ""))
+            }
+            setView(editText)
+            setNegativeButton(R.string.cancel_button) { dialog, which ->
+                dialog.dismiss()
+            }
+            setPositiveButton(R.string.save_button) { dialog, which ->
+                dialog.dismiss()
+                val editor = preference.edit()
+                with(editText.text?.toString() ?: "") {
+                    when (this.isNullOrEmpty()) {
+                        true -> {
+                            editor.remove(data.key)
+                        }
+                        false -> {
+                            editor.putString(data.key, this)
+                        }
+                    }
+                }
+                editor.apply()
+            }
+        }.create().run {
+            window?.setBackgroundDrawableResource(R.drawable.dialog_background)
+            show()
+            getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+            getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
         }
     }
 
@@ -119,6 +158,7 @@ class SettingFragment : BaseFragment() {
         dataList.add(SettingItem.SearchStyle)
         dataList.add(SettingItem.PostBottomStyle)
         dataList.add(SettingItem.Policy)
+        dataList.add(SettingItem.ApiDomain)
         dataList.add(SettingItem.PttId)
         binding.run {
             articleListFragmentRecyclerView?.adapter?.notifyDataSetChanged()
@@ -146,7 +186,8 @@ class SettingFragment : BaseFragment() {
         SearchStyle(R.string.setting_search_item_style, "SEARCHSTYLE", R.array.setting_search_item_style_array),
         PostBottomStyle(R.string.setting_post_bottom_style, "POSTBOTTOMSTYLE", R.array.setting_post_bottom_style_array),
         Policy(R.string.ptt_policy),
-        PttId(R.string.set_ptt_id, "APIPTTID");
+        PttId(R.string.set_ptt_id, "APIPTTID"),
+        ApiDomain(R.string.set_api_domain, PreferenceConstants.apiDomain);
     }
 
     companion object {
