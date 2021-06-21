@@ -43,7 +43,7 @@ class FavoriteBoardsFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return FavoriteBoardsFragmentLayoutBinding.inflate(inflater, container, false).apply {
             _binding = this
         }.root
