@@ -7,4 +7,5 @@ object PreferenceConstants {
     const val tokenType = "TokenType"
     const val theme = "THEME"
     const val postBottomStyle = "POSTBOTTOMSTYLE"
+    const val apiDomain = "ApiDomain"
 }
