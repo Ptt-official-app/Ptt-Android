@@ -62,7 +62,7 @@
                 android:id="@+id/article_read_item_textView_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.1k"
+                android:text="0"
                 android:textColor="?attr/lightBlueGrey"
                 android:textSize="18sp"
                 android:textStyle="bold" />

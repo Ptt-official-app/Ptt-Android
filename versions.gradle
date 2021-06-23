@@ -1,0 +1,124 @@
+ext.buildConfig = [
+        'appID'      : 'tw.y_studio.ptt',
+        'compileSDK' : 30,
+        'minSDK'     : 26,
+        'targetSDK'  : 30,
+        'buildTool'  : '30.0.2',
+        'versionCode': 44,
+        'versionName': "0.0.15_build1",
+        'runner'     : "androidx.test.runner.AndroidJUnitRunner",
+        'jdk'        : '1.8'
+]
+
+ext.versions = [
+        'androidGradle'                : '4.1.2',
+        'koin'                         : '2.2.0',
+        'kotlin'                       : '1.4.32',
+        'androidXAppCompat'            : '1.2.0',
+        'androidXArch'                 : '2.1.0',
+        'androidXBrowser'              : '1.2.0',
+        'androidXConstraintLayout'     : '2.0.4',
+        'androidXLegacy'               : '1.0.0',
+        'androidXLifecycle'            : '2.2.0',
+        'androidXNavigation'           : '2.3.1',
+        'androidXLocalBroadcastManager': '1.0.0',
+        'androidXMultidex'             : '2.0.1',
+        'androidXSwipeRefreshLayout'   : '1.1.0',
+        'androidXTextJunit'            : '1.1.2',
+        'androidXTextEspresso'         : '3.3.0',
+        'fresco'                       : '2.3.0',
+        'jsoup'                        : '1.13.1',
+        'junit'                        : '4.13',
+        'material'                     : '1.2.1',
+        "mockK"                        : '1.10.2',
+        'okhttp'                       : '4.9.0',
+        'okio'                         : '2.8.0',
+        'retrofit'                     : '2.9.0',
+        'truth'                        : '1.1',
+        'leakcanary'                   : '2.5',
+        'gson'                         : '2.8.6',
+        'coroutines'                   : '1.4.2',
+        'desugar'                      : '1.0.9'
+]
+
+ext.projectDeps = [
+        'androidGradlePlugin': "com.android.tools.build:gradle:${versions.androidGradle}",
+        'kotlin'             : [
+                'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        ]
+]
+
+ext.deps = [
+        'kotlin'  : [
+                'stdlib'    : [
+                        'jdk8': "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+                ],
+                'coroutines': [
+                        'core'   : "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+                        'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
+                        'test'   : "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
+                ]
+        ],
+        'koin'    : [
+                'android'  : "org.koin:koin-android:${versions.koin}",
+                'scope'    : "org.koin:koin-androidx-scope:${versions.koin}",
+                'viewModel': "org.koin:koin-androidx-viewmodel:${versions.koin}",
+                'fragment' : "org.koin:koin-androidx-fragment:${versions.koin}"
+        ],
+        'androidX': [
+                'arch'                 : "androidx.arch.core:core-testing:${versions.androidXArch}",
+                'appcompat'            : "androidx.appcompat:appcompat:${versions.androidXAppCompat}",
+                'browser'              : "androidx.browser:browser:${versions.androidXBrowser}",
+                'constraintLayout'     : "androidx.constraintlayout:constraintlayout:${versions.androidXConstraintLayout}",
+                'legacy'               : "androidx.legacy:legacy-support-v4:${versions.androidXLegacy}",
+                'lifecycle'            : [
+                        'extensions'  : "androidx.lifecycle:lifecycle-extensions:${versions.androidXLifecycle}",
+                        'compiler'    : "androidx.lifecycle:lifecycle-compiler:${versions.androidXLifecycle}",
+                        'viewmodelKTX': "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.androidXLifecycle}",
+                        'runtime'     : "androidx.lifecycle:lifecycle-runtime-ktx:${versions.androidXLifecycle}"
+                ],
+                'navigation'           : [
+                        'fragment': "androidx.navigation:navigation-fragment-ktx:${versions.androidXNavigation}",
+                        'ui'      : "androidx.navigation:navigation-ui-ktx:${versions.androidXNavigation}"
+                ],
+                'localBroadcastManager': "androidx.localbroadcastmanager:localbroadcastmanager:${versions.androidXLocalBroadcastManager}",
+                'multidex'             : "androidx.multidex:multidex:${versions.androidXMultidex}",
+                'swipeRefreshLayout'   : "androidx.swiperefreshlayout:swiperefreshlayout:${versions.androidXSwipeRefreshLayout}",
+                'test'                 : [
+                        'ext': [
+                                'junit'   : "androidx.test.ext:junit:${versions.androidXTextJunit}",
+                                'espresso': "androidx.test.espresso:espresso-core:${versions.androidXTextEspresso}"
+                        ]
+                ]
+        ],
+        'google'  : [
+                'material': "com.google.android.material:material:${versions.material}",
+                'truth'   : "com.google.truth:truth:${versions.truth}",
+                "gson"    : "com.google.code.gson:gson:${versions.gson}"
+        ],
+        'jsoup'   : "org.jsoup:jsoup:${versions.jsoup}",
+        'junit'   : "junit:junit:${versions.junit}",
+        'facebook': [
+                'fresco': [
+                        'core'         : "com.facebook.fresco:fresco:${versions.fresco}",
+                        'animate'      : "com.facebook.fresco:animated-gif:${versions.fresco}",
+                        'imagePipeline': "com.facebook.fresco:imagepipeline-okhttp3:${versions.fresco}"
+                ]
+        ],
+        "mockK"   : [
+                "core"   : "io.mockk:mockk:${versions.mockK}",
+                "android": "io.mockk:mockk-android:${versions.mockK}",
+        ],
+        'square'  : [
+                'okhttp'    : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+                'log'       : "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
+
+                'okio'      : "com.squareup.okio:okio:${versions.okio}",
+                'leakcanary': "com.squareup.leakcanary:leakcanary-android:${versions.leakcanary}",
+                'retrofit'  : [
+                        'core'         : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
+                        'gsonConverter': "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
+                ]
+        ],
+        'desugar' : "com.android.tools:desugar_jdk_libs:${versions.desugar}"
+]

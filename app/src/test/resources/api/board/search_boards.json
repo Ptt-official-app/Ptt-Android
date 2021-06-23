@@ -1,0 +1,23 @@
+{
+  "list": [
+    {
+      "bid": "string",
+      "brdname": "string",
+      "title": "string",
+      "flag": 0,
+      "type": "string",
+      "class": "string",
+      "nuser": 0,
+      "moderators": [
+        "string"
+      ],
+      "reason": "string",
+      "read": true,
+      "total": 0,
+      "last_post_time": 0,
+      "stat_attr": 0,
+      "level_idx": "string"
+    }
+  ],
+  "next_idx": "string"
+}

@@ -1,0 +1,29 @@
+package tw.y_studio.ptt
+
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
+import kotlin.coroutines.ContinuationInterceptor
+
+/**
+ * Created by Michael.Lien
+ * on 2021/2/1
+ */
+@ExperimentalCoroutinesApi
+class MainCoroutineRule : TestWatcher(), TestCoroutineScope by TestCoroutineScope() {
+
+    override fun starting(description: Description?) {
+        super.starting(description)
+        Dispatchers.setMain(this.coroutineContext[ContinuationInterceptor] as CoroutineDispatcher)
+    }
+
+    override fun finished(description: Description?) {
+        super.finished(description)
+        Dispatchers.resetMain()
+    }
+}
