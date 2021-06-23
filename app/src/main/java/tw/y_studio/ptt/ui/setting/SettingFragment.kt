@@ -90,7 +90,7 @@ class SettingFragment : BaseFragment() {
     }
 
     private fun showEditTextDialog(data: SettingItem) {
-        val context = context ?: return
+        val context = requireContext()
         val preference = currentActivity.getSharedPreferences(PreferenceConstants.prefName, Context.MODE_PRIVATE)
         AlertDialog.Builder(context).apply {
             setTitle(data.titleResId)
