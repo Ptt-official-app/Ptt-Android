@@ -20,6 +20,7 @@ import tw.y_studio.ptt.fragment.search_boards.SearchBoardsFragment
 import tw.y_studio.ptt.ui.BaseActivity
 import tw.y_studio.ptt.ui.StaticValue
 import tw.y_studio.ptt.ui.article.list.ArticleListFragment
+import tw.y_studio.ptt.ui.article.list.search.ArticleListSearchFragment
 import tw.y_studio.ptt.ui.article.read.ArticleReadFragment
 import tw.y_studio.ptt.ui.common.extension.navigateForward
 import tw.y_studio.ptt.utils.PreferenceConstants
