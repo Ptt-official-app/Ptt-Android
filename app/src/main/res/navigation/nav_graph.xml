@@ -17,7 +17,7 @@
         tools:layout="@layout/post_article_fragment_layout"/>
     <fragment
         android:id="@+id/articleListSearchFragment"
-        android:name="tw.y_studio.ptt.fragment.ArticleListSearchFragment"
+        android:name="tw.y_studio.ptt.ui.article.list.search.ArticleListSearchFragment"
         android:label="ArticleListSearchFragment"
         tools:layout="@layout/article_list_search_fragment_layout"/>
     <fragment
