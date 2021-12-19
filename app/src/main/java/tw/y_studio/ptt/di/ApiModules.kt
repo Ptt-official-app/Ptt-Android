@@ -29,7 +29,7 @@ val apiModules = module {
 
 private fun provideRetrofit(client: OkHttpClient, preferences: SharedPreferences): Retrofit {
     return Retrofit.Builder()
-        .baseUrl(preferences.getString(PreferenceConstants.apiDomain, BuildConfig.develop_domain))
+        .baseUrl(preferences.getString(PreferenceConstants.apiDomain, BuildConfig.APIDomain))
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()

@@ -51,4 +51,7 @@ Google 的 format 工具，專案裡把縮排的規則改成 4 格。
 ### API
 
 請各位開發者自行在專案 root 建立 `api.properties`，並在裡面加入：
-> domain=開發版 server api domain
+```
+api_domain=https://<api server domain>:port
+```
+> 目前僅支援 [go-openbbsmiddleware](https://github.com/Ptt-official-app/go-openbbsmiddleware) 版本API
