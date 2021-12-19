@@ -29,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.nodes.Document;
 
-import tw.y_studio.ptt.BuildConfig;
 import tw.y_studio.ptt.R;
 import tw.y_studio.ptt.adapter.HotArticleListAdapter;
 import tw.y_studio.ptt.ptt.AidConverter;
@@ -264,7 +263,7 @@ public class HotArticleListFragment extends BaseFragment {
                         GattingData = true;
                         data_temp.clear();
                         DebugUtils.Log("onAL", "get data from web start");
-                        String url = BuildConfig.demo_hot_article_url;
+                        String url = "";
                         if (FieldName != null && FieldName.length() > 0) {
                             Map<String, Object> datt = new HashMap<>();
                             datt.put("title", FieldName);

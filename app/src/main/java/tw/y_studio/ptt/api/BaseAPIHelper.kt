@@ -14,7 +14,7 @@ abstract class BaseAPIHelper : IBaseAPI {
     }
 
     @JvmField
-    protected val hostUrl = BuildConfig.API_Domain
+    protected val hostUrl = BuildConfig.APIDomain
 
     protected val okHttpClient: OkHttpClient?
     override fun close() {
