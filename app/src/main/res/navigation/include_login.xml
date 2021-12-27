@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/navigationLoginPageFragment"
-        android:name="tw.y_studio.ptt.fragment.login.LoginPageFragment"
+        android:name="cc.ptt.android.presentation.login.LoginPageFragment"
         android:label="LoginPageFragment"
         tools:layout="@layout/login_page_fragment_layout"/>
 </navigation>
