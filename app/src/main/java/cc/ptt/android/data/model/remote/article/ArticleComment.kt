@@ -31,4 +31,18 @@ data class ArticleComment(
      */
     @SerializedName("type")
     val type: Int
-)
+) {
+    val articleCommentType get() = ArticleCommentType.parse(type)
+}
+
+enum class ArticleCommentType(val value: Int) {
+    PUSH(1),
+    HUSH(2),
+    COMMENT(3);
+
+    companion object {
+        fun parse(value: Int): ArticleCommentType {
+            return values().find { it.value == value } ?: COMMENT
+        }
+    }
+}

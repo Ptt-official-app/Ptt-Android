@@ -14,7 +14,7 @@ import org.koin.dsl.module
 val viewModelModules = module {
     viewModel { HotBoardsViewModel(get(), get(named("IO"))) }
     viewModel { ArticleListViewModel(get(), get(), get(named("IO"))) }
-    viewModel { ArticleReadViewModel(get(), get(), get(named("IO"))) }
+    viewModel { ArticleReadViewModel(get(), get(), get(named("IO")), get()) }
     viewModel { LoginPageViewModel(get()) }
     viewModel { SearchBoardsModel(get(), get(named("IO"))) }
     viewModel { FavoriteBoardsViewModel(get(), get(named("IO")), get()) }
