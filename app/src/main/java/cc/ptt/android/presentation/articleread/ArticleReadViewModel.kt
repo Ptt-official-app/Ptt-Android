@@ -14,6 +14,7 @@ import cc.ptt.android.data.model.remote.article.ArticleComment
 import cc.ptt.android.data.model.remote.article.ArticleCommentType
 import cc.ptt.android.data.model.remote.article.ArticleDetail
 import cc.ptt.android.data.model.remote.board.article.Article
+import cc.ptt.android.data.repository.login.LoginRepository
 import cc.ptt.android.data.source.remote.article.IArticleRemoteDataSource
 import cc.ptt.android.domain.usecase.articlecomment.CreateArticleCommentUseCase
 import kotlinx.coroutines.*
@@ -24,7 +25,8 @@ class ArticleReadViewModel(
     private val articleRemoteDataSource: IArticleRemoteDataSource,
     private val preferences: SharedPreferences,
     private val ioDispatcher: CoroutineDispatcher,
-    private val createArticleCommentUseCase: CreateArticleCommentUseCase
+    private val createArticleCommentUseCase: CreateArticleCommentUseCase,
+    private val loginRepository: LoginRepository
 ) : ViewModel() {
 
     val data: MutableList<ArticleReadAdapter.Item> = mutableListOf()
@@ -53,6 +55,10 @@ class ArticleReadViewModel(
 
     private fun emitActionState(action: ActionEvent) = viewModelScope.launch {
         _actionState.emit(action)
+    }
+
+    fun isLogin(): Boolean = loginRepository.isLogin().apply {
+        Log(ArticleReadViewModel.TAG, "isLogin: ${loginRepository.getUserInfo()}")
     }
 
     fun originalTitle(classX: String, title: String) = if (classX.isBlank()) {
@@ -278,6 +284,6 @@ class ArticleReadViewModel(
     }
 
     companion object {
-        private val TAG = ArticleReadViewModel.javaClass.simpleName
+        private val TAG = ArticleReadViewModel::class.java.simpleName
     }
 }

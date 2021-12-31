@@ -28,10 +28,6 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickLis
 
     private var isShowPassword = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (requireActivity() as HomeActivity).fragmentTouchListener = this
@@ -176,7 +172,7 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickLis
                 KeyboardUtils.hideSoftInput(requireActivity())
                 val account = binding.editLoginPageAccount.text.toString()
                 val password = binding.editLoginPagePassword.text.toString()
-                viewModel.checkLoginLegal(requireContext(), account, password)
+                viewModel.checkLoginLegal(account, password)
             }
             R.id.btnLoginPageShowPassword -> {
                 if (isShowPassword) {

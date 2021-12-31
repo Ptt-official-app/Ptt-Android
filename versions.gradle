@@ -37,7 +37,7 @@ ext.versions = [
         'truth'                        : '1.1',
         'leakcanary'                   : '2.5',
         'gson'                         : '2.8.6',
-        'coroutines'                   : '1.4.2',
+        'coroutines'                   : '1.6.0',
         'desugar'                      : '1.0.9'
 ]
 

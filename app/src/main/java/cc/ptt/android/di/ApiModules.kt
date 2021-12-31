@@ -8,6 +8,7 @@ import cc.ptt.android.data.api.article.ArticleApiService
 import cc.ptt.android.data.api.board.BoardApiService
 import cc.ptt.android.data.api.user.UserApiService
 import cc.ptt.android.data.common.PreferenceConstants
+import cc.ptt.android.data.source.local.LoginDataStore
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
@@ -33,12 +34,12 @@ private fun provideRetrofit(client: OkHttpClient, preferences: SharedPreferences
         .build()
 }
 
-private fun provideOkHttpClient(logInterceptor: HttpLoggingInterceptor, preferences: SharedPreferences): OkHttpClient {
+private fun provideOkHttpClient(logInterceptor: HttpLoggingInterceptor, loginDataStore: LoginDataStore): OkHttpClient {
     return OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
         .addInterceptor(logInterceptor)
-        .addInterceptor(TokenInterceptor(preferences))
+        .addInterceptor(TokenInterceptor(loginDataStore))
         .build()
 }
 

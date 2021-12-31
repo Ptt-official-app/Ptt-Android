@@ -1,5 +1,6 @@
 package cc.ptt.android.presentation.setting
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
 import cc.ptt.android.data.common.PreferenceConstants
@@ -19,10 +21,15 @@ import cc.ptt.android.presentation.common.ClickFix
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 import cc.ptt.android.presentation.login.LoginPageFragment
 import cc.ptt.android.utils.turnOnUrl
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingFragment : BaseFragment() {
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: SettingViewModel by viewModel()
 
     private val dataList = mutableListOf<SettingItem>()
     private val mClickFix = ClickFix()
@@ -31,7 +38,7 @@ class SettingFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return FragmentSettingBinding.inflate(inflater, container, false).apply {
             _binding = this
         }.root
@@ -47,8 +54,11 @@ class SettingFragment : BaseFragment() {
                         SettingItem.PttId -> {
                             loadFragment(LoginPageFragment.newInstance(), currentFragment)
                         }
+                        SettingItem.CleanPttId -> {
+                            viewModel.logout()
+                        }
                         SettingItem.Policy -> {
-                            turnOnUrl(context!!, "https://www.ptt.cc/index.ua.html")
+                            turnOnUrl(requireContext(), "https://www.ptt.cc/index.ua.html")
                         }
                         SettingItem.ApiDomain -> {
                             showEditTextDialog(data)
@@ -147,9 +157,14 @@ class SettingFragment : BaseFragment() {
     }
 
     override fun onAnimOver() {
-        loadData()
+        lifecycleScope.launch {
+            viewModel.loginState.collect {
+                loadData()
+            }
+        }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun loadData() {
         dataList.clear()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -159,9 +174,13 @@ class SettingFragment : BaseFragment() {
         dataList.add(SettingItem.PostBottomStyle)
         dataList.add(SettingItem.Policy)
         dataList.add(SettingItem.ApiDomain)
-        dataList.add(SettingItem.PttId)
-        binding.run {
-            articleListFragmentRecyclerView?.adapter?.notifyDataSetChanged()
+        if (viewModel.isLogin()) {
+            dataList.add(SettingItem.CleanPttId)
+        } else {
+            dataList.add(SettingItem.PttId)
+        }
+        _binding?.run {
+            articleListFragmentRecyclerView.adapter?.notifyDataSetChanged()
         }
     }
 
@@ -187,6 +206,7 @@ class SettingFragment : BaseFragment() {
         PostBottomStyle(R.string.setting_post_bottom_style, "POSTBOTTOMSTYLE", R.array.setting_post_bottom_style_array),
         Policy(R.string.ptt_policy),
         PttId(R.string.set_ptt_id, "APIPTTID"),
+        CleanPttId(R.string.clean_ptt_id, "APIPTTID"),
         ApiDomain(R.string.set_api_domain, PreferenceConstants.apiDomain);
     }
 

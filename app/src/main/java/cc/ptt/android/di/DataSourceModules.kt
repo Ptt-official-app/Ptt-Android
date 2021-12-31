@@ -8,14 +8,11 @@ import cc.ptt.android.data.source.remote.favorite.IFavoriteRemoteDataSource
 import cc.ptt.android.data.source.remote.favorite.IFavoriteRemoteDataSourceImpl
 import cc.ptt.android.data.source.remote.search.ISearchBoardRemoteDataSource
 import cc.ptt.android.data.source.remote.search.SearchBoardRemoteDataSourceImpl
-import cc.ptt.android.data.source.remote.user.IUserRemoteDataSource
-import cc.ptt.android.data.source.remote.user.UserRemoteDataSourceImpl
 import org.koin.dsl.module
 
 val dataSourceModules = module {
     factory<IBoardRemoteDataSource> { BoardRemoteDataSourceImpl(get()) }
     factory<ISearchBoardRemoteDataSource> { SearchBoardRemoteDataSourceImpl(get()) }
     factory<IArticleRemoteDataSource> { ArticleRemoteDataSourceImpl(get(), get(), get(IO)) }
-    factory<IUserRemoteDataSource> { UserRemoteDataSourceImpl(get(), get(IO)) }
     factory<IFavoriteRemoteDataSource> { IFavoriteRemoteDataSourceImpl(get()) }
 }
