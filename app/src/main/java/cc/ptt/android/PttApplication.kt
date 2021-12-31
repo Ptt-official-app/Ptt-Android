@@ -28,6 +28,7 @@ class PttApplication : MultiDexApplication() {
             modules(
                 listOf(
                     appModules,
+                    dataStoreModules,
                     viewModelModules,
                     apiModules,
                     dataSourceModules,

@@ -2,7 +2,6 @@ package cc.ptt.android.presentation.articleread
 
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -15,9 +14,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
-import cc.ptt.android.common.utils.useApi
 import cc.ptt.android.data.api.PostRankMark
-import cc.ptt.android.data.common.PreferenceConstants
 import cc.ptt.android.data.common.ResourcesUtils
 import cc.ptt.android.data.model.remote.article.ArticleCommentType
 import cc.ptt.android.data.model.remote.board.article.Article
@@ -31,7 +28,6 @@ import cc.ptt.android.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ArticleReadFragment : BaseFragment() {
@@ -43,13 +39,9 @@ class ArticleReadFragment : BaseFragment() {
 
     private val boardName by bundleDelegate<String>()
 
-    private val haveApi = true
-
     private var progressDialog: ProgressDialog? = null
 
     private val viewModel: ArticleReadViewModel by viewModel()
-
-    private val preferences: SharedPreferences by inject()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -171,8 +163,7 @@ class ArticleReadFragment : BaseFragment() {
     }
 
     private fun chooseCommentType() = lifecycleScope.launch(Dispatchers.Main) {
-        val id = preferences.getString(PreferenceConstants.id, "")
-        if (id!!.isEmpty()) {
+        if (!viewModel.isLogin()) {
             loadFragment(LoginPageFragment.newInstance(), currentFragment)
             return@launch
         }
@@ -198,11 +189,7 @@ class ArticleReadFragment : BaseFragment() {
     }
 
     private fun setRankMenu(view: View) {
-        if (!(haveApi && useApi)) {
-            return
-        }
-        val id = preferences.getString(PreferenceConstants.id, "")
-        if (id!!.isEmpty()) {
+        if (!viewModel.isLogin()) {
             loadFragment(LoginPageFragment.newInstance(), currentFragment)
             return
         }
