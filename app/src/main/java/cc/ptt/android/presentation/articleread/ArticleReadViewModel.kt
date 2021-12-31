@@ -10,15 +10,21 @@ import cc.ptt.android.common.date.DatePatternConstants
 import cc.ptt.android.common.utils.Log
 import cc.ptt.android.data.api.PostRankMark
 import cc.ptt.android.data.common.StringUtils
+import cc.ptt.android.data.model.remote.article.ArticleComment
+import cc.ptt.android.data.model.remote.article.ArticleCommentType
 import cc.ptt.android.data.model.remote.article.ArticleDetail
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.data.source.remote.article.IArticleRemoteDataSource
+import cc.ptt.android.domain.usecase.articlecomment.CreateArticleCommentUseCase
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 class ArticleReadViewModel(
     private val articleRemoteDataSource: IArticleRemoteDataSource,
     private val preferences: SharedPreferences,
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
+    private val createArticleCommentUseCase: CreateArticleCommentUseCase
 ) : ViewModel() {
 
     val data: MutableList<ArticleReadAdapter.Item> = mutableListOf()
@@ -36,6 +42,18 @@ class ArticleReadViewModel(
 
     private val _likeNumber = MutableLiveData<String>()
     val likeNumber: LiveData<String> = _likeNumber
+
+    private val _actionState = MutableSharedFlow<ActionEvent>()
+    val actionState = _actionState.asSharedFlow()
+
+    sealed class ActionEvent {
+        object ChooseCommentType : ActionEvent()
+        data class CreateCommentSuccess(val comment: ArticleComment) : ActionEvent()
+    }
+
+    private fun emitActionState(action: ActionEvent) = viewModelScope.launch {
+        _actionState.emit(action)
+    }
 
     fun originalTitle(classX: String, title: String) = if (classX.isBlank()) {
         title
@@ -226,8 +244,40 @@ class ArticleReadViewModel(
         return@withContext detail.rank
     }
 
+    fun createComment(article: Article, text: String?, type: ArticleCommentType?) {
+        if (text.isNullOrEmpty()) {
+            return
+        }
+
+        type?.let {
+            _progressDialogState.value = true
+            viewModelScope.launch(ioDispatcher) {
+                createArticleCommentUseCase(
+                    CreateArticleCommentUseCase.Params(article.boardId, article.articleId, it, text)
+                ).onSuccess {
+                    withContext(Dispatchers.Main) {
+                        _progressDialogState.value = false
+                    }
+                    emitActionState(ActionEvent.CreateCommentSuccess(it.comment))
+                }.onFailure {
+                    Log(TAG, "createComment error: $it")
+                    withContext(Dispatchers.Main) {
+                        _errorMessage.value = it.localizedMessage
+                        _progressDialogState.value = false
+                    }
+                }
+            }
+        } ?: run {
+            emitActionState(ActionEvent.ChooseCommentType)
+        }
+    }
+
     override fun onCleared() {
         articleRemoteDataSource.disposeAll()
         super.onCleared()
+    }
+
+    companion object {
+        private val TAG = ArticleReadViewModel.javaClass.simpleName
     }
 }

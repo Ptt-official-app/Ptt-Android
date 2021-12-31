@@ -1,5 +1,6 @@
 package cc.ptt.android.data.api.article
 
+import cc.ptt.android.data.model.remote.article.ArticleComment
 import cc.ptt.android.data.model.remote.article.ArticleCommentsList
 import cc.ptt.android.data.model.remote.article.ArticleDetail
 import cc.ptt.android.data.model.remote.article.ArticleRank
@@ -36,4 +37,12 @@ interface ArticleApiService {
         @Query("limit") limit: Int,
         @Query("desc") desc: Boolean,
     ): HotArticleList
+
+    @Headers("Content-Type: text/plain; charset=utf-8")
+    @POST("api/board/{bid}/article/{aid}/comment")
+    suspend fun createArticleComment(
+        @Path("bid") boardId: String,
+        @Path("aid") articleId: String,
+        @Body body: RequestBody
+    ): ArticleComment
 }
