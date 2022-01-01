@@ -28,7 +28,6 @@ ext.versions = [
         'androidXSwipeRefreshLayout'   : '1.1.0',
         'androidXTextJunit'            : '1.1.2',
         'androidXTextEspresso'         : '3.3.0',
-        'fresco'                       : '2.3.0',
         'jsoup'                        : '1.13.1',
         'junit'                        : '4.13',
         'material'                     : '1.2.1',
@@ -40,7 +39,8 @@ ext.versions = [
         'leakcanary'                   : '2.5',
         'gson'                         : '2.8.6',
         'coroutines'                   : '1.6.0',
-        'desugar'                      : '1.0.9'
+        'desugar'                      : '1.0.9',
+        'coil'                         : '1.4.0'
 ]
 
 ext.projectDeps = [
@@ -100,13 +100,6 @@ ext.deps = [
         ],
         'jsoup'   : "org.jsoup:jsoup:${versions.jsoup}",
         'junit'   : "junit:junit:${versions.junit}",
-        'facebook': [
-                'fresco': [
-                        'core'         : "com.facebook.fresco:fresco:${versions.fresco}",
-                        'animate'      : "com.facebook.fresco:animated-gif:${versions.fresco}",
-                        'imagePipeline': "com.facebook.fresco:imagepipeline-okhttp3:${versions.fresco}"
-                ]
-        ],
         "mockK"   : [
                 "core"   : "io.mockk:mockk:${versions.mockK}",
                 "android": "io.mockk:mockk-android:${versions.mockK}",
@@ -122,5 +115,6 @@ ext.deps = [
                         'gsonConverter': "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
                 ]
         ],
-        'desugar' : "com.android.tools:desugar_jdk_libs:${versions.desugar}"
+        'desugar' : "com.android.tools:desugar_jdk_libs:${versions.desugar}",
+        'coil'    : "io.coil-kt:coil:${versions.coil}"
 ]

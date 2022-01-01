@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/tools"
     android:background="?attr/black">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -53,7 +52,7 @@
                     android:tint="?attr/blueGrey"
                     app:srcCompat="@drawable/ic_edit_24px" />
 
-                <com.facebook.drawee.view.SimpleDraweeView
+                <ImageView
                     android:id="@+id/person_page_picture"
                     android:layout_width="70sp"
                     android:layout_height="70sp"
@@ -64,12 +63,7 @@
                     android:layout_marginBottom="20sp"
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_launcher"
-                    app:roundAsCircle="true"
-                    fresco:fadeDuration="1"
-                    fresco:roundWithOverlayColor="?attr/black"
-                    fresco:roundedCornerRadius="5dp"
-                    fresco:src="@drawable/ic_launcher" />
+                    android:src="@drawable/ic_launcher" />
 
                 <TextView
                     android:id="@+id/textView_persion_page_id"
@@ -113,8 +107,8 @@
                         android:layout_height="25sp"
                         android:adjustViewBounds="true"
                         android:scaleType="centerInside"
-                        android:tint="?attr/slateGrey"
-                        app:srcCompat="@drawable/up" />
+                        app:srcCompat="@drawable/up"
+                        app:tint="?attr/slateGrey" />
 
                     <Space
                         android:layout_width="12sp"
@@ -173,23 +167,16 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/person_page_picture_mini"
                 android:layout_width="35sp"
                 android:layout_height="35sp"
                 android:layout_centerHorizontal="true"
-
                 android:layout_marginTop="20sp"
-
                 android:layout_marginBottom="20sp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_launcher"
-                app:roundAsCircle="true"
-                fresco:fadeDuration="1"
-                fresco:roundWithOverlayColor="?attr/black"
-                fresco:roundedCornerRadius="5dp"
-                fresco:src="@drawable/ic_launcher" />
+                android:src="@drawable/ic_launcher" />
 
             <Space
                 android:layout_width="10sp"
