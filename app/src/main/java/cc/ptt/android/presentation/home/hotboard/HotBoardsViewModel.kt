@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.hotboard
+package cc.ptt.android.presentation.home.hotboard
 
 import androidx.lifecycle.*
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem

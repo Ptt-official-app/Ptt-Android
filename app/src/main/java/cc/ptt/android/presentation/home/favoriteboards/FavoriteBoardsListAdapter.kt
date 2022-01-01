@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.favoriteboards
+package cc.ptt.android.presentation.home.favoriteboards
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

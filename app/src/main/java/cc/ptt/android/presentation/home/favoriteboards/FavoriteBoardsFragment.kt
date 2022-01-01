@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.favoriteboards
+package cc.ptt.android.presentation.home.favoriteboards
 
 import android.content.BroadcastReceiver
 import android.content.Context

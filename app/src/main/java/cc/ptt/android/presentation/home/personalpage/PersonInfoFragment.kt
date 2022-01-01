@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.fragment
+package cc.ptt.android.presentation.home.personalpage
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,53 +9,37 @@ import cc.ptt.android.R
 import cc.ptt.android.presentation.base.BaseFragment
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 
-class EmptyFragment : BaseFragment() {
+class PersonInfoFragment : BaseFragment() {
     private var recyclerView: RecyclerView? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.empty_fragment_layout, container, false)
+        val view = inflater.inflate(R.layout.personal_info_fragment_layout, container, false)
         setMainView(view)
-        recyclerView = findViewById<RecyclerView>(R.id.recyclerView_empty)
+        recyclerView = findViewById<RecyclerView>(R.id.persion_info_fragment_recyclerView)
+        val bundle = arguments // 取得Bundle
+        val title_ = bundle!!.getString("Title")
         val layoutManager = CustomLinearLayoutManager(context)
         layoutManager.orientation = RecyclerView.VERTICAL
         recyclerView!!.setHasFixedSize(true)
         recyclerView!!.layoutManager = layoutManager
-        recyclerView!!.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
-            override fun getItemCount(): Int {
-                return 0
-            }
-
-            override fun onCreateViewHolder(
-                parent: ViewGroup,
-                viewType: Int
-            ): RecyclerView.ViewHolder {
-                return object : RecyclerView.ViewHolder(View(null)) {
-                }
-            }
-
-            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            }
-        }
         return view
     }
 
     override fun onAnimOver() {}
 
     companion object {
-        @JvmStatic
-        fun newInstance(): EmptyFragment {
+        fun newInstance(): PersonInfoFragment {
             val args = Bundle()
-            val fragment = EmptyFragment()
+            val fragment = PersonInfoFragment()
             fragment.arguments = args
             return fragment
         }
 
-        @JvmStatic
-        fun newInstance(args: Bundle?): EmptyFragment {
-            val fragment = EmptyFragment()
+        fun newInstance(args: Bundle?): PersonInfoFragment {
+            val fragment = PersonInfoFragment()
             fragment.arguments = args
             return fragment
         }

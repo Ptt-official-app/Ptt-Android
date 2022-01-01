@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.hotarticle
+package cc.ptt.android.presentation.home.hotarticle
 
 import android.util.Log
 import androidx.lifecycle.*

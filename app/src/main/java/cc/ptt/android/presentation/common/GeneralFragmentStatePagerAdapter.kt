@@ -7,8 +7,9 @@ import java.util.*
 
 class GeneralFragmentStatePagerAdapter(
     fm: FragmentActivity,
-    private val fragmentArrayList: ArrayList<Fragment>
+    private val fragmentArrayList: List<Fragment>
 ) : FragmentStateAdapter(fm) {
+
     override fun createFragment(position: Int): Fragment {
         return fragmentArrayList[position]
     }

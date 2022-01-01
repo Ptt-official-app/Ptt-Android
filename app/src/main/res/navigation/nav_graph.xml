@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="cc.ptt.android.presentation.fragment.HomeFragment"
+        android:name="cc.ptt.android.presentation.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/home_fragment_layout"/>
     <fragment
         android:id="@+id/postArticleFragment"
-        android:name="cc.ptt.android.presentation.fragment.PostArticleFragment"
+        android:name="cc.ptt.android.presentation.postarticle.PostArticleFragment"
         android:label="PostArticleFragment"
         tools:layout="@layout/post_article_fragment_layout"/>
     <fragment
@@ -45,7 +45,7 @@
         tools:layout="@layout/search_boards_fragment_layout"/>
     <fragment
         android:id="@+id/hotArticleFilterFragment"
-        android:name="cc.ptt.android.presentation.hotarticle.HotArticleFilterFragment"
+        android:name="cc.ptt.android.presentation.home.hotarticle.HotArticleFilterFragment"
         android:label="HotArticleFilterFragment"
         tools:layout="@layout/hot_article_list_fragment_layout"/>
 

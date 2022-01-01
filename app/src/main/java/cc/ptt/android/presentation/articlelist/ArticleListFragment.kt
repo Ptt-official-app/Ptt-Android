@@ -15,7 +15,7 @@ import cc.ptt.android.presentation.articlesearch.ArticleListSearchFragment
 import cc.ptt.android.presentation.base.BaseFragment
 import cc.ptt.android.presentation.common.ClickFix
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
-import cc.ptt.android.presentation.fragment.PostArticleFragment
+import cc.ptt.android.presentation.postarticle.PostArticleFragment
 import cc.ptt.android.utils.observeNotNull
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
