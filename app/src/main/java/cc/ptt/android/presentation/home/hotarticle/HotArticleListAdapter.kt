@@ -1,13 +1,12 @@
 package cc.ptt.android.presentation.home.hotarticle
 
 import android.content.Context
-import android.graphics.PointF
-import android.net.Uri
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -19,17 +18,8 @@ import cc.ptt.android.data.common.StringUtils.TextViewAutoSplitFix
 import cc.ptt.android.data.common.StringUtils.sortDecimal
 import cc.ptt.android.data.model.ui.hotarticle.HotArticleUI
 import cc.ptt.android.data.model.ui.hotarticle.HotArticleUIType
-import cc.ptt.android.presentation.common.ImageLoadingDrawable
 import cc.ptt.android.presentation.common.stickyheader.StickyAdapter
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.drawable.ScalingUtils
-import com.facebook.drawee.generic.GenericDraweeHierarchy
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
-import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.ResizeOptions
-import com.facebook.imagepipeline.request.ImageRequest
-import com.facebook.imagepipeline.request.ImageRequestBuilder
+import coil.load
 
 class HotArticleListAdapter constructor(
     private val context: Context,
@@ -130,38 +120,14 @@ class HotArticleListAdapter constructor(
         mOnItemLongClickListener = listener
     }
 
-    private fun setImageView(draweeView: SimpleDraweeView, Url: String) {
-        if (draweeView.tag != null) {
-            if (draweeView.tag.toString() == Url) {
+    private fun setImageView(imageView: ImageView, url: String) {
+        if (imageView.tag != null) {
+            if (imageView.tag.toString() == url) {
                 return
             }
         }
-        draweeView.tag = Url
-        try {
-            val uri = Uri.parse(Url)
-            val request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setLocalThumbnailPreviewsEnabled(true)
-                .setProgressiveRenderingEnabled(false)
-                .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
-                .setResizeOptions(ResizeOptions(1024, 1024))
-                .build()
-            val controller: DraweeController = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setAutoPlayAnimations(true)
-                .setOldController(draweeView.controller)
-                .build()
-            val builder = GenericDraweeHierarchyBuilder(context.resources)
-            val pf = PointF(0.5f, 0.5f)
-            var hierarchy: GenericDraweeHierarchy? = null
-            hierarchy = builder.setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP)
-                .setActualImageFocusPoint(pf)
-                .setFadeDuration(0)
-                .setProgressBarImage(ImageLoadingDrawable()) // .setRoundingParams(roundingParams)
-                .build()
-            draweeView.controller = controller
-            draweeView.hierarchy = hierarchy
-        } catch (e: Exception) {
-        }
+        imageView.tag = url
+        imageView.load(url)
     }
 
     inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
@@ -173,7 +139,7 @@ class HotArticleListAdapter constructor(
         val textViewDate: TextView = v.findViewById(R.id.article_list_item_textView_date)
         val like: AppCompatImageButton = v.findViewById(R.id.article_list_item_imageButton_like)
         val dislike: AppCompatImageButton = v.findViewById(R.id.article_list_item_imageButton_dislike)
-        val image: SimpleDraweeView = v.findViewById(R.id.article_list_item_picture)
+        val image: ImageView = v.findViewById(R.id.article_list_item_picture)
 
         fun update(data: HotArticleUI) {
             TextViewAutoSplitFix(textViewTitle)

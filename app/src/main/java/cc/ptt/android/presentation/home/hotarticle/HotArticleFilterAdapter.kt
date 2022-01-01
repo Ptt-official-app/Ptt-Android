@@ -1,13 +1,12 @@
 package cc.ptt.android.presentation.home.hotarticle
 
 import android.content.Context
-import android.graphics.PointF
-import android.net.Uri
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -16,17 +15,8 @@ import cc.ptt.android.R
 import cc.ptt.android.data.common.StringUtils
 import cc.ptt.android.data.common.StringUtils.TextViewAutoSplitFix
 import cc.ptt.android.data.common.StringUtils.notNullString
-import cc.ptt.android.presentation.common.ImageLoadingDrawable
 import cc.ptt.android.presentation.common.stickyheader.StickyAdapter
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.drawable.ScalingUtils
-import com.facebook.drawee.generic.GenericDraweeHierarchy
-import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
-import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.drawee.view.SimpleDraweeView
-import com.facebook.imagepipeline.common.ResizeOptions
-import com.facebook.imagepipeline.request.ImageRequest
-import com.facebook.imagepipeline.request.ImageRequestBuilder
+import coil.load
 
 class HotArticleFilterAdapter(
     private val context: Context,
@@ -167,38 +157,14 @@ class HotArticleFilterAdapter(
         mOnItemLongClickListener = listener
     }
 
-    private fun setImageView(draweeView: SimpleDraweeView, Url: String) {
-        if (draweeView.tag != null) {
-            if (draweeView.tag.toString() == Url) {
+    private fun setImageView(imageView: ImageView, url: String) {
+        if (imageView.tag != null) {
+            if (imageView.tag.toString() == url) {
                 return
             }
         }
-        draweeView.tag = Url
-        try {
-            val uri = Uri.parse(Url)
-            val request = ImageRequestBuilder.newBuilderWithSource(uri)
-                .setLocalThumbnailPreviewsEnabled(true)
-                .setProgressiveRenderingEnabled(false)
-                .setLowestPermittedRequestLevel(ImageRequest.RequestLevel.FULL_FETCH)
-                .setResizeOptions(ResizeOptions(1024, 1024))
-                .build()
-            val controller: DraweeController = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(request)
-                .setAutoPlayAnimations(true)
-                .setOldController(draweeView.controller)
-                .build()
-            val builder = GenericDraweeHierarchyBuilder(context.resources)
-            val pf = PointF(0.5f, 0.5f)
-            var hierarchy: GenericDraweeHierarchy? = null
-            hierarchy = builder.setActualImageScaleType(ScalingUtils.ScaleType.FOCUS_CROP)
-                .setActualImageFocusPoint(pf)
-                .setFadeDuration(0)
-                .setProgressBarImage(ImageLoadingDrawable())
-                .build()
-            draweeView.controller = controller
-            draweeView.hierarchy = hierarchy
-        } catch (e: Exception) {
-        }
+        imageView.tag = url
+        imageView.load(url)
     }
 
     inner class ViewHolderTitleSubitem(v: View) : RecyclerView.ViewHolder(v) {

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/article_list_item_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -216,16 +214,12 @@
 
             </LinearLayout>
 
-            <com.facebook.drawee.view.SimpleDraweeView
+            <ImageView
                 android:id="@+id/article_list_item_picture"
                 android:layout_width="60sp"
                 android:layout_height="60sp"
                 android:layout_gravity="center"
-                android:layout_marginStart="3sp"
-                fresco:fadeDuration="1"
-                fresco:roundAsCircle="true"
-                fresco:roundingBorderColor="?attr/colorAccent"
-                fresco:roundingBorderWidth="2dp" />
+                android:layout_marginStart="3sp" />
 
         </LinearLayout>
     </LinearLayout>

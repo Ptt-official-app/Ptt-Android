@@ -93,10 +93,8 @@ dependencies {
     implementation deps.androidX.navigation.fragment
     implementation deps.androidX.navigation.ui
 
-    // Facebook
-    implementation deps.facebook.fresco.core
-    implementation deps.facebook.fresco.animate
-    implementation deps.facebook.fresco.imagePipeline
+    // Coil
+    implementation deps.coil
 
     // Google
     implementation deps.google.material
