@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.setting
+package cc.ptt.android.presentation.home.setting
 
 import android.view.LayoutInflater
 import android.view.View

@@ -21,9 +21,10 @@ import cc.ptt.android.presentation.articlesearch.ArticleListSearchFragment
 import cc.ptt.android.presentation.base.BaseActivity
 import cc.ptt.android.presentation.common.StaticValue
 import cc.ptt.android.presentation.common.extension.navigateForward
-import cc.ptt.android.presentation.fragment.*
-import cc.ptt.android.presentation.hotarticle.HotArticleFilterFragment
+import cc.ptt.android.presentation.home.HomeFragment
+import cc.ptt.android.presentation.home.hotarticle.HotArticleFilterFragment
 import cc.ptt.android.presentation.login.LoginPageFragment
+import cc.ptt.android.presentation.postarticle.*
 import cc.ptt.android.presentation.searchboards.SearchBoardsFragment
 import java.util.*
 import kotlin.math.abs

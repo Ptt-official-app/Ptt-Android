@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.fragment;
+package cc.ptt.android.presentation.postarticle;
 
 import static android.content.Context.MODE_PRIVATE;
 

@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.hotboard
+package cc.ptt.android.presentation.home.hotboard
 
 import android.os.Bundle
 import android.util.Log

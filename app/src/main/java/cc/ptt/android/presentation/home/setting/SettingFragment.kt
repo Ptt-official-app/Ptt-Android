@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.setting
+package cc.ptt.android.presentation.home.setting
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,7 +21,6 @@ import cc.ptt.android.presentation.common.ClickFix
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 import cc.ptt.android.presentation.login.LoginPageFragment
 import cc.ptt.android.utils.turnOnUrl
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

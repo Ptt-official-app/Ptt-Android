@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.hotboard
+package cc.ptt.android.presentation.home.hotboard
 
 import android.view.LayoutInflater
 import android.view.View

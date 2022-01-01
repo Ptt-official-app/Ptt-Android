@@ -1,4 +1,4 @@
-package cc.ptt.android.presentation.favoriteboards
+package cc.ptt.android.presentation.home.favoriteboards
 
 import android.content.SharedPreferences
 import androidx.lifecycle.*
