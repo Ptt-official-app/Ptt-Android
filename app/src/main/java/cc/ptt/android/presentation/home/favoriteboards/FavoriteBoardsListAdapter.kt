@@ -49,7 +49,7 @@ class FavoriteBoardsListAdapter(
                     textViewSubtitle.text = data[position].subtitle ?: ""
                     textViewOnlinePeople.text = data[position].online ?: ""
                     person.setColorFilter(
-                        PttColor.ColorTrans(
+                        PttColor.colorTrans(
                             data[position].onlineColor ?: ""
                         )
                     )
