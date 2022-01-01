@@ -1,7 +1,7 @@
 ext.buildConfig = [
         'appID'      : 'tw.y_studio.ptt',
         'compileSDK' : 30,
-        'minSDK'     : 26,
+        'minSDK'     : 23,
         'targetSDK'  : 30,
         'buildTool'  : '30.0.2',
         'versionCode': 44,
