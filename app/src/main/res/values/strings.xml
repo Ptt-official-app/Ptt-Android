@@ -52,7 +52,8 @@
     <string name="post_article_navigation_item_save">儲存檔案</string>
     <string name="post_article_navigation_item_post">發布文章</string>
     <string name="ptt_policy">Ptt使用者條款</string>
-    <string name="set_ptt_id">設定PTT ID</string>
+    <string name="set_ptt_id">登入</string>
+    <string name="clean_ptt_id">登出</string>
     <string name="set_api_domain">設定API domain</string>
     <string name="most_people_like">最高評價</string>
     <string name="save_button">儲存</string>

@@ -14,9 +14,7 @@ android {
         targetSdkVersion buildConfig.targetSDK
         versionCode buildConfig.versionCode
         versionName buildConfig.versionName
-        buildConfigField "String", "API_Domain", "\"${domain()}\""
-        buildConfigField "String", "develop_domain", "\"${developDomain()}\""
-        buildConfigField "String", "demo_hot_article_url", "\"${demoHotArticleUrl()}\""
+        buildConfigField "String", "APIDomain", "\"${apiDomain()}\""
         testInstrumentationRunner buildConfig.runner
         multiDexEnabled true
         ndk {
@@ -62,23 +60,7 @@ android {
     }
 }
 
-def domain() {
-    def path = getRootProject().file('api.properties')
-    if (path.canRead()) {
-        def props = new Properties()
-        props.load(new FileInputStream(path))
-        if (props != null) {
-            return props['domain']
-        } else {
-            println 'some entries in \\\'api.properties\\\' not found!'
-        }
-    } else {
-        println 'Use CI Variables'
-        return System.getenv('domain')
-    }
-}
-
-def developDomain() {
+def apiDomain() {
     def path = getRootProject().file('api.properties')
     if (path.canRead()) {
         def props = new Properties()
@@ -92,10 +74,6 @@ def developDomain() {
         println 'Use CI Variables'
         return System.getenv('api_domain')
     }
-}
-
-static def demoHotArticleUrl(){
-    return "https://www.google.com.tw/"
 }
 
 dependencies {
@@ -115,10 +93,8 @@ dependencies {
     implementation deps.androidX.navigation.fragment
     implementation deps.androidX.navigation.ui
 
-    // Facebook
-    implementation deps.facebook.fresco.core
-    implementation deps.facebook.fresco.animate
-    implementation deps.facebook.fresco.imagePipeline
+    // Coil
+    implementation deps.coil
 
     // Google
     implementation deps.google.material

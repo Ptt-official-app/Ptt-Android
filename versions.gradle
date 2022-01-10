@@ -1,11 +1,15 @@
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def majorVersion = 0
+def minorVersion = 16
+def patchVersion = 0
 ext.buildConfig = [
         'appID'      : 'tw.y_studio.ptt',
         'compileSDK' : 30,
-        'minSDK'     : 26,
+        'minSDK'     : 23,
         'targetSDK'  : 30,
         'buildTool'  : '30.0.2',
-        'versionCode': 44,
-        'versionName': "0.0.15_build1",
+        'versionCode': majorVersion * 1000000 + minorVersion * 10000 + patchVersion * 100,
+        'versionName': "${majorVersion}.${minorVersion}.${patchVersion}, ${gitSha}",
         'runner'     : "androidx.test.runner.AndroidJUnitRunner",
         'jdk'        : '1.8'
 ]
@@ -13,7 +17,7 @@ ext.buildConfig = [
 ext.versions = [
         'androidGradle'                : '4.1.2',
         'koin'                         : '2.2.0',
-        'kotlin'                       : '1.4.32',
+        'kotlin'                       : '1.5.10',
         'androidXAppCompat'            : '1.2.0',
         'androidXArch'                 : '2.1.0',
         'androidXBrowser'              : '1.2.0',
@@ -26,7 +30,6 @@ ext.versions = [
         'androidXSwipeRefreshLayout'   : '1.1.0',
         'androidXTextJunit'            : '1.1.2',
         'androidXTextEspresso'         : '3.3.0',
-        'fresco'                       : '2.3.0',
         'jsoup'                        : '1.13.1',
         'junit'                        : '4.13',
         'material'                     : '1.2.1',
@@ -37,8 +40,9 @@ ext.versions = [
         'truth'                        : '1.1',
         'leakcanary'                   : '2.5',
         'gson'                         : '2.8.6',
-        'coroutines'                   : '1.4.2',
-        'desugar'                      : '1.0.9'
+        'coroutines'                   : '1.6.0',
+        'desugar'                      : '1.0.9',
+        'coil'                         : '1.4.0'
 ]
 
 ext.projectDeps = [
@@ -98,13 +102,6 @@ ext.deps = [
         ],
         'jsoup'   : "org.jsoup:jsoup:${versions.jsoup}",
         'junit'   : "junit:junit:${versions.junit}",
-        'facebook': [
-                'fresco': [
-                        'core'         : "com.facebook.fresco:fresco:${versions.fresco}",
-                        'animate'      : "com.facebook.fresco:animated-gif:${versions.fresco}",
-                        'imagePipeline': "com.facebook.fresco:imagepipeline-okhttp3:${versions.fresco}"
-                ]
-        ],
         "mockK"   : [
                 "core"   : "io.mockk:mockk:${versions.mockK}",
                 "android": "io.mockk:mockk-android:${versions.mockK}",
@@ -120,5 +117,6 @@ ext.deps = [
                         'gsonConverter': "com.squareup.retrofit2:converter-gson:${versions.retrofit}"
                 ]
         ],
-        'desugar' : "com.android.tools:desugar_jdk_libs:${versions.desugar}"
+        'desugar' : "com.android.tools:desugar_jdk_libs:${versions.desugar}",
+        'coil'    : "io.coil-kt:coil:${versions.coil}"
 ]

@@ -36,7 +36,7 @@
                 app:srcCompat="@drawable/ic_chevron_left_black_24dp" />
 
             <TextView
-                android:id="@+id/ppst_article_fragment_textView_title"
+                android:id="@+id/post_article_fragment_text_view_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/post_article_fragment_textView_title"
