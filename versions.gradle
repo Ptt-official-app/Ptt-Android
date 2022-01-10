@@ -1,13 +1,15 @@
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-
+def majorVersion = 0
+def minorVersion = 16
+def patchVersion = 0
 ext.buildConfig = [
         'appID'      : 'tw.y_studio.ptt',
         'compileSDK' : 30,
         'minSDK'     : 23,
         'targetSDK'  : 30,
         'buildTool'  : '30.0.2',
-        'versionCode': 44,
-        'versionName': "0.15.0, ${gitSha}",
+        'versionCode': majorVersion * 1000000 + minorVersion * 10000 + patchVersion * 100,
+        'versionName': "${majorVersion}.${minorVersion}.${patchVersion}, ${gitSha}",
         'runner'     : "androidx.test.runner.AndroidJUnitRunner",
         'jdk'        : '1.8'
 ]
