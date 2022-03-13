@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import cc.ptt.android.common.utils.Log
@@ -18,8 +19,9 @@ import cc.ptt.android.presentation.common.ClickFix
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 import cc.ptt.android.presentation.common.stickyheader.StickyHeaderItemDecorator
 import cc.ptt.android.utils.observeNotNull
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HotArticleListFragment : BaseFragment() {
 
     private var _binding: HotArticleListFragmentLayoutBinding? = null
@@ -30,7 +32,7 @@ class HotArticleListFragment : BaseFragment() {
     private lateinit var mAdapter: HotArticleListAdapter
     private val mClickFix = ClickFix()
 
-    private val viewModel: HotArticleListViewModel by viewModel()
+    private val viewModel: HotArticleListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

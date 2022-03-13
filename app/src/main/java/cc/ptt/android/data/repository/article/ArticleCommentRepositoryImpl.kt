@@ -2,15 +2,17 @@ package cc.ptt.android.data.repository.article
 
 import cc.ptt.android.data.api.article.ArticleApiService
 import cc.ptt.android.data.model.remote.article.ArticleComment
+import cc.ptt.android.di.IODispatchers
 import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import javax.inject.Inject
 
-class ArticleCommentRepositoryImpl constructor(
+class ArticleCommentRepositoryImpl @Inject constructor(
     private val articleApiService: ArticleApiService,
-    private val dispatcher: CoroutineDispatcher,
+    @IODispatchers private val dispatcher: CoroutineDispatcher,
 ) : ArticleCommentRepository {
     override suspend fun createArticleComment(bid: String, aid: String, type: Int, content: String): ArticleComment = withContext(dispatcher) {
         val param: String = JsonObject().apply {

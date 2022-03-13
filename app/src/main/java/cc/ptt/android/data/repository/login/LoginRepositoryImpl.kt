@@ -6,16 +6,18 @@ import cc.ptt.android.data.model.remote.user.exist_user.ExistUserRequest
 import cc.ptt.android.data.model.remote.user.login.LoginRequest
 import cc.ptt.android.data.model.ui.user.UserInfo
 import cc.ptt.android.data.source.local.LoginDataStore
+import cc.ptt.android.di.IODispatchers
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import javax.inject.Inject
 
-class LoginRepositoryImpl constructor(
+class LoginRepositoryImpl @Inject constructor(
     private val loginDataStore: LoginDataStore,
     private val userApiService: UserApiService,
-    private val dispatcher: CoroutineDispatcher,
+    @IODispatchers private val dispatcher: CoroutineDispatcher,
 ) : LoginRepository {
 
     companion object {

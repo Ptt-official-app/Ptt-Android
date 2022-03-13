@@ -1,5 +1,6 @@
 package cc.ptt.android.presentation.home.personalpage
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -54,10 +55,12 @@ class PersonalPageFragment : BaseFragment() {
     ): View {
         val view = PersionalPageFragmentLayoutBinding.inflate(inflater, container, false).apply {
             _binding = this
-        }.root.apply {
-            setMainView(this)
-        }
+        }.root
+        return view
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         fragmentArrayList = arrayListOf(
             Pair(getString(R.string.persion_page_tabs_info), PersonInfoFragment.newInstance()),
             Pair(getString(R.string.persion_page_tabs_articles), EmptyFragment.newInstance()),
@@ -70,24 +73,7 @@ class PersonalPageFragment : BaseFragment() {
             }
         }
 
-        mAppBar.addOnOffsetChangedListener(
-            OnOffsetChangedListener { appBarLayout, verticalOffset ->
-                if (isAlreadyReady) {
-                    val percent = (
-                        abs(verticalOffset).toDouble() /
-                            abs(
-                                headerRelativeLayout
-                                    .height
-                            ).toDouble() *
-                            100.0
-                        ).toInt()
-                    val height = headerRelativeLayoutMini.height
-                    headerRelativeLayoutMini.y =
-                        (height * -1 + height * (percent / 100.0)).toFloat()
-                }
-                isAlreadyReady = true
-            }
-        )
+        mAppBar.addOnOffsetChangedListener(offsetChangedListener)
 
         mViewPager.adapter = GeneralFragmentStatePagerAdapter(
             requireActivity(),
@@ -101,13 +87,27 @@ class PersonalPageFragment : BaseFragment() {
         TabLayoutMediator(
             mTabs,
             mViewPager
-        ) { tab: TabLayout.Tab, position: Int -> tab.text = fragmentArrayList[position].first }
-            .attach()
+        ) { tab: TabLayout.Tab, position: Int ->
+            tab.text = fragmentArrayList[position].first
+        }.attach()
+
         loadData()
-        return view
     }
 
-    private var isAlreadyReady = false
+    private val offsetChangedListener = OnOffsetChangedListener { _, verticalOffset ->
+        val percent = (
+            abs(verticalOffset).toFloat() /
+                abs(headerRelativeLayout.height).toFloat() *
+                100.0
+            ).toInt()
+        val height = headerRelativeLayoutMini.height
+        if (height > 0) {
+            headerRelativeLayoutMini.y =
+                (height * -1 + height * (percent / 100.0)).toFloat()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
     fun loadData() {
         setImageView(personPicture, null)
         setImageView(personPictureMini, null)
@@ -117,6 +117,7 @@ class PersonalPageFragment : BaseFragment() {
         personIDTextView.text = id
         personIDTextViewMini.text = id
         personNickTextView.text = "匿名訪客"
+        personLikeTextView.text = "1.8k"
     }
 
     private fun setImageView(imageView: ImageView, url: String?) {

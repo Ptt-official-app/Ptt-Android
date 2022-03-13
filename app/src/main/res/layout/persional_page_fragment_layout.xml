@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/black">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager_person_page"
@@ -19,7 +19,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         </androidx.viewpager2.widget.ViewPager2>
-
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout_person_page"
@@ -38,32 +37,34 @@
 
                 <ImageButton
                     android:id="@+id/imageButton_persion_page_edit"
-                    android:layout_width="30sp"
-                    android:layout_height="30sp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_alignParentTop="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginStart="20sp"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginEnd="20sp"
-                    android:layout_marginBottom="20sp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
                     android:background="?selectableItemBackgroundBorderless"
-                    android:padding="5sp"
+                    android:padding="5dp"
                     android:scaleType="centerInside"
                     android:tint="?attr/blueGrey"
-                    app:srcCompat="@drawable/ic_edit_24px" />
+                    app:srcCompat="@drawable/ic_edit_24px"
+                    android:contentDescription="@null" />
 
                 <ImageView
                     android:id="@+id/person_page_picture"
-                    android:layout_width="70sp"
-                    android:layout_height="70sp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginStart="20sp"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginEnd="20sp"
-                    android:layout_marginBottom="20sp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
                     android:adjustViewBounds="true"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_launcher" />
+                    android:src="@drawable/ic_launcher"
+                    android:contentDescription="@null" />
 
                 <TextView
                     android:id="@+id/textView_persion_page_id"
@@ -71,9 +72,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/person_page_picture"
                     android:layout_centerHorizontal="true"
-                    android:text="WeGoYuSheng"
+                    android:text=""
                     android:textColor="?attr/paleGrey"
-                    android:textSize="17sp" />
+                    android:textSize="17dp"
+                    tools:text="WeGoYuSheng"/>
 
                 <TextView
                     android:id="@+id/textView_persion_page_nick"
@@ -81,37 +83,39 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/textView_persion_page_id"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="8sp"
-                    android:text="艾倫戴爾皇家空軍總司令"
+                    android:layout_marginTop="8dp"
+                    android:text=""
                     android:textColor="?attr/paleGrey"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    tools:text="艾倫戴爾皇家空軍總司令"/>
 
             </RelativeLayout>
-
 
             <RelativeLayout
                 android:id="@+id/relativeLayout_person_page_like_bar"
                 android:layout_width="match_parent"
-                android:layout_height="60sp">
+                android:layout_height="60dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    tools:ignore="UselessParent">
 
                     <ImageView
                         android:id="@+id/imageView"
-                        android:layout_width="25sp"
-                        android:layout_height="25sp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:adjustViewBounds="true"
                         android:scaleType="centerInside"
                         app:srcCompat="@drawable/up"
-                        app:tint="?attr/slateGrey" />
+                        app:tint="?attr/slateGrey"
+                        android:contentDescription="@null" />
 
                     <Space
-                        android:layout_width="12sp"
+                        android:layout_width="12dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
@@ -119,46 +123,45 @@
                         android:id="@+id/textView_persional_like"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1.8k"
+                        android:text=""
                         android:textColor="@color/colorAccent"
-                        android:textSize="20sp" />
+                        android:textSize="20dp"
+                        tools:text="1.8k"/>
 
                 </LinearLayout>
+
             </RelativeLayout>
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/page_tabs"
                 android:layout_width="match_parent"
-                android:layout_height="35sp"
-                android:layout_marginStart="20sp"
-                android:layout_marginEnd="20sp"
+                android:layout_height="35dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:background="@drawable/tab_state_unselect"
-
                 app:tabBackground="@android:color/transparent"
                 app:tabGravity="fill"
                 app:tabIndicator="@drawable/tab_state_select"
                 app:tabIndicatorColor="?attr/blueGrey"
                 app:tabIndicatorGravity="center"
-                app:tabIndicatorHeight="35sp"
+                app:tabIndicatorHeight="35dp"
                 app:tabMaxWidth="0dp"
                 app:tabRippleColor="@android:color/transparent"
                 app:tabSelectedTextColor="?attr/paleGrey"
                 app:tabTextAppearance="@style/TextAppearance.AppCompat.Display4"
                 app:tabTextColor="?attr/blueGrey" />
-        </com.google.android.material.appbar.AppBarLayout>
 
+        </com.google.android.material.appbar.AppBarLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <RelativeLayout
         android:id="@+id/relativeLayout_person_page_header_mini"
         android:layout_width="match_parent"
-        android:layout_height="60sp"
+        android:layout_height="60dp"
         android:background="?attr/black"
         android:gravity="center_vertical"
-        android:translationY="-60sp">
-
-
+        android:translationY="-60dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -169,44 +172,43 @@
 
             <ImageView
                 android:id="@+id/person_page_picture_mini"
-                android:layout_width="35sp"
-                android:layout_height="35sp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20sp"
-                android:layout_marginBottom="20sp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerInside"
                 android:src="@drawable/ic_launcher" />
 
             <Space
-                android:layout_width="10sp"
-                android:layout_height="wrap_content"
-                />
+                android:layout_width="10dp"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/textView_person_page_id_mini"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/person_page_picture"
-                android:layout_centerHorizontal="true"
-                android:text="WeGoYuSheng"
+                android:text=""
                 android:textColor="?attr/paleGrey"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                tools:text="WeGoYuSheng"/>
 
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/imageButton_person_page_edit_mini"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            android:layout_alignParentRight="true"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-
-            android:layout_marginEnd="20sp"
+            android:layout_marginEnd="20dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:padding="5sp"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:tint="?attr/blueGrey"
-            app:srcCompat="@drawable/ic_edit_24px" />
+            app:srcCompat="@drawable/ic_edit_24px"
+            android:contentDescription="@null" />
+
     </RelativeLayout>
+
 </RelativeLayout>

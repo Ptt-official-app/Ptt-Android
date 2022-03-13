@@ -8,16 +8,18 @@ import cc.ptt.android.data.model.remote.PostRank
 import cc.ptt.android.data.model.remote.article.ArticleCommentsList
 import cc.ptt.android.data.model.remote.article.ArticleDetail
 import cc.ptt.android.data.model.remote.article.ArticleRank
+import cc.ptt.android.di.IODispatchers
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import javax.inject.Inject
 
-class ArticleRemoteDataSourceImpl(
+class ArticleRemoteDataSourceImpl @Inject constructor (
     private val postAPI: PostAPI,
     private val articleApiService: ArticleApiService,
-    private val dispatcher: CoroutineDispatcher,
+    @IODispatchers private val dispatcher: CoroutineDispatcher,
 ) : IArticleRemoteDataSource {
 
     override suspend fun getArticleDetail(

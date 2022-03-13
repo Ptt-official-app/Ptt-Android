@@ -16,7 +16,6 @@ ext.buildConfig = [
 
 ext.versions = [
         'androidGradle'                : '4.1.2',
-        'koin'                         : '2.2.0',
         'kotlin'                       : '1.5.10',
         'androidXAppCompat'            : '1.2.0',
         'androidXArch'                 : '2.1.0',
@@ -42,14 +41,16 @@ ext.versions = [
         'gson'                         : '2.8.6',
         'coroutines'                   : '1.6.0',
         'desugar'                      : '1.0.9',
-        'coil'                         : '1.4.0'
+        'coil'                         : '1.4.0',
+        'hilt'                         : '2.38.1'
 ]
 
 ext.projectDeps = [
         'androidGradlePlugin': "com.android.tools.build:gradle:${versions.androidGradle}",
         'kotlin'             : [
                 'gradlePlugin': "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
-        ]
+        ],
+        'hiltGradlePlugin'   : "com.google.dagger:hilt-android-gradle-plugin:${versions.hilt}"
 ]
 
 ext.deps = [
@@ -62,12 +63,6 @@ ext.deps = [
                         'android': "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
                         'test'   : "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}"
                 ]
-        ],
-        'koin'    : [
-                'android'  : "org.koin:koin-android:${versions.koin}",
-                'scope'    : "org.koin:koin-androidx-scope:${versions.koin}",
-                'viewModel': "org.koin:koin-androidx-viewmodel:${versions.koin}",
-                'fragment' : "org.koin:koin-androidx-fragment:${versions.koin}"
         ],
         'androidX': [
                 'arch'                 : "androidx.arch.core:core-testing:${versions.androidXArch}",
@@ -118,5 +113,9 @@ ext.deps = [
                 ]
         ],
         'desugar' : "com.android.tools:desugar_jdk_libs:${versions.desugar}",
-        'coil'    : "io.coil-kt:coil:${versions.coil}"
+        'coil'    : "io.coil-kt:coil:${versions.coil}",
+        'hilt'    : [
+                "android"   : "com.google.dagger:hilt-android:${versions.hilt}",
+                "compiler"  : "com.google.dagger:hilt-android-compiler:${versions.hilt}"
+        ]
 ]

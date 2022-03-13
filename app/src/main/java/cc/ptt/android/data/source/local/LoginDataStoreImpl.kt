@@ -5,8 +5,9 @@ import cc.ptt.android.common.security.AESKeyStoreHelper
 import cc.ptt.android.data.common.PreferenceConstants
 import cc.ptt.android.data.common.StringUtils
 import cc.ptt.android.data.model.ui.user.UserInfo
+import javax.inject.Inject
 
-class LoginDataStoreImpl constructor(
+class LoginDataStoreImpl @Inject constructor(
     private val preference: SharedPreferences
 ) : LoginDataStore {
 

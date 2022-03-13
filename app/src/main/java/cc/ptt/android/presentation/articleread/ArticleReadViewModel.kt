@@ -16,15 +16,19 @@ import cc.ptt.android.data.model.remote.article.ArticleDetail
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.data.repository.login.LoginRepository
 import cc.ptt.android.data.source.remote.article.IArticleRemoteDataSource
+import cc.ptt.android.di.IODispatchers
 import cc.ptt.android.domain.usecase.articlecomment.CreateArticleCommentUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import javax.inject.Inject
 
-class ArticleReadViewModel(
+@HiltViewModel
+class ArticleReadViewModel @Inject constructor(
     private val articleRemoteDataSource: IArticleRemoteDataSource,
     private val preferences: SharedPreferences,
-    private val ioDispatcher: CoroutineDispatcher,
+    @IODispatchers private val ioDispatcher: CoroutineDispatcher,
     private val createArticleCommentUseCase: CreateArticleCommentUseCase,
     private val loginRepository: LoginRepository
 ) : ViewModel() {

@@ -17,7 +17,7 @@ import cc.ptt.android.presentation.home.personalpage.PersonalPageFragment
 import cc.ptt.android.presentation.home.setting.SettingFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
-import java.util.HashMap
+import java.util.*
 
 class HomeFragment : BaseFragment() {
 
@@ -30,7 +30,7 @@ class HomeFragment : BaseFragment() {
         EmptyPage(3),
     }
 
-    private val homeFragmentMap: MutableMap<PageType, Fragment> = HashMap()
+    private val homeFragmentMap: MutableMap<PageType, Fragment> = EnumMap(PageType::class.java)
     private var preFragment: Fragment? = null
     private val navigation: BottomNavigationView get() = binding.homeBottomNavigation
 
@@ -47,30 +47,7 @@ class HomeFragment : BaseFragment() {
     ): View {
         val view = HomeFragmentLayoutBinding.inflate(inflater, container, false).apply {
             _binding = this
-        }.root.apply {
-            setMainView(this)
-        }
-
-        mOnNavigationItemSelectedListener =
-            BottomNavigationView.OnNavigationItemSelectedListener { item -> changeFragment(item.itemId) }
-        mOnNavigationItemReselectedListener = OnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.home_bottom_navigation_item_hot_boards -> if (homeFragmentMap.containsKey(PageType.HotBoards)) {
-                    (homeFragmentMap[PageType.HotBoards] as? HotBoardsFragment)?.scrollToTop()
-                }
-                R.id.home_bottom_navigation_item_favorite_boards -> if (homeFragmentMap.containsKey(PageType.FavoriteBoards)) {
-                    (homeFragmentMap[PageType.FavoriteBoards] as? FavoriteBoardsFragment)?.scrollToTop()
-                }
-                R.id.home_bottom_navigation_item_hot_articles -> if (homeFragmentMap.containsKey(PageType.HotArticles)) {
-                    (homeFragmentMap[PageType.HotArticles] as? HotArticleListFragment)?.scrollToTop()
-                }
-                R.id.home_bottom_navigation_item_user_page -> {}
-                R.id.home_bottom_navigation_item_more_action -> {}
-                else -> {}
-            }
-        }
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        navigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener)
+        }.root
         return view
     }
 
@@ -132,7 +109,32 @@ class HomeFragment : BaseFragment() {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mOnNavigationItemSelectedListener =
+            BottomNavigationView.OnNavigationItemSelectedListener { item -> changeFragment(item.itemId) }
+        mOnNavigationItemReselectedListener = OnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.home_bottom_navigation_item_hot_boards -> if (homeFragmentMap.containsKey(PageType.HotBoards)) {
+                    (homeFragmentMap[PageType.HotBoards] as? HotBoardsFragment)?.scrollToTop()
+                }
+                R.id.home_bottom_navigation_item_favorite_boards -> if (homeFragmentMap.containsKey(PageType.FavoriteBoards)) {
+                    (homeFragmentMap[PageType.FavoriteBoards] as? FavoriteBoardsFragment)?.scrollToTop()
+                }
+                R.id.home_bottom_navigation_item_hot_articles -> if (homeFragmentMap.containsKey(PageType.HotArticles)) {
+                    (homeFragmentMap[PageType.HotArticles] as? HotArticleListFragment)?.scrollToTop()
+                }
+                R.id.home_bottom_navigation_item_user_page -> {}
+                R.id.home_bottom_navigation_item_more_action -> {}
+                else -> {}
+            }
+        }
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        navigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener)
+    }
+
     override fun onAnimOver() {
+        super.onAnimOver()
         changeFragment(navigation.selectedItemId)
     }
 
@@ -176,6 +178,11 @@ class HomeFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        homeFragmentMap.clear()
     }
 
     companion object {

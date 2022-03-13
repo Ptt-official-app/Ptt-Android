@@ -30,7 +30,6 @@ class HotArticleFilterFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.hot_article_list_fragment_layout, container, false)
-        setMainView(view)
         mRecyclerView = findViewById<RecyclerView>(R.id.article_list_fragment_recycler_view)
         mSwipeRefreshLayout =
             findViewById<SwipeRefreshLayout>(R.id.article_list_fragment_refresh_layout)
@@ -88,8 +87,10 @@ class HotArticleFilterFragment : BaseFragment() {
                                     )
                                 )
                             }
-                            LocalBroadcastManager.getInstance(context)
-                                .sendBroadcast(intent)
+                            context?.let {
+                                LocalBroadcastManager.getInstance(it)
+                                    .sendBroadcast(intent)
+                            }
                         }
                         currentActivity.onBackPressed()
                     } else {

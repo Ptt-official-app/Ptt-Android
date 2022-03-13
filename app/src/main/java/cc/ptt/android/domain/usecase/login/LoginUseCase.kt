@@ -2,12 +2,14 @@ package cc.ptt.android.domain.usecase.login
 
 import cc.ptt.android.data.model.ui.user.UserInfo
 import cc.ptt.android.data.repository.login.LoginRepository
+import cc.ptt.android.di.IODispatchers
 import cc.ptt.android.domain.base.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Inject
 
-class LoginUseCase constructor(
+class LoginUseCase @Inject constructor(
     private val loginRepository: LoginRepository,
-    dispatcher: CoroutineDispatcher
+    @IODispatchers dispatcher: CoroutineDispatcher
 ) : UseCase<LoginUseCase.Params, LoginUseCase.Results>(dispatcher) {
     data class Params(
         val id: String,

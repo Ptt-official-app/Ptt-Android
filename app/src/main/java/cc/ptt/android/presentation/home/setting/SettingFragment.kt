@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
@@ -21,14 +22,15 @@ import cc.ptt.android.presentation.common.ClickFix
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 import cc.ptt.android.presentation.login.LoginPageFragment
 import cc.ptt.android.utils.turnOnUrl
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@AndroidEntryPoint
 class SettingFragment : BaseFragment() {
     private var _binding: FragmentSettingBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: SettingViewModel by viewModel()
+    private val viewModel: SettingViewModel by viewModels()
 
     private val dataList = mutableListOf<SettingItem>()
     private val mClickFix = ClickFix()

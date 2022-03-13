@@ -5,12 +5,16 @@ import androidx.lifecycle.*
 import cc.ptt.android.data.common.PreferenceConstants
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
 import cc.ptt.android.data.source.remote.favorite.IFavoriteRemoteDataSource
+import cc.ptt.android.di.IODispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
-class FavoriteBoardsViewModel(
+@HiltViewModel
+class FavoriteBoardsViewModel @Inject constructor(
     private val favoriteRemoteDataSource: IFavoriteRemoteDataSource,
-    private val ioDispatcher: CoroutineDispatcher,
+    @IODispatchers private val ioDispatcher: CoroutineDispatcher,
     private val preferences: SharedPreferences
 ) : ViewModel() {
     val data: MutableList<HotBoardsItem> = mutableListOf()
