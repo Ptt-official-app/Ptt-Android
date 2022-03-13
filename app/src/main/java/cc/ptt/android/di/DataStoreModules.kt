@@ -2,8 +2,16 @@ package cc.ptt.android.di
 
 import cc.ptt.android.data.source.local.LoginDataStore
 import cc.ptt.android.data.source.local.LoginDataStoreImpl
-import org.koin.dsl.module
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-val dataStoreModules = module {
-    factory<LoginDataStore> { LoginDataStoreImpl(get()) }
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class DataStoreModules {
+    @Binds
+    @Singleton
+    abstract fun provideLoginDataStore(loginDataStoreImpl: LoginDataStoreImpl): LoginDataStore
 }

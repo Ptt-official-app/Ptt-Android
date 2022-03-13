@@ -8,10 +8,13 @@ import cc.ptt.android.R
 import cc.ptt.android.data.common.StringUtils
 import cc.ptt.android.domain.usecase.login.LoginUseCase
 import cc.ptt.android.presentation.common.event.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.*
+import javax.inject.Inject
 
-class LoginPageViewModel constructor(
+@HiltViewModel
+class LoginPageViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 

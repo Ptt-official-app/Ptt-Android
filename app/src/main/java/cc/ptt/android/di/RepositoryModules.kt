@@ -6,10 +6,29 @@ import cc.ptt.android.data.repository.login.LoginRepository
 import cc.ptt.android.data.repository.login.LoginRepositoryImpl
 import cc.ptt.android.data.repository.populararticles.PopularArticlesRepository
 import cc.ptt.android.data.repository.populararticles.PopularArticlesRepositoryImpl
-import org.koin.dsl.module
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-val repositoryModules = module {
-    factory<PopularArticlesRepository> { PopularArticlesRepositoryImpl(get(), get(IO)) }
-    factory<ArticleCommentRepository> { ArticleCommentRepositoryImpl(get(), get(IO)) }
-    single<LoginRepository> { LoginRepositoryImpl(get(), get(), get(IO)) }
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModules {
+
+    @Binds
+    abstract fun providePopularArticlesRepository(
+        popularArticlesRepositoryImpl: PopularArticlesRepositoryImpl
+    ): PopularArticlesRepository
+
+    @Binds
+    abstract fun provideArticleCommentRepository(
+        articleCommentRepositoryImpl: ArticleCommentRepositoryImpl
+    ): ArticleCommentRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideLoginRepository(
+        loginRepositoryImpl: LoginRepositoryImpl
+    ): LoginRepository
 }

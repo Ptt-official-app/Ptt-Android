@@ -8,11 +8,32 @@ import cc.ptt.android.data.source.remote.favorite.IFavoriteRemoteDataSource
 import cc.ptt.android.data.source.remote.favorite.IFavoriteRemoteDataSourceImpl
 import cc.ptt.android.data.source.remote.search.ISearchBoardRemoteDataSource
 import cc.ptt.android.data.source.remote.search.SearchBoardRemoteDataSourceImpl
-import org.koin.dsl.module
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
 
-val dataSourceModules = module {
-    factory<IBoardRemoteDataSource> { BoardRemoteDataSourceImpl(get()) }
-    factory<ISearchBoardRemoteDataSource> { SearchBoardRemoteDataSourceImpl(get()) }
-    factory<IArticleRemoteDataSource> { ArticleRemoteDataSourceImpl(get(), get(), get(IO)) }
-    factory<IFavoriteRemoteDataSource> { IFavoriteRemoteDataSourceImpl(get()) }
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+abstract class DataSourceModules {
+
+    @Binds
+    abstract fun provideIBoardRemoteDataSource(
+        boardRemoteDataSourceImpl: BoardRemoteDataSourceImpl
+    ): IBoardRemoteDataSource
+
+    @Binds
+    abstract fun provideISearchBoardRemoteDataSource(
+        searchBoardRemoteDataSourceImpl: SearchBoardRemoteDataSourceImpl
+    ): ISearchBoardRemoteDataSource
+
+    @Binds
+    abstract fun provideIArticleRemoteDataSource(
+        articleRemoteDataSourceImpl: ArticleRemoteDataSourceImpl
+    ): IArticleRemoteDataSource
+
+    @Binds
+    abstract fun provideIFavoriteRemoteDataSource(
+        favoriteRemoteDataSourceImpl: IFavoriteRemoteDataSourceImpl
+    ): IFavoriteRemoteDataSource
 }

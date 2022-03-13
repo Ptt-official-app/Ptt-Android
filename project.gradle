@@ -18,6 +18,7 @@ def addProjectDependencies(ScriptHandler handler) {
     handler.dependencies {
         classpath projectDeps.androidGradlePlugin
         classpath projectDeps.kotlin.gradlePlugin
+        classpath projectDeps.hiltGradlePlugin
     }
 }
 

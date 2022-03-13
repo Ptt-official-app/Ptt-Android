@@ -17,14 +17,13 @@ class PersonInfoFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.personal_info_fragment_layout, container, false)
-        setMainView(view)
         recyclerView = findViewById<RecyclerView>(R.id.persion_info_fragment_recyclerView)
         val bundle = arguments // 取得Bundle
         val title_ = bundle!!.getString("Title")
         val layoutManager = CustomLinearLayoutManager(context)
         layoutManager.orientation = RecyclerView.VERTICAL
-        recyclerView!!.setHasFixedSize(true)
-        recyclerView!!.layoutManager = layoutManager
+        recyclerView?.setHasFixedSize(true)
+        recyclerView?.layoutManager = layoutManager
         return view
     }
 

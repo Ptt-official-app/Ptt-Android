@@ -9,16 +9,20 @@ import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.data.model.remote.board.article.ArticleList
 import cc.ptt.android.data.source.remote.article.IArticleRemoteDataSource
 import cc.ptt.android.data.source.remote.board.IBoardRemoteDataSource
+import cc.ptt.android.di.IODispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
-class ArticleListViewModel(
+@HiltViewModel
+class ArticleListViewModel @Inject constructor(
     private val articleRemoteDataSource: IArticleRemoteDataSource,
     private val boardRemoteDataSource: IBoardRemoteDataSource,
-    private val ioDispatcher: CoroutineDispatcher
+    @IODispatchers private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     val data: MutableList<Article> = ArrayList()
     private val page = AtomicInteger(1)

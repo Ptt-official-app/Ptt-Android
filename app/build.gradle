@@ -3,6 +3,7 @@ plugins {
     id "org.jetbrains.kotlin.android"
     id "org.jetbrains.kotlin.kapt"
     id "org.jetbrains.kotlin.plugin.parcelize"
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -103,11 +104,6 @@ dependencies {
     // Jsoup
     implementation deps.jsoup
 
-    implementation deps.koin.android
-    implementation deps.koin.scope
-    implementation deps.koin.viewModel
-    implementation deps.koin.fragment
-
     // Kotlin
     implementation deps.kotlin.stdlib.jdk8
     implementation deps.kotlin.coroutines.core
@@ -139,4 +135,12 @@ dependencies {
     // solved AndroidX conflict: Duplicate class guava listenablefuture
     // see：https://stackoverflow.com/questions/60472354/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    // Hilt
+    implementation deps.hilt.android
+    kapt deps.hilt.compiler
+}
+
+kapt {
+    correctErrorTypes true
 }
