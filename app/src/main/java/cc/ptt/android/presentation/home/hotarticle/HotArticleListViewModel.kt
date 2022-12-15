@@ -4,14 +4,19 @@ import android.util.Log
 import androidx.lifecycle.*
 import cc.ptt.android.common.utils.Log
 import cc.ptt.android.data.model.ui.hotarticle.HotArticleUI
+import cc.ptt.android.di.IODispatchers
+import cc.ptt.android.di.UIDispatchers
 import cc.ptt.android.domain.usecase.GetPopularArticlesUIUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class HotArticleListViewModel constructor(
+@HiltViewModel
+class HotArticleListViewModel @Inject constructor(
     private val getPopularArticlesUIUseCase: GetPopularArticlesUIUseCase,
-    private val uiDispatcher: CoroutineDispatcher,
-    ioDispatcher: CoroutineDispatcher
+    @UIDispatchers private val uiDispatcher: CoroutineDispatcher,
+    @IODispatchers ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     companion object {

@@ -1,12 +1,14 @@
 package cc.ptt.android.domain.usecase.login
 
 import cc.ptt.android.data.repository.login.LoginRepository
+import cc.ptt.android.di.IODispatchers
 import cc.ptt.android.domain.base.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Inject
 
-class LogoutUseCase constructor(
+class LogoutUseCase @Inject constructor(
     private val loginRepository: LoginRepository,
-    dispatcher: CoroutineDispatcher
+    @IODispatchers dispatcher: CoroutineDispatcher
 ) : UseCase<Unit, Unit>(dispatcher) {
 
     override suspend fun execute(parameters: Unit): Result<Unit> {

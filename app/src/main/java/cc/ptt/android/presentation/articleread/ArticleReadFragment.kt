@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
@@ -25,11 +26,11 @@ import cc.ptt.android.presentation.common.KeyboardUtils
 import cc.ptt.android.presentation.common.extension.bundleDelegate
 import cc.ptt.android.presentation.login.LoginPageFragment
 import cc.ptt.android.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@AndroidEntryPoint
 class ArticleReadFragment : BaseFragment() {
     private var _binding: ArticleReadFragmentLayoutBinding? = null
     private val binding get() = _binding!!
@@ -41,7 +42,7 @@ class ArticleReadFragment : BaseFragment() {
 
     private var progressDialog: ProgressDialog? = null
 
-    private val viewModel: ArticleReadViewModel by viewModel()
+    private val viewModel: ArticleReadViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -220,7 +221,7 @@ class ArticleReadFragment : BaseFragment() {
         _binding = null
         try {
             val inputMethodManager = currentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(mainView.windowToken, 0)
+            inputMethodManager.hideSoftInputFromWindow(binding.root.windowToken, 0)
         } catch (e: Exception) {
         }
     }

@@ -3,12 +3,14 @@ package cc.ptt.android.domain.usecase
 import cc.ptt.android.data.model.ui.hotarticle.HotArticleUI
 import cc.ptt.android.data.model.ui.hotarticle.HotArticleUIType
 import cc.ptt.android.data.repository.populararticles.PopularArticlesRepository
+import cc.ptt.android.di.IODispatchers
 import cc.ptt.android.domain.base.UseCase
 import kotlinx.coroutines.CoroutineDispatcher
+import javax.inject.Inject
 
-class GetPopularArticlesUIUseCase constructor(
+class GetPopularArticlesUIUseCase @Inject constructor(
     private val popularArticlesRepository: PopularArticlesRepository,
-    dispatcher: CoroutineDispatcher
+    @IODispatchers dispatcher: CoroutineDispatcher
 ) : UseCase<GetPopularArticlesUIUseCase.Params, GetPopularArticlesUIUseCase.Results>(dispatcher) {
 
     data class Params(

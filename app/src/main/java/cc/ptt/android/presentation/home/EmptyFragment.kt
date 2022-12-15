@@ -17,7 +17,6 @@ class EmptyFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.empty_fragment_layout, container, false)
-        setMainView(view)
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView_empty)
         val layoutManager = CustomLinearLayoutManager(context)
         layoutManager.orientation = RecyclerView.VERTICAL

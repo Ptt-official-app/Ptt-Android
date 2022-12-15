@@ -3,7 +3,6 @@ package cc.ptt.android.presentation.postarticle
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,19 +35,22 @@ class PostArticleFragment : BaseFragment() {
     private val titleEditText: EditText get() = binding.postArticleFragmentEdittextTitle
     private val categoryTextView: TextView get() = binding.postArticleFragmentTextViewCategory
 
-    private val preferences get() = context.getSharedPreferences(PreferenceConstants.prefName, Context.MODE_PRIVATE)
+    private val preferences
+        get() = requireActivity().getSharedPreferences(
+            PreferenceConstants.prefName,
+            Context.MODE_PRIVATE
+        )
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val view = PostArticleFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root.apply {
-            setMainView(this)
-        }
+    ): View = PostArticleFragmentLayoutBinding.inflate(inflater, container, false).apply {
+        _binding = this
+    }.root
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         go2BackBtn.setOnClickListener { currentActivity.onBackPressed() }
         mOnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -58,12 +60,12 @@ class PostArticleFragment : BaseFragment() {
                     R.id.post_article_navigation_item_insert_image -> {}
                     R.id.post_article_navigation_item_hide_keyboard ->
                         try {
-                            val inputMethodManager = context
+                            val inputMethodManager = requireActivity()
                                 .getSystemService(
                                     Context.INPUT_METHOD_SERVICE
                                 ) as InputMethodManager
                             inputMethodManager.hideSoftInputFromWindow(
-                                mainView.windowToken, 0
+                                binding.root.windowToken, 0
                             )
                             navigation.menu.getItem(4).isVisible = false
                         } catch (e: Exception) {
@@ -74,66 +76,53 @@ class PostArticleFragment : BaseFragment() {
             }
 
         with(navigation) {
-            labelVisibilityMode = if (preferences.getInt(PreferenceConstants.postBottomStyle, 0) == 0) {
-                LabelVisibilityMode.LABEL_VISIBILITY_LABELED
-            } else {
-                LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
-            }
+            labelVisibilityMode =
+                if (preferences.getInt(PreferenceConstants.postBottomStyle, 0) == 0) {
+                    LabelVisibilityMode.LABEL_VISIBILITY_LABELED
+                } else {
+                    LabelVisibilityMode.LABEL_VISIBILITY_UNLABELED
+                }
             menu.clear()
             inflateMenu(R.menu.post_article_bottom_navigation_menu2)
             setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         }
 
-        return view
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     private var keyboardMode = false
-    private var globalLayoutListener: OnGlobalLayoutListener? = null
+    private val globalLayoutListener = OnGlobalLayoutListener {
+        _binding?.root?.let {
+            val r = Rect()
+            it.getWindowVisibleDisplayFrame(r)
+            if (!keyboardMode &&
+                it.rootView.height -
+                (r.bottom - r.top)
+            > StaticValue.widthPixels.coerceAtMost(StaticValue.highPixels) /
+                2
+            ) {
+                navigation.menu.clear()
+                navigation.inflateMenu(
+                    R.menu.post_article_bottom_navigation_menu3
+                )
+                keyboardMode = true
+            } else if (keyboardMode &&
+                it.rootView.height -
+                (r.bottom - r.top)
+                < StaticValue.widthPixels.coerceAtMost(StaticValue.highPixels) /
+                2
+            ) {
+                keyboardMode = false
+                navigation.menu.clear()
+                navigation.inflateMenu(
+                    R.menu.post_article_bottom_navigation_menu2
+                )
+            }
+        }
+    }
+
     override fun onAnimOver() {
         loadData()
-        mainView
-            .viewTreeObserver
-            .addOnGlobalLayoutListener(
-                OnGlobalLayoutListener {
-                    val r = Rect()
-                    mainView.getWindowVisibleDisplayFrame(r)
-                    Log.d(
-                        "onPost",
-                        "-- " +
-                            (
-                                mainView
-                                    .rootView
-                                    .height -
-                                    (r.bottom - r.top)
-                                )
-                    )
-                    if (!keyboardMode &&
-                        mainView.rootView.height -
-                        (r.bottom - r.top)
-                    > StaticValue.widthPixels.coerceAtMost(StaticValue.highPixels) /
-                        2
-                    ) {
-                        navigation.menu.clear()
-                        navigation.inflateMenu(
-                            R.menu.post_article_bottom_navigation_menu3
-                        )
-                        keyboardMode = true
-                    } else if (keyboardMode &&
-                        mainView.rootView.height -
-                        (r.bottom - r.top)
-                        < StaticValue.widthPixels.coerceAtMost(StaticValue.highPixels) /
-                        2
-                    ) {
-                        keyboardMode = false
-                        navigation.menu.clear()
-                        navigation.inflateMenu(
-                            R.menu.post_article_bottom_navigation_menu2
-                        )
-                    }
-                }.also {
-                    globalLayoutListener = it
-                }
-            )
     }
 
     private fun loadData() {
@@ -145,8 +134,7 @@ class PostArticleFragment : BaseFragment() {
             KeyboardUtils.hideSoftInput(requireActivity())
         } catch (e: Exception) {
         }
-        mainView.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
-        globalLayoutListener = null
+        binding.root.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
         _binding = null
     }
 

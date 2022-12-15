@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
 import cc.ptt.android.common.utils.Log
@@ -18,8 +19,9 @@ import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 import cc.ptt.android.presentation.postarticle.PostArticleFragment
 import cc.ptt.android.utils.observeNotNull
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ArticleListFragment : BaseFragment() {
 
     private var _binding: ArticleListFragmentLayoutBinding? = null
@@ -30,7 +32,7 @@ class ArticleListFragment : BaseFragment() {
     private var boardId = ""
     private val mClickFix = ClickFix()
 
-    private val articleListViewModel: ArticleListViewModel by viewModel()
+    private val articleListViewModel: ArticleListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

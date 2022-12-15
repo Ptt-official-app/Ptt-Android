@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.data.model.remote.board.searchboard.SearchBoardsItem
@@ -18,20 +19,21 @@ import cc.ptt.android.presentation.common.ClickFix
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 import cc.ptt.android.presentation.common.KeyboardUtils
 import cc.ptt.android.utils.observeNotNull
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchBoardsFragment : BaseFragment() {
     private var _binding: SearchBoardsFragmentLayoutBinding? = null
     private val binding get() = _binding
     private val mClickFix = ClickFix()
 
-    private val viewModel: SearchBoardsModel by viewModel()
+    private val viewModel: SearchBoardsModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         return SearchBoardsFragmentLayoutBinding.inflate(inflater, container, false).apply {
             _binding = this
         }.root

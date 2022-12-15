@@ -3,11 +3,15 @@ package cc.ptt.android.presentation.home.hotboard
 import androidx.lifecycle.*
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
 import cc.ptt.android.data.source.remote.board.IBoardRemoteDataSource
+import cc.ptt.android.di.IODispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class HotBoardsViewModel(
+@HiltViewModel
+class HotBoardsViewModel @Inject constructor(
     private val boardRemoteDataSource: IBoardRemoteDataSource,
-    private val ioDispatcher: CoroutineDispatcher
+    @IODispatchers private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
     val data: MutableList<HotBoardsItem> = mutableListOf()
 

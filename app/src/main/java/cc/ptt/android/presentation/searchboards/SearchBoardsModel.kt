@@ -6,14 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cc.ptt.android.data.model.remote.board.searchboard.SearchBoardsItem
 import cc.ptt.android.data.source.remote.search.ISearchBoardRemoteDataSource
+import cc.ptt.android.di.IODispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+import javax.inject.Inject
 
-class SearchBoardsModel(
+@HiltViewModel
+class SearchBoardsModel @Inject constructor(
     private val searchBoardRemoteDataSource: ISearchBoardRemoteDataSource,
-    private val ioDispatcher: CoroutineDispatcher
+    @IODispatchers private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     val data: MutableList<SearchBoardsItem> = mutableListOf()
