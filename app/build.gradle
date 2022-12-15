@@ -84,7 +84,6 @@ dependencies {
     implementation deps.androidX.browser
     implementation deps.androidX.constraintLayout
     implementation deps.androidX.legacy
-    implementation deps.androidX.lifecycle.extensions
     implementation deps.androidX.lifecycle.compiler
     implementation deps.androidX.lifecycle.viewmodelKTX
     implementation deps.androidX.lifecycle.runtime
