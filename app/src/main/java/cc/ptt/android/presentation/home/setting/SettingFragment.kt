@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import cc.ptt.android.BuildConfig
 import cc.ptt.android.R
 import cc.ptt.android.data.common.PreferenceConstants
 import cc.ptt.android.databinding.FragmentSettingBinding
@@ -106,7 +107,7 @@ class SettingFragment : BaseFragment() {
         AlertDialog.Builder(context).apply {
             setTitle(data.titleResId)
             val editText = AppCompatEditText(context).apply {
-                setText(preference.getString(data.key, ""))
+                setText(preference.getString(data.key, BuildConfig.APIDomain))
             }
             setView(editText)
             setNegativeButton(R.string.cancel_button) { dialog, which ->
