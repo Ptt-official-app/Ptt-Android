@@ -1,7 +1,7 @@
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 def majorVersion = 0
 def minorVersion = 17
-def patchVersion = 0
+def patchVersion = 1
 ext.buildConfig = [
         'appID'      : 'tw.y_studio.ptt',
         'compileSDK' : 33,
