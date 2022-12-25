@@ -50,8 +50,11 @@ Google 的 format 工具，專案裡把縮排的規則改成 4 格。
 
 ### API
 1. 開發前請確認 `build variant` 設定為 `stagingDebug` 再行開發
-2. 請各位開發者自行在專案`local.properties`裡面加入：
+2. (optional)自行在專案`local.properties`裡面加入：
 ```
-host=https://<api_host_domain>
+HOST=https://<api_host_domain>
+ACCOUNT=<unit_test_account>
+PASSWORD=<unit_test_account_password>
 ```
+
 > 目前僅支援 [go-openbbsmiddleware](https://github.com/Ptt-official-app/go-openbbsmiddleware) 版本API

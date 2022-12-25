@@ -1,73 +1,53 @@
 package cc.ptt.android.data.source.remote.article
 
-import cc.ptt.android.data.api.PostAPI
-import cc.ptt.android.data.api.PostRankMark
-import cc.ptt.android.data.api.article.ArticleApiService
-import cc.ptt.android.data.model.remote.Post
-import cc.ptt.android.data.model.remote.PostRank
+import cc.ptt.android.data.api.article.ArticleApi
+import cc.ptt.android.data.model.remote.article.ArticleComment
 import cc.ptt.android.data.model.remote.article.ArticleCommentsList
 import cc.ptt.android.data.model.remote.article.ArticleDetail
 import cc.ptt.android.data.model.remote.article.ArticleRank
-import cc.ptt.android.di.IODispatchers
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
+import com.google.gson.JsonObject
+import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import javax.inject.Inject
 
-class ArticleRemoteDataSourceImpl @Inject constructor (
-    private val postAPI: PostAPI,
-    private val articleApiService: ArticleApiService,
-    @IODispatchers private val dispatcher: CoroutineDispatcher,
-) : IArticleRemoteDataSource {
+class ArticleRemoteDataSourceImpl constructor (
+    private val articleApi: ArticleApi
+) : ArticleRemoteDataSource {
 
-    override suspend fun getArticleDetail(
+    override fun getArticleDetail(
         boardId: String,
         articleId: String
-    ): ArticleDetail = withContext(dispatcher) {
-        return@withContext articleApiService.getArticleDetail(boardId, articleId)
+    ): Flow<ArticleDetail> {
+        return articleApi.getArticleDetail(boardId, articleId)
     }
 
-    override suspend fun getArticleComments(
+    override fun getArticleComments(
         boardId: String,
         articleId: String,
         desc: Boolean
-    ): ArticleCommentsList = withContext(dispatcher) {
-        return@withContext articleApiService.getArticleComments(boardId, articleId, desc)
+    ): Flow<ArticleCommentsList> {
+        return articleApi.getArticleComments(boardId, articleId, desc)
     }
 
-    override suspend fun postArticleRank(
+    override fun postArticleRank(
         rank: Int,
         boardId: String,
         articleId: String
-    ) = withContext(dispatcher) {
+    ): Flow<ArticleRank> {
         val param: String = Gson().toJson(
             ArticleRank(rank)
         )
         val body = param.toRequestBody("text/plain; charset=utf-8".toMediaType())
-
-        return@withContext articleApiService.postArticleRank(boardId, articleId, body)
+        return articleApi.postArticleRank(boardId, articleId, body)
     }
 
-    override fun getPost(board: String, fileName: String): Post {
-        return postAPI.getPost(board, fileName)
-    }
-
-    override fun setPostRank(
-        boardName: String,
-        aid: String,
-        pttId: String,
-        rank: PostRankMark
-    ) {
-        postAPI.setPostRank(boardName, aid, pttId, rank)
-    }
-
-    override fun getPostRank(board: String, aid: String): PostRank {
-        return postAPI.getPostRank(board, aid)
-    }
-
-    override fun disposeAll() {
-        postAPI.close()
+    override fun createArticleComment(bid: String, aid: String, type: Int, content: String): Flow<ArticleComment> {
+        val param: String = JsonObject().apply {
+            addProperty("type", type)
+            addProperty("content", content)
+        }.toString()
+        val body = param.toRequestBody("text/plain; charset=utf-8".toMediaType())
+        return articleApi.createArticleComment(bid, aid, body)
     }
 }

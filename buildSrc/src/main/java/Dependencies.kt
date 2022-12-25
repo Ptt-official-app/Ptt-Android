@@ -46,6 +46,10 @@ object Dependencies {
         const val swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.androidXSwipeRefreshLayout}"
 
         object Test {
+            object Core {
+                const val core = "androidx.test:core-ktx:${Versions.androidXTextCore}"
+            }
+
             object Ext {
                 const val junit = "androidx.test.ext:junit:${Versions.androidXTextJunit}"
                 const val espresso = "androidx.test.espresso:espresso-core:${Versions.androidXTextEspresso}"
@@ -86,5 +90,16 @@ object Dependencies {
     object Hilt {
         const val android = "com.google.dagger:hilt-android:${Versions.hilt}"
         const val compiler = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
+    }
+
+    object Koin {
+        object Core {
+            const val core = "io.insert-koin:koin-core:${Versions.koinCore}"
+            const val test = "io.insert-koin:koin-test:${Versions.koinCore}"
+            const val junit4 = "io.insert-koin:koin-test-junit4:${Versions.koinCore}"
+        }
+        object Android {
+            const val android = "io.insert-koin:koin-android:${Versions.koinAndroid}"
+        }
     }
 }

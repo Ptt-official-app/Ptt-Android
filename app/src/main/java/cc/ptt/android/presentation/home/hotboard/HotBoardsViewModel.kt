@@ -2,16 +2,13 @@ package cc.ptt.android.presentation.home.hotboard
 
 import androidx.lifecycle.*
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
-import cc.ptt.android.data.source.remote.board.IBoardRemoteDataSource
-import cc.ptt.android.di.IODispatchers
-import dagger.hilt.android.lifecycle.HiltViewModel
+import cc.ptt.android.data.repository.board.BoardRepository
 import kotlinx.coroutines.*
-import javax.inject.Inject
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 
-@HiltViewModel
-class HotBoardsViewModel @Inject constructor(
-    private val boardRemoteDataSource: IBoardRemoteDataSource,
-    @IODispatchers private val ioDispatcher: CoroutineDispatcher
+class HotBoardsViewModel constructor(
+    private val boardRepository: BoardRepository
 ) : ViewModel() {
     val data: MutableList<HotBoardsItem> = mutableListOf()
 
@@ -22,34 +19,30 @@ class HotBoardsViewModel @Inject constructor(
     val errorMessage: LiveData<String> = _errorMessage
 
     fun loadData() {
+        if (_loadingState.value == true) return
+        fetchData()
+    }
+
+    private fun fetchData() {
         viewModelScope.launch {
-            if (_loadingState.value == true) return@launch
-            data.clear()
             _loadingState.value = true
-            getDataFromApi()
-            _loadingState.value = false
-        }
-    }
-
-    private suspend fun getDataFromApi() = withContext(ioDispatcher) {
-        try {
-            val popularBoards = boardRemoteDataSource.getPopularBoards()
-            val boardData = popularBoards.list.map {
-                HotBoardsItem(
-                    it.boardId,
-                    it.boardName,
-                    it.title,
-                    it.onlineUser.toString(),
-                    "7"
-                )
+            boardRepository.getPopularBoards().catch { e ->
+                _errorMessage.postValue("Error: $e")
+                _loadingState.value = false
+            }.collect { popularBoards ->
+                val boardData = popularBoards.list.map {
+                    HotBoardsItem(
+                        it.boardId,
+                        it.boardName,
+                        it.title,
+                        it.onlineUser.toString(),
+                        "7"
+                    )
+                }
+                data.clear()
+                data.addAll(boardData)
+                _loadingState.value = false
             }
-            data.addAll(boardData)
-        } catch (e: Exception) {
-            _errorMessage.postValue("Error: $e")
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }

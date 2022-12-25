@@ -5,19 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cc.ptt.android.data.model.remote.board.searchboard.SearchBoardsItem
-import cc.ptt.android.data.source.remote.search.ISearchBoardRemoteDataSource
-import cc.ptt.android.di.IODispatchers
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
+import cc.ptt.android.data.repository.search.SearchBoardRepository
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.*
-import javax.inject.Inject
 
-@HiltViewModel
-class SearchBoardsModel @Inject constructor(
-    private val searchBoardRemoteDataSource: ISearchBoardRemoteDataSource,
-    @IODispatchers private val ioDispatcher: CoroutineDispatcher
+class SearchBoardsModel constructor(
+    private val searchBoardRepository: SearchBoardRepository
 ) : ViewModel() {
 
     val data: MutableList<SearchBoardsItem> = mutableListOf()
@@ -31,53 +25,41 @@ class SearchBoardsModel @Inject constructor(
     private val _nowSearchText = MutableLiveData<String>()
     val nowSearchText: LiveData<String> = _nowSearchText
 
-    private val _waitSearchText = MutableLiveData<String>()
-    val waitSearchText: LiveData<String> = _waitSearchText
+    private var searchJob: Job? = null
 
     fun loadData() {
-        if (_loadingState.value == true) return
         _nowSearchText.value?.let { searchBoard(it) }
     }
 
     fun searchBoard(keyWords: String) {
-        if (_loadingState.value == true) {
-            _waitSearchText.value = keyWords
-            return
-        }
-
-        _nowSearchText.value = keyWords
-
-        viewModelScope.launch {
-            if (_loadingState.value == true) return@launch
-            data.clear()
-            _loadingState.value = true
-            getDataFromApi()
-            _loadingState.value = false
-        }
+        fetchData(keyWords)
     }
 
-    private suspend fun getDataFromApi() = withContext(ioDispatcher) {
-        try {
-            val boards = searchBoardRemoteDataSource.searchBoardByKeyword(
-                (_nowSearchText.value ?: "").replace(" ", "")
-            )
-            val boardData = boards.list.map {
-                SearchBoardsItem(
-                    boardId = it.boardId,
-                    title = it.boardName,
-                    subtitle = it.title
-                )
+    private fun fetchData(text: String) {
+        _nowSearchText.value = text
+        data.clear()
+        _loadingState.value = false
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            _loadingState.value = true
+            searchBoardRepository.searchBoardByKeyword(text).catch { e ->
+                _errorMessage.postValue("Error: $e")
+                _loadingState.value = false
+            }.collect { boards ->
+                val boardData = boards.list.map {
+                    SearchBoardsItem(
+                        boardId = it.boardId,
+                        title = it.boardName,
+                        subtitle = it.title
+                    )
+                }
+                data.clear()
+                data.addAll(boardData)
+                _loadingState.value = false
             }
-            data += boardData
-        } catch (e: Exception) {
-            _errorMessage.postValue("Error: $e")
         }
     }
 
     fun changeBoardLikeSate(position: Int) {
-    }
-
-    override fun onCleared() {
-        super.onCleared()
     }
 }
