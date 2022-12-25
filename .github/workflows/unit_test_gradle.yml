@@ -6,6 +6,7 @@ on:
       - '*'
       - '!master'
       - '!release*'
+      - '!dev*'
   pull_request:
     branches:
       - 'master'
@@ -15,7 +16,7 @@ on:
 jobs:
   test:
     name: Run Build Tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -28,13 +29,19 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Set Host
+      
+    - name: Set up environment
       env:
-        HOST: $
-      run: echo host=$HOST > ./local.properties
+        TEST_ACCOUNT: ${{ secrets.TEST_ACCOUNT }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      shell: bash
+      run: echo -e "ACCOUNT=$TEST_ACCOUNT\nPASSWORD=$TEST_PASSWORD" > ./local.properties
+      
     - name: Spotless Check
       run: bash ./gradlew spotlessCheck    
+      
     - name: Build Test
       run: bash ./gradlew clean assembleStagingDebug
+
     - name: Unit Test
       run: bash ./gradlew testStagingDebugUnitTest
