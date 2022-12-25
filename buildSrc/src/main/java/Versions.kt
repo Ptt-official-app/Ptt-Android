@@ -17,6 +17,7 @@ object Versions {
     const val androidXLocalBroadcastManager = "1.0.0"
     const val androidXMultidex = "2.0.1"
     const val androidXSwipeRefreshLayout = "1.1.0"
+    const val androidXTextCore = "1.5.0"
     const val androidXTextJunit = "1.1.2"
     const val androidXTextEspresso = "3.3.0"
     const val jsoup = "1.13.1"
@@ -33,6 +34,9 @@ object Versions {
     const val desugar = "1.1.5"
     const val coil = "2.2.2"
     const val hilt = "2.44"
+    const val koinCore = "3.3.0"
+    const val koinAndroid = "3.3.1"
+    const val spotless = "6.12.0"
 }
 
 object GlobalConfig {
@@ -48,4 +52,7 @@ object GlobalConfig {
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
     val JDKVersion = JavaVersion.VERSION_1_8
+
+    const val BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT = "TEST_ACCOUNT"
+    const val BUILD_CONFIG_KEY_FOR_TEST_PASSWORD = "TEST_PASSWORD"
 }

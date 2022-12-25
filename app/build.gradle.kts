@@ -1,11 +1,14 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
+import java.io.InputStreamReader
+import java.io.FileInputStream
+import java.io.IOException
 
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
     id("org.jetbrains.kotlin.plugin.parcelize")
-    id("dagger.hilt.android.plugin")
 }
 
 fun String.runCommand(workingDir: File = file("./")): String {
@@ -24,24 +27,24 @@ fun gitSha(): String {
     return "git rev-parse --short HEAD".runCommand()
 }
 
-fun getProductionApiHost(): String {
+fun getTestAccount(): String {
     return try {
-        gradleLocalProperties(rootDir).getProperty("production_host")
-    } catch (e: Exception) {
-        getApiHost()
+        checkStringType(gradleLocalProperties(rootDir).getProperty("ACCOUNT"))
+    } catch (e : Exception) {
+        "\"\""
     }
 }
 
-fun getStagingApiHost(): String {
+fun getTestPassword(): String {
     return try {
-        gradleLocalProperties(rootDir).getProperty("staging_host")
-    } catch (e: Exception) {
-        getApiHost()
+        checkStringType(gradleLocalProperties(rootDir).getProperty("PASSWORD"))
+    } catch (e : Exception) {
+        "\"\""
     }
 }
 
-fun getApiHost(): String {
-    return gradleLocalProperties(rootDir).getProperty("host")
+fun checkStringType(text: String): String {
+    return "\"${text.replace("\"","")}\""
 }
 
 android {
@@ -67,7 +70,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             isShrinkResources = true
             isZipAlignEnabled = true
             multiDexEnabled = true
@@ -75,7 +81,10 @@ android {
         getByName("debug") {
             isDefault = true
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             isShrinkResources = false
             isZipAlignEnabled = false
             multiDexEnabled = true
@@ -96,13 +105,15 @@ android {
     productFlavors {
         create("production") {
             dimension = "api_environment"
-            buildConfigField("String", "APIDomain", "\"${getProductionApiHost()}\"")
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT, "\"\"")
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_PASSWORD, "\"\"")
         }
 
         create("staging") {
             isDefault = true
             dimension = "api_environment"
-            buildConfigField("String", "APIDomain", "\"${getStagingApiHost()}\"")
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT, getTestAccount())
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_PASSWORD, getTestPassword())
         }
     }
 
@@ -154,6 +165,16 @@ dependencies {
     implementation(Dependencies.Square.Retrofit.core)
     implementation(Dependencies.Square.Retrofit.gsonConverter)
 
+    // solved AndroidX conflict: Duplicate class guava listenablefuture
+    // see：https://stackoverflow.com/questions/60472354/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
+    implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
+
+    // Koin Core features
+    implementation(Dependencies.Koin.Core.core)
+    // Koin main features for Android
+    implementation(Dependencies.Koin.Android.android)
+
+    // Test
     coreLibraryDesugaring(Dependencies.desugar)
 
     testImplementation(Dependencies.Google.truth)
@@ -161,6 +182,12 @@ dependencies {
     testImplementation(Dependencies.MockK.core)
     testImplementation(Dependencies.AndroidX.arch)
     testImplementation(Dependencies.Kotlin.Coroutines.test)
+
+    // Koin Test features
+    testImplementation(Dependencies.Koin.Core.test)
+    // Koin for JUnit 4
+    testImplementation(Dependencies.Koin.Core.junit4)
+    testImplementation(Dependencies.AndroidX.Test.Core.core)
 
     androidTestImplementation(Dependencies.AndroidX.Test.Ext.junit)
     androidTestImplementation(Dependencies.AndroidX.Test.Ext.espresso)
@@ -170,14 +197,6 @@ dependencies {
     androidTestImplementation(Dependencies.Kotlin.Coroutines.test)
 
     debugImplementation(Dependencies.Square.leakcanary)
-
-    // solved AndroidX conflict: Duplicate class guava listenablefuture
-    // see：https://stackoverflow.com/questions/60472354/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
-    implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
-
-    // Hilt
-    implementation(Dependencies.Hilt.android)
-    kapt(Dependencies.Hilt.compiler)
 }
 
 kapt {

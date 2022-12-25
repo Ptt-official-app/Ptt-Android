@@ -1,34 +1,25 @@
 package cc.ptt.android.presentation.articleread
 
-import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cc.ptt.android.common.date.DateFormatUtils
 import cc.ptt.android.common.date.DatePatternConstants
-import cc.ptt.android.common.utils.Log
-import cc.ptt.android.data.api.PostRankMark
+import cc.ptt.android.common.utils.log
 import cc.ptt.android.data.common.StringUtils
 import cc.ptt.android.data.model.remote.article.ArticleComment
 import cc.ptt.android.data.model.remote.article.ArticleCommentType
-import cc.ptt.android.data.model.remote.article.ArticleDetail
 import cc.ptt.android.data.model.remote.board.article.Article
+import cc.ptt.android.data.model.ui.article.PostRankMark
+import cc.ptt.android.data.repository.article.ArticleRepository
 import cc.ptt.android.data.repository.login.LoginRepository
-import cc.ptt.android.data.source.remote.article.IArticleRemoteDataSource
-import cc.ptt.android.di.IODispatchers
 import cc.ptt.android.domain.usecase.articlecomment.CreateArticleCommentUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import javax.inject.Inject
+import kotlinx.coroutines.flow.*
 
-@HiltViewModel
-class ArticleReadViewModel @Inject constructor(
-    private val articleRemoteDataSource: IArticleRemoteDataSource,
-    private val preferences: SharedPreferences,
-    @IODispatchers private val ioDispatcher: CoroutineDispatcher,
+class ArticleReadViewModel constructor(
+    private val articleRepository: ArticleRepository,
     private val createArticleCommentUseCase: CreateArticleCommentUseCase,
     private val loginRepository: LoginRepository
 ) : ViewModel() {
@@ -62,7 +53,7 @@ class ArticleReadViewModel @Inject constructor(
     }
 
     fun isLogin(): Boolean = loginRepository.isLogin().apply {
-        Log(ArticleReadViewModel.TAG, "isLogin: ${loginRepository.getUserInfo()}")
+        log(ArticleReadViewModel.TAG, "isLogin: ${loginRepository.getUserInfo()}")
     }
 
     fun originalTitle(classX: String, title: String) = if (classX.isBlank()) {
@@ -95,163 +86,133 @@ class ArticleReadViewModel @Inject constructor(
         headerItem?.let { data.add(it) }
     }
 
-    private suspend fun dataFromApi(
-        article: Article
-    ) = withContext(ioDispatcher) {
-        Log("onAR", "get data from web start")
-        val asyncDetail: Deferred<ArticleDetail> = async {
-            articleRemoteDataSource.getArticleDetail(article.boardId, article.articleId)
-        }
-        val asyncComments = async {
-            articleRemoteDataSource.getArticleComments(article.boardId, article.articleId)
-        }
-        val articleDetail = asyncDetail.await()
-        val articleComments = asyncComments.await()
-
-        data.add(
-            ArticleReadAdapter.Item.HeaderItem(
-                articleDetail.title,
-                articleDetail.owner,
-                DateFormatUtils.secondsToDateTime(
-                    articleDetail.createTime.toLong(),
-                    DatePatternConstants.articleDateTime
-                ),
-                articleDetail.classX,
-                articleDetail.boardName
-            )
-        )
-        val contentBuilder = StringBuilder()
-        articleDetail.content.forEach listContent@{ listContent ->
-            if (listContent.isEmpty()) {
-                contentBuilder.appendLine()
-                data.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
-                contentBuilder.clear()
-                return@listContent
-            }
-            listContent.forEach { content ->
-                val urlM = StringUtils.UrlPattern.matcher(content.text)
-                if (urlM.find()) {
-                    data.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
-                    contentBuilder.clear()
-                    data.add(ArticleReadAdapter.Item.ContentLineItem(content.text))
-                    val imageUrl = StringUtils.getImgUrl(content.text)
-                    for (urlString in imageUrl) {
-                        data.add(ArticleReadAdapter.Item.ImageItem(-2, urlString))
-                    }
-                } else {
-                    contentBuilder.append(content.text)
-                }
-            }
-            data.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
-            contentBuilder.clear()
-        }
-
-        data.add(
-            ArticleReadAdapter.Item.CenterBarItem(
-                articleDetail.recommend.toString(),
-                articleDetail.nComments.toString()
-            )
-        )
-        for ((index, articleComment) in articleComments.list.withIndex()) {
-            articleComment.content.forEach { listContent ->
-                listContent.forEach { content ->
-                    data.add(
-                        ArticleReadAdapter.Item.CommentItem(
-                            index,
-                            content.text,
-                            articleComment.owner
-                        )
-                    )
-                    val imageUrl: List<String> = StringUtils.getImgUrl(
-                        StringUtils.notNullString(content.text)
-                    )
-                    for (urlString in imageUrl) {
-                        data.add(ArticleReadAdapter.Item.ImageItem(index, urlString))
-                    }
-                    data.add(
-                        ArticleReadAdapter.Item.CommentBarItem(
-                            index,
-                            DateFormatUtils.secondsToDateTime(
-                                articleComment.createTime.toLong(),
-                                DatePatternConstants.articleCommentDateTime
-                            ),
-                            "${index + 1}F",
-                            "0"
-                        )
-                    )
-                }
-            }
-        }
-
-        _likeNumber.postValue(articleDetail.rank.toString())
-    }
-
-    fun loadData(
+    private fun dataFromApi(
         article: Article
     ) = viewModelScope.launch {
-        if (_loadingState.value == true) return@launch
-        data.clear()
         _loadingState.value = true
-        try {
-            dataFromApi(article)
-            Log("onAL", "get data from web over")
-        } catch (e: Exception) {
-            Log("onAL", "Error : $e")
-            _errorMessage.value = "Error : $e"
-        }
+        articleRepository.getArticleDetail(
+            article.boardId,
+            article.articleId
+        ).combine(articleRepository.getArticleComments(article.boardId, article.articleId)) { detail, comments ->
+            val items = mutableListOf<ArticleReadAdapter.Item>()
+            val headerItem = ArticleReadAdapter.Item.HeaderItem(
+                detail.title,
+                detail.owner,
+                DateFormatUtils.secondsToDateTime(
+                    detail.createTime.toLong(),
+                    DatePatternConstants.articleDateTime
+                ),
+                detail.classX,
+                detail.boardName
+            )
+            items.add(headerItem)
 
-        _loadingState.value = false
+            val contentBuilder = StringBuilder()
+            detail.content.forEach listContent@{ listContent ->
+                if (listContent.isEmpty()) {
+                    contentBuilder.appendLine()
+                    items.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
+                    contentBuilder.clear()
+                    return@listContent
+                }
+                listContent.forEach { content ->
+                    val urlM = StringUtils.UrlPattern.matcher(content.text)
+                    if (urlM.find()) {
+                        items.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
+                        contentBuilder.clear()
+                        items.add(ArticleReadAdapter.Item.ContentLineItem(content.text))
+                        val imageUrl = StringUtils.getImgUrl(content.text)
+                        for (urlString in imageUrl) {
+                            items.add(ArticleReadAdapter.Item.ImageItem(-2, urlString))
+                        }
+                    } else {
+                        contentBuilder.append(content.text)
+                    }
+                }
+                items.add(ArticleReadAdapter.Item.ContentLineItem(contentBuilder.toString()))
+                contentBuilder.clear()
+            }
+
+            items.add(
+                ArticleReadAdapter.Item.CenterBarItem(
+                    detail.recommend.toString(),
+                    detail.nComments.toString()
+                )
+            )
+
+            for ((index, articleComment) in comments.list.withIndex()) {
+                articleComment.content.forEach { listContent ->
+                    listContent.forEach { content ->
+                        items.add(
+                            ArticleReadAdapter.Item.CommentItem(
+                                index,
+                                content.text,
+                                articleComment.owner
+                            )
+                        )
+                        val imageUrl: List<String> = StringUtils.getImgUrl(
+                            StringUtils.notNullString(content.text)
+                        )
+                        for (urlString in imageUrl) {
+                            items.add(ArticleReadAdapter.Item.ImageItem(index, urlString))
+                        }
+                        items.add(
+                            ArticleReadAdapter.Item.CommentBarItem(
+                                index,
+                                DateFormatUtils.secondsToDateTime(
+                                    articleComment.createTime.toLong(),
+                                    DatePatternConstants.articleCommentDateTime
+                                ),
+                                "${index + 1}F",
+                                "0"
+                            )
+                        )
+                    }
+                }
+            }
+
+            listOf(items, detail.rank.toString())
+        }.catch { e ->
+            _loadingState.value = false
+            _errorMessage.value = "Error : $e"
+        }.collect {
+            // _likeNumber.postValue(articleDetail.rank.toString())
+            data.clear()
+            val items = it.firstOrNull() as? MutableList<ArticleReadAdapter.Item> ?: return@collect
+            val rank = it.lastOrNull() as? String ?: return@collect
+            data.addAll(items)
+            _likeNumber.postValue(rank)
+            _loadingState.value = false
+        }
+    }
+
+    fun loadData(article: Article) {
+        if (_loadingState.value == true) return
+        dataFromApi(article)
     }
 
     fun setRank(
         article: Article,
-        rank: PostRankMark
+        rankMark: PostRankMark
     ) = viewModelScope.launch {
-        try {
-            // TODO: 4/11/21 post rank api
-            setArticleRank(article, rank)
-            _loadingState.value = true
-            val newRank = refreshRank(article.boardId, article.articleId)
-            _likeNumber.value = newRank.toString()
+        _loadingState.value = true
+        articleRepository.postArticleRank(rankMark.value, article.boardId, article.articleId).flatMapMerge {
+            articleRepository.getArticleDetail(article.boardId, article.articleId)
+        }.catch { e ->
+            _progressDialogState.value = false
+            _errorMessage.value = "Error : $e"
+        }.collect { detail ->
+            for (i in data.indices) {
+                val item = data[i]
+                if (item !is ArticleReadAdapter.Item.CenterBarItem) continue
+                data[i] = ArticleReadAdapter.Item.CenterBarItem(detail.recommend.toString(), item.floor)
+                break
+            }
+            val rank = detail.rank
+            _likeNumber.value = rank.toString()
             _loadingState.value = false
             _progressDialogState.value = false
-        } catch (e: Exception) {
-            _progressDialogState.value = false
-            _errorMessage.value = "Error : $e"
         }
-    }
-
-    private suspend fun setArticleRank(
-        article: Article,
-        rankMark: PostRankMark
-    ) = withContext(ioDispatcher) {
-        try {
-            _likeNumber.value.apply {
-                articleRemoteDataSource.postArticleRank(
-                    rank = rankMark.value,
-                    boardId = article.boardId,
-                    articleId = article.articleId
-                )
-            }
-        } catch (e: Exception) {
-            Log("onAL", "Error : $e")
-            _errorMessage.value = "Error : $e"
-        }
-    }
-
-    private suspend fun refreshRank(
-        boardId: String,
-        articleId: String
-    ): Int = withContext(ioDispatcher) {
-        val detail = articleRemoteDataSource.getArticleDetail(boardId, articleId)
-        for (i in data.indices) {
-            val item = data[i]
-            if (item !is ArticleReadAdapter.Item.CenterBarItem) continue
-            data[i] = ArticleReadAdapter.Item.CenterBarItem(detail.recommend.toString(), item.floor)
-            break
-        }
-        Log("onAL", "get data from web over")
-        return@withContext detail.rank
     }
 
     fun createComment(article: Article, text: String?, type: ArticleCommentType?) {
@@ -261,30 +222,18 @@ class ArticleReadViewModel @Inject constructor(
 
         type?.let {
             _progressDialogState.value = true
-            viewModelScope.launch(ioDispatcher) {
-                createArticleCommentUseCase(
-                    CreateArticleCommentUseCase.Params(article.boardId, article.articleId, it, text)
-                ).onSuccess {
-                    withContext(Dispatchers.Main) {
-                        _progressDialogState.value = false
-                    }
-                    emitActionState(ActionEvent.CreateCommentSuccess(it.comment))
-                }.onFailure {
-                    Log(TAG, "createComment error: $it")
-                    withContext(Dispatchers.Main) {
-                        _errorMessage.value = it.localizedMessage
-                        _progressDialogState.value = false
-                    }
+            viewModelScope.launch {
+                createArticleCommentUseCase.createArticleComment(article.boardId, article.articleId, it, text).catch { e ->
+                    _errorMessage.value = e.localizedMessage
+                    _progressDialogState.value = false
+                }.collect {
+                    _progressDialogState.value = false
+                    emitActionState(ActionEvent.CreateCommentSuccess(it))
                 }
             }
         } ?: run {
             emitActionState(ActionEvent.ChooseCommentType)
         }
-    }
-
-    override fun onCleared() {
-        articleRemoteDataSource.disposeAll()
-        super.onCleared()
     }
 
     companion object {

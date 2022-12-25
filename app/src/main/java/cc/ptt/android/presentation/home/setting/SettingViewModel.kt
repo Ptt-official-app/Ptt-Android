@@ -2,16 +2,15 @@ package cc.ptt.android.presentation.home.setting
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cc.ptt.android.common.utils.log
 import cc.ptt.android.data.repository.login.LoginRepository
-import cc.ptt.android.domain.usecase.login.LogoutUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
+import cc.ptt.android.domain.usecase.login.LoginUseCase
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SettingViewModel @Inject constructor(
+class SettingViewModel constructor(
     private val loginRepository: LoginRepository,
-    private val logoutUseCase: LogoutUseCase
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
     val loginState get() = loginRepository.userType
@@ -21,6 +20,8 @@ class SettingViewModel @Inject constructor(
     }
 
     fun logout() = viewModelScope.launch {
-        logoutUseCase(Unit)
+        loginUseCase.logout().collect {
+            log("SettingViewModel", "logout success")
+        }
     }
 }

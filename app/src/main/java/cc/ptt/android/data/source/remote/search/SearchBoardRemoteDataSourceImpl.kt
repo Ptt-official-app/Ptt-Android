@@ -1,20 +1,20 @@
 package cc.ptt.android.data.source.remote.search
 
-import cc.ptt.android.data.api.board.BoardApiService
-import cc.ptt.android.data.model.remote.board.hotboard.HotBoard
-import javax.inject.Inject
+import cc.ptt.android.data.api.board.BoardApi
+import cc.ptt.android.data.model.remote.board.hotboard.BoardList
+import kotlinx.coroutines.flow.Flow
 
-class SearchBoardRemoteDataSourceImpl @Inject constructor (
-    private val boardApiService: BoardApiService
-) : ISearchBoardRemoteDataSource {
+class SearchBoardRemoteDataSourceImpl constructor (
+    private val boardApi: BoardApi
+) : SearchBoardRemoteDataSource {
 
-    override suspend fun searchBoardByKeyword(
+    override fun searchBoardByKeyword(
         keyword: String,
         startIndex: String,
         limit: Int,
         aces: Boolean
-    ): HotBoard {
-        return boardApiService.searchBoards(
+    ): Flow<BoardList> {
+        return boardApi.searchBoards(
             keyword = keyword,
             start_idx = startIndex,
             limit = limit,
