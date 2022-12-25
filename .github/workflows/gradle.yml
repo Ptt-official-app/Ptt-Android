@@ -28,13 +28,20 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Set Host
+      
+    - name: Set up environment
       env:
-        HOST: $
-      run: echo host=$HOST > ./local.properties
+        HOST: ${{ secrets.HOST }}
+        TEST_ACCOUNT: ${{ secrets.TEST_ACCOUNT }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      shell: bash
+      run: echo -e "HOST=$HOST\nACCOUNT=$TEST_ACCOUNT\nPASSWORD=$TEST_PASSWORD" > ./local.properties
+      
     - name: Spotless Check
       run: bash ./gradlew spotlessCheck    
+      
     - name: Build Test
       run: bash ./gradlew clean assembleStagingDebug
+
     - name: Unit Test
       run: bash ./gradlew testStagingDebugUnitTest
