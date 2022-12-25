@@ -1,22 +1,13 @@
 package cc.ptt.android.presentation.home.hotarticle
 
-import android.util.Log
 import androidx.lifecycle.*
-import cc.ptt.android.common.utils.Log
 import cc.ptt.android.data.model.ui.hotarticle.HotArticleUI
-import cc.ptt.android.di.IODispatchers
-import cc.ptt.android.di.UIDispatchers
 import cc.ptt.android.domain.usecase.GetPopularArticlesUIUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.flow.catch
 
-@HiltViewModel
-class HotArticleListViewModel @Inject constructor(
-    private val getPopularArticlesUIUseCase: GetPopularArticlesUIUseCase,
-    @UIDispatchers private val uiDispatcher: CoroutineDispatcher,
-    @IODispatchers ioDispatcher: CoroutineDispatcher
+class HotArticleListViewModel constructor(
+    private val getPopularArticlesUIUseCase: GetPopularArticlesUIUseCase
 ) : ViewModel() {
 
     companion object {
@@ -24,8 +15,6 @@ class HotArticleListViewModel @Inject constructor(
     }
 
     private val job = Job()
-
-    private val coroutineContext: CoroutineContext = job + ioDispatcher
 
     private val _loadingState = MutableLiveData<Boolean>()
     val loadingState: LiveData<Boolean> = _loadingState
@@ -38,6 +27,7 @@ class HotArticleListViewModel @Inject constructor(
     private var startIndex = ""
     private var hasNext = false
 
+    @OptIn(FlowPreview::class)
     fun loadData(getNext: Boolean) {
         if (_loadingState.value == true) {
             return
@@ -46,26 +36,18 @@ class HotArticleListViewModel @Inject constructor(
             return
         }
         _loadingState.value = true
-        viewModelScope.launch(coroutineContext) {
-            getPopularArticlesUIUseCase(
-                GetPopularArticlesUIUseCase.Params(startIndex, getNext)
-            ).onSuccess {
-                Log(TAG, "onSuccess: ${it.data}")
-                withContext(uiDispatcher) {
-                    startIndex = it.nextIdx
-                    hasNext = it.nextIdx.isNotEmpty()
-                    if (!getNext) {
-                        data.clear()
-                    }
-                    data.addAll(it.data)
-                    _loadingState.value = false
+        viewModelScope.launch {
+            getPopularArticlesUIUseCase.getPopularArticles(startIndex, getNext).catch { e ->
+                _loadingState.value = false
+                _errorMessage.value = e.localizedMessage
+            }.collect {
+                startIndex = it.nextIdx
+                hasNext = it.nextIdx.isNotEmpty()
+                if (!getNext) {
+                    data.clear()
                 }
-            }.onFailure {
-                Log.d(HotArticleListViewModel.TAG, "onFailure : ${it.localizedMessage}")
-                withContext(uiDispatcher) {
-                    _loadingState.value = false
-                    _errorMessage.value = it.localizedMessage
-                }
+                data.addAll(it.data)
+                _loadingState.value = false
             }
         }
     }

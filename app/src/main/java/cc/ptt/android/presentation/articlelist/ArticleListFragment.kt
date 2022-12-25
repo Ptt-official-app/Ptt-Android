@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
-import cc.ptt.android.common.utils.Log
+import cc.ptt.android.common.utils.log
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.databinding.ArticleListFragmentLayoutBinding
 import cc.ptt.android.presentation.articleread.ArticleReadFragment
@@ -19,9 +18,8 @@ import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 import cc.ptt.android.presentation.postarticle.PostArticleFragment
 import cc.ptt.android.utils.observeNotNull
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class ArticleListFragment : BaseFragment() {
 
     private var _binding: ArticleListFragmentLayoutBinding? = null
@@ -32,7 +30,7 @@ class ArticleListFragment : BaseFragment() {
     private var boardId = ""
     private val mClickFix = ClickFix()
 
-    private val articleListViewModel: ArticleListViewModel by viewModels()
+    private val articleListViewModel: ArticleListViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,7 +134,7 @@ class ArticleListFragment : BaseFragment() {
             }
 
             observeNotNull(getErrorLiveData()) { e ->
-                Log("ArticleListFragment", "Error : $e")
+                log("ArticleListFragment", "Error : $e")
                 Toast.makeText(currentActivity, "Error : $e", Toast.LENGTH_SHORT).show()
             }
         }

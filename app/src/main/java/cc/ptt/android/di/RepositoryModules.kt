@@ -1,34 +1,21 @@
 package cc.ptt.android.di
 
-import cc.ptt.android.data.repository.article.ArticleCommentRepository
-import cc.ptt.android.data.repository.article.ArticleCommentRepositoryImpl
+import cc.ptt.android.data.repository.article.ArticleRepository
+import cc.ptt.android.data.repository.article.ArticleRepositoryImpl
+import cc.ptt.android.data.repository.board.BoardRepository
+import cc.ptt.android.data.repository.board.BoardRepositoryImpl
 import cc.ptt.android.data.repository.login.LoginRepository
 import cc.ptt.android.data.repository.login.LoginRepositoryImpl
 import cc.ptt.android.data.repository.populararticles.PopularArticlesRepository
 import cc.ptt.android.data.repository.populararticles.PopularArticlesRepositoryImpl
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import cc.ptt.android.data.repository.search.SearchBoardRepository
+import cc.ptt.android.data.repository.search.SearchBoardRepositoryImpl
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class RepositoryModules {
-
-    @Binds
-    abstract fun providePopularArticlesRepository(
-        popularArticlesRepositoryImpl: PopularArticlesRepositoryImpl
-    ): PopularArticlesRepository
-
-    @Binds
-    abstract fun provideArticleCommentRepository(
-        articleCommentRepositoryImpl: ArticleCommentRepositoryImpl
-    ): ArticleCommentRepository
-
-    @Binds
-    @Singleton
-    abstract fun provideLoginRepository(
-        loginRepositoryImpl: LoginRepositoryImpl
-    ): LoginRepository
+val repositoryModules = module {
+    factory <PopularArticlesRepository> { PopularArticlesRepositoryImpl(get()) }
+    factory <ArticleRepository> { ArticleRepositoryImpl(get()) }
+    factory <BoardRepository> { BoardRepositoryImpl(get()) }
+    single <LoginRepository> { LoginRepositoryImpl(get(), get()) }
+    factory <SearchBoardRepository> { SearchBoardRepositoryImpl(get()) }
 }

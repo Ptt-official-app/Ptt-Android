@@ -8,13 +8,12 @@ import cc.ptt.android.R
 import cc.ptt.android.data.common.StringUtils
 import cc.ptt.android.domain.usecase.login.LoginUseCase
 import cc.ptt.android.presentation.common.event.Event
-import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import okhttp3.*
-import javax.inject.Inject
 
-@HiltViewModel
-class LoginPageViewModel @Inject constructor(
+class LoginPageViewModel constructor(
     private val loginUseCase: LoginUseCase
 ) : ViewModel() {
 
@@ -27,19 +26,20 @@ class LoginPageViewModel @Inject constructor(
     private val _loginSuccess = MutableLiveData<Unit>()
     val loginSuccess: LiveData<Unit> = _loginSuccess
 
-    fun checkLoginLegal(account: String, password: String) = viewModelScope.launch {
+    private var loginJob: Job? = null
+
+    fun checkLoginLegal(account: String, password: String) {
         if (!StringUtils.isAccount(account)) {
             _passwordMessage.value = R.string.not_this_password
-            return@launch
+            return
         }
-
-        loginUseCase(
-            LoginUseCase.Params(account, password)
-        ).onSuccess {
-            _loginSuccess.value = Unit
-        }.onFailure {
-            it.printStackTrace()
-            _errorMessage.value = Event(R.string.server_error)
+        loginJob?.cancel()
+        loginJob = viewModelScope.launch {
+            loginUseCase.login(account, password).catch {
+                _errorMessage.value = Event(R.string.server_error)
+            }.collect {
+                _loginSuccess.value = Unit
+            }
         }
     }
 }
