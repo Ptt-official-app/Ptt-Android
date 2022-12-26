@@ -44,6 +44,7 @@ object Dependencies {
         const val localBroadcastManager = "androidx.localbroadcastmanager:localbroadcastmanager:${Versions.androidXLocalBroadcastManager}"
         const val multidex = "androidx.multidex:multidex:${Versions.androidXMultidex}"
         const val swipeRefreshLayout = "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.androidXSwipeRefreshLayout}"
+        const val coreKtx = "androidx.core:core-ktx:+"
 
         object Test {
             object Core {

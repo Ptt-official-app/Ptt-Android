@@ -1,14 +1,8 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-import java.util.Properties
-import java.io.InputStreamReader
-import java.io.FileInputStream
-import java.io.IOException
-
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.kapt")
-    id("org.jetbrains.kotlin.plugin.parcelize")
+    id("kotlin-parcelize")
+    id("kotlin-kapt")
+    kotlin("android")
 }
 
 fun String.runCommand(workingDir: File = file("./")): String {
@@ -25,50 +19,6 @@ fun String.runCommand(workingDir: File = file("./")): String {
 
 fun gitSha(): String {
     return "git rev-parse --short HEAD".runCommand()
-}
-
-fun getProductionHost(): String {
-    return try {
-        checkStringType(gradleLocalProperties(rootDir).getProperty("PRODUCTION_HOST"))
-    } catch (e : Exception) {
-        getHost()
-    }
-}
-
-fun getStagingHost(): String {
-    return try {
-        checkStringType(gradleLocalProperties(rootDir).getProperty("STAGING_HOST"))
-    } catch (e : Exception) {
-        getHost()
-    }
-}
-
-fun getHost(): String {
-    return try {
-        checkStringType(gradleLocalProperties(rootDir).getProperty("HOST"))
-    } catch (e : Exception) {
-        "\"\""
-    }
-}
-
-fun getTestAccount(): String {
-    return try {
-        checkStringType(gradleLocalProperties(rootDir).getProperty("ACCOUNT"))
-    } catch (e : Exception) {
-        "\"\""
-    }
-}
-
-fun getTestPassword(): String {
-    return try {
-        checkStringType(gradleLocalProperties(rootDir).getProperty("PASSWORD"))
-    } catch (e : Exception) {
-        "\"\""
-    }
-}
-
-fun checkStringType(text: String): String {
-    return "\"${text.replace("\"","")}\""
 }
 
 android {
@@ -129,32 +79,20 @@ android {
     productFlavors {
         create("production") {
             dimension = "api_environment"
-            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_API_HOST, getProductionHost())
-            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT, "\"\"")
-            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_PASSWORD, "\"\"")
         }
 
         create("staging") {
             isDefault = true
             dimension = "api_environment"
-            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_API_HOST, getStagingHost())
-            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT, getTestAccount())
-            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_PASSWORD, getTestPassword())
-        }
-    }
-
-    sourceSets {
-        val sharedTestDir = "src/sharedTest/java"
-        getByName("test") {
-            java.setSrcDirs(listOf(sharedTestDir))
-        }
-        getByName("androidTest") {
-            java.setSrcDirs(listOf(sharedTestDir))
         }
     }
 }
 
 dependencies {
+    api(project(":common"))
+    api(project(":data"))
+    api(project(":domain"))
+
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     // AndroidX
     implementation(Dependencies.AndroidX.appcompat)
@@ -199,10 +137,11 @@ dependencies {
     implementation(Dependencies.Koin.Core.core)
     // Koin main features for Android
     implementation(Dependencies.Koin.Android.android)
+    implementation(Dependencies.AndroidX.coreKtx)
 
-    // Test
     coreLibraryDesugaring(Dependencies.desugar)
 
+    // Test
     testImplementation(Dependencies.Google.truth)
     testImplementation(Dependencies.junit)
     testImplementation(Dependencies.MockK.core)
@@ -223,8 +162,4 @@ dependencies {
     androidTestImplementation(Dependencies.Kotlin.Coroutines.test)
 
     debugImplementation(Dependencies.Square.leakcanary)
-}
-
-kapt {
-    correctErrorTypes = true
 }

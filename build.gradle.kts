@@ -10,12 +10,12 @@ buildscript {
     dependencies {
         classpath(Dependencies.ProjectDependencies.androidGradlePlugin)
         classpath(Dependencies.ProjectDependencies.Kotlin.gradlePlugin)
-        classpath(Dependencies.ProjectDependencies.hiltGradlePlugin)
     }
 }
 
 plugins {
     id("com.diffplug.spotless") version Versions.spotless
+    id("org.jetbrains.kotlin.android") version "1.7.22" apply false
 }
 
 allprojects {
