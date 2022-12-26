@@ -125,7 +125,7 @@ class SettingFragment : BaseFragment() {
     private fun showSingleChoiceDialog(data: SettingItem) {
         val context = context ?: return
         val currentValue = when (data) {
-            SettingItem.ApiDomain -> mainPreferences.getThemeType()
+            SettingItem.Theme -> mainPreferences.getThemeType()
             SettingItem.SearchStyle -> mainPreferences.getSearchStyle()
             SettingItem.PostBottomStyle -> mainPreferences.getPostBottomStyle()
             else -> 0
@@ -135,7 +135,7 @@ class SettingFragment : BaseFragment() {
             setSingleChoiceItems(data.valueArrayKey, currentValue) { dialog, which ->
                 dialog.dismiss()
                 when (data) {
-                    SettingItem.ApiDomain -> mainPreferences.setThemeType(which)
+                    SettingItem.Theme -> mainPreferences.setThemeType(which)
                     SettingItem.SearchStyle -> mainPreferences.setSearchStyle(which)
                     SettingItem.PostBottomStyle -> mainPreferences.setPostBottomStyle(which)
                     else -> Unit
