@@ -1,24 +1,17 @@
 package cc.ptt.android.data.repository.login
 
-import cc.ptt.android.common.utils.Log
-import cc.ptt.android.data.api.user.UserApiService
-import cc.ptt.android.data.model.remote.user.exist_user.ExistUserRequest
-import cc.ptt.android.data.model.remote.user.login.LoginRequest
+import cc.ptt.android.data.model.remote.user.exist_user.ExistUser
+import cc.ptt.android.data.model.remote.user.login.Login
 import cc.ptt.android.data.model.ui.user.UserInfo
-import cc.ptt.android.data.source.local.LoginDataStore
-import cc.ptt.android.di.IODispatchers
-import com.google.gson.Gson
+import cc.ptt.android.data.source.local.LoginLocalDataSource
+import cc.ptt.android.data.source.remote.login.LoginRemoteDataSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import javax.inject.Inject
 
-class LoginRepositoryImpl @Inject constructor(
-    private val loginDataStore: LoginDataStore,
-    private val userApiService: UserApiService,
-    @IODispatchers private val dispatcher: CoroutineDispatcher,
-) : LoginRepository {
+class LoginRepositoryImpl constructor(
+    private val loginLocalDataSource: LoginLocalDataSource,
+    private val loginRemoteDataSource: LoginRemoteDataSource
+) : LoginRepository, CoroutineScope by MainScope() {
 
     companion object {
         private val TAG = LoginRepository::class.java.simpleName
@@ -31,71 +24,55 @@ class LoginRepositoryImpl @Inject constructor(
         initUserType()
     }
 
-    private fun initUserType() = GlobalScope.launch {
+    private fun initUserType() = launch {
         getUserInfo()?.let {
-            Log(TAG, "UserInfo: $it")
             _userType.emit(UserType.Login(it))
         } ?: run {
-            Log(TAG, "UserInfo: Guest")
             _userType.emit(UserType.Guest)
         }
     }
 
-    override suspend fun login(
+    override fun login(
         clientId: String,
         clientSecret: String,
         userName: String,
         password: String
-    ) = withContext(dispatcher) {
-        val param: String = Gson().toJson(
-            LoginRequest(
-                clientId = clientId,
-                clientSecret = clientSecret,
-                userName = userName,
-                password = password
-            )
-        )
-        val body = param.toRequestBody("text/plain; charset=utf-8".toMediaType())
-
-        return@withContext userApiService.login(body).apply {
-            val userInfo = UserInfo(userId, accessToken, tokenType)
-            loginDataStore.setUserInfo(userInfo)
+    ): Flow<Login> {
+        return loginRemoteDataSource.login(clientId, clientSecret, userName, password).onEach {
+            val userInfo = UserInfo(it.userId, it.accessToken, it.tokenType)
+            loginLocalDataSource.setUserInfo(userInfo)
             initUserType()
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun logout(): Unit = withContext(dispatcher) {
-        loginDataStore.cleanUserInfo()
-        initUserType()
+    override fun logout(): Flow<Unit> {
+        return flow {
+            emit(Unit)
+        }.onEach {
+            loginLocalDataSource.cleanUserInfo()
+            initUserType()
+        }.flowOn(Dispatchers.IO)
     }
 
-    override suspend fun existUser(
+    override fun existUser(
         clientId: String,
         clientSecret: String,
         userName: String
-    ) = withContext(dispatcher) {
-        val param = Gson().toJson(
-            ExistUserRequest(
-                clientId = clientId,
-                clientSecret = clientSecret,
-                userName = userName
-            )
-        )
-        val body = param.toRequestBody("text/plain; charset=utf-8".toMediaType())
-        return@withContext userApiService.existUser(body)
+    ): Flow<ExistUser> {
+        return loginRemoteDataSource.existUser(clientId, clientSecret, userName).flowOn(Dispatchers.IO)
     }
 
     override fun isLogin(): Boolean {
         initUserType()
-        return loginDataStore.isLogin()
+        return loginLocalDataSource.isLogin()
     }
 
     override fun isGuest(): Boolean {
         initUserType()
-        return !loginDataStore.isLogin()
+        return !loginLocalDataSource.isLogin()
     }
 
     override fun getUserInfo(): UserInfo? {
-        return loginDataStore.getUserInfo()
+        return loginLocalDataSource.getUserInfo()
     }
 }

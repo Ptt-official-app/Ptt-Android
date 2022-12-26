@@ -1,11 +1,12 @@
 package cc.ptt.android.data.repository.populararticles
 
 import cc.ptt.android.data.model.remote.article.hotarticle.HotArticleList
+import kotlinx.coroutines.flow.Flow
 
 interface PopularArticlesRepository {
-    suspend fun getPopularArticles(
+    fun getPopularArticles(
         startIndex: String,
         limit: Int,
         desc: Boolean
-    ): HotArticleList
+    ): Flow<HotArticleList>
 }

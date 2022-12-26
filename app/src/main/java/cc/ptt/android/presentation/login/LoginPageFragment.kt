@@ -10,7 +10,6 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.viewModels
 import cc.ptt.android.FragmentTouchListener
 import cc.ptt.android.HomeActivity
 import cc.ptt.android.R
@@ -19,13 +18,12 @@ import cc.ptt.android.databinding.LoginPageFragmentBinding
 import cc.ptt.android.presentation.base.BaseFragment
 import cc.ptt.android.presentation.common.KeyboardUtils
 import cc.ptt.android.utils.observeEventNotNull
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.absoluteValue
 
-@AndroidEntryPoint
 class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickListener {
 
-    private val viewModel: LoginPageViewModel by viewModels()
+    private val viewModel: LoginPageViewModel by viewModel()
 
     private lateinit var binding: LoginPageFragmentBinding
 

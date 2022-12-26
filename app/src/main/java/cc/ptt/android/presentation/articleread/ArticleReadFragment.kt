@@ -11,14 +11,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.PopupMenu
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
-import cc.ptt.android.data.api.PostRankMark
 import cc.ptt.android.data.common.ResourcesUtils
 import cc.ptt.android.data.model.remote.article.ArticleCommentType
 import cc.ptt.android.data.model.remote.board.article.Article
+import cc.ptt.android.data.model.ui.article.PostRankMark
 import cc.ptt.android.databinding.ArticleReadFragmentLayoutBinding
 import cc.ptt.android.presentation.base.BaseFragment
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
@@ -26,11 +25,10 @@ import cc.ptt.android.presentation.common.KeyboardUtils
 import cc.ptt.android.presentation.common.extension.bundleDelegate
 import cc.ptt.android.presentation.login.LoginPageFragment
 import cc.ptt.android.utils.*
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class ArticleReadFragment : BaseFragment() {
     private var _binding: ArticleReadFragmentLayoutBinding? = null
     private val binding get() = _binding!!
@@ -42,7 +40,7 @@ class ArticleReadFragment : BaseFragment() {
 
     private var progressDialog: ProgressDialog? = null
 
-    private val viewModel: ArticleReadViewModel by viewModels()
+    private val viewModel: ArticleReadViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

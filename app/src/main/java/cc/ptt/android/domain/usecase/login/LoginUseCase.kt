@@ -1,33 +1,24 @@
 package cc.ptt.android.domain.usecase.login
 
+import cc.ptt.android.common.apihelper.ApiHelper
 import cc.ptt.android.data.model.ui.user.UserInfo
 import cc.ptt.android.data.repository.login.LoginRepository
-import cc.ptt.android.di.IODispatchers
-import cc.ptt.android.domain.base.UseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Inject
+import cc.ptt.android.domain.base.UseCaseBase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
-class LoginUseCase @Inject constructor(
+class LoginUseCase constructor(
     private val loginRepository: LoginRepository,
-    @IODispatchers dispatcher: CoroutineDispatcher
-) : UseCase<LoginUseCase.Params, LoginUseCase.Results>(dispatcher) {
-    data class Params(
-        val id: String,
-        val password: String
-    )
+    private val apiHelper: ApiHelper
+) : UseCaseBase() {
 
-    data class Results(
-        val data: UserInfo,
-    )
-
-    override suspend fun execute(parameters: Params): Result<Results> {
-        return try {
-            loginRepository.login("test_client_id", "test_client_secret", parameters.id, parameters.password)
-            loginRepository.getUserInfo()?.let {
-                Result.success(Results(it))
-            } ?: throw Exception("Not login yet")
-        } catch (e: Exception) {
-            Result.failure(e)
+    fun login(id: String, password: String): Flow<UserInfo> {
+        return loginRepository.login(apiHelper.getClientId(), apiHelper.getClientSecret(), id, password).map {
+            loginRepository.getUserInfo() ?: throw Exception("Not login yet")
         }
+    }
+
+    fun logout(): Flow<Unit> {
+        return loginRepository.logout()
     }
 }

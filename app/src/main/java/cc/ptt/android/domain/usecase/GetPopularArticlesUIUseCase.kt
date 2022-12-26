@@ -3,40 +3,29 @@ package cc.ptt.android.domain.usecase
 import cc.ptt.android.data.model.ui.hotarticle.HotArticleUI
 import cc.ptt.android.data.model.ui.hotarticle.HotArticleUIType
 import cc.ptt.android.data.repository.populararticles.PopularArticlesRepository
-import cc.ptt.android.di.IODispatchers
-import cc.ptt.android.domain.base.UseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import javax.inject.Inject
+import cc.ptt.android.domain.base.UseCaseBase
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
 
-class GetPopularArticlesUIUseCase @Inject constructor(
-    private val popularArticlesRepository: PopularArticlesRepository,
-    @IODispatchers dispatcher: CoroutineDispatcher
-) : UseCase<GetPopularArticlesUIUseCase.Params, GetPopularArticlesUIUseCase.Results>(dispatcher) {
+@FlowPreview
+class GetPopularArticlesUIUseCase constructor(
+    private val popularArticlesRepository: PopularArticlesRepository
+) : UseCaseBase() {
 
-    data class Params(
-        val startIndex: String? = null,
-        val getNext: Boolean
-    )
+    fun getPopularArticles(startIndex: String? = null, getNext: Boolean): Flow<Results> {
+        if (getNext && startIndex.isNullOrEmpty()) {
+            throw Exception("Can not get next.")
+        }
+        val limit = 100
+        val desc = false
+        val startIndex = startIndex.orEmpty()
 
-    data class Results(
-        val data: MutableList<HotArticleUI>,
-        val nextIdx: String
-    )
-
-    override suspend fun execute(parameters: Params): Result<Results> {
-        return try {
-            if (parameters.getNext && parameters.startIndex.isNullOrEmpty()) {
-                throw Exception("Can not get next.")
-            }
-            val limit = 100
-            val desc = false
-            val startIndex = parameters.startIndex ?: ""
-            val result = popularArticlesRepository.getPopularArticles(startIndex, limit, desc)
+        return popularArticlesRepository.getPopularArticles(startIndex, limit, desc).flatMapMerge {
             val data: MutableList<HotArticleUI> = arrayListOf()
-            if (!parameters.getNext) {
+            if (!getNext) {
                 data.add(HotArticleUI(HotArticleUIType.TITLE, "ALL", 0L, "", "", "", "", "", "", false, "", null))
             }
-            for (item in result.list) {
+            for (item in it.list) {
                 data.add(
                     HotArticleUI(
                         HotArticleUIType.NORMAL,
@@ -54,9 +43,12 @@ class GetPopularArticlesUIUseCase @Inject constructor(
                     )
                 )
             }
-            Result.success(Results(data, result.nextIdx))
-        } catch (e: Exception) {
-            Result.failure(e)
+            flowOf(Results(data, it.nextIdx))
         }
     }
+
+    data class Results(
+        val data: MutableList<HotArticleUI>,
+        val nextIdx: String
+    )
 }

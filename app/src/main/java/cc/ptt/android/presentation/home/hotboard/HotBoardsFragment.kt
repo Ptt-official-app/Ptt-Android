@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
-import cc.ptt.android.common.utils.Log
+import cc.ptt.android.common.utils.log
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
 import cc.ptt.android.databinding.HotBoardsFragmentLayoutBinding
 import cc.ptt.android.presentation.articlelist.ArticleListFragment
@@ -15,15 +14,14 @@ import cc.ptt.android.presentation.common.ClickFix
 import cc.ptt.android.presentation.common.CustomLinearLayoutManager
 import cc.ptt.android.presentation.searchboards.SearchBoardsFragment
 import cc.ptt.android.utils.observeNotNull
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class HotBoardsFragment : BaseFragment() {
     private var _binding: HotBoardsFragmentLayoutBinding? = null
     private val binding get() = _binding
     private val mClickFix = ClickFix()
 
-    private val viewModel: HotBoardsViewModel by viewModels()
+    private val viewModel: HotBoardsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,7 +29,7 @@ class HotBoardsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View = HotBoardsFragmentLayoutBinding.inflate(inflater, container, false).apply {
         _binding = this
-        Log("HotBoardsFragment", "init")
+        log("HotBoardsFragment", "init")
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,7 +84,7 @@ class HotBoardsFragment : BaseFragment() {
                 binding?.hotBoardsFragmentRecyclerView?.adapter?.notifyDataSetChanged()
             }
             observeNotNull(errorMessage) {
-                Log("HotBoardsFragment", "errorMessage $it")
+                log("HotBoardsFragment", "errorMessage $it")
             }
         }
     }
@@ -102,7 +100,7 @@ class HotBoardsFragment : BaseFragment() {
     }
 
     fun scrollToTop() {
-        Log("HotBoardsFragment", "scrollToTop: hotBoardsFragmentRecyclerView")
+        log("HotBoardsFragment", "scrollToTop: hotBoardsFragmentRecyclerView")
         binding?.hotBoardsFragmentRecyclerView?.scrollToPosition(0)
     }
 

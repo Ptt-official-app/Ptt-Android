@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -26,10 +25,8 @@ import cc.ptt.android.presentation.common.dragitemmove.ItemMoveCallback
 import cc.ptt.android.presentation.common.dragitemmove.StartDragListener
 import cc.ptt.android.presentation.searchboards.SearchBoardsFragment
 import cc.ptt.android.utils.observeNotNull
-import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@AndroidEntryPoint
 class FavoriteBoardsFragment : BaseFragment() {
     private var _binding: FavoriteBoardsFragmentLayoutBinding? = null
     private val binding get() = _binding
@@ -38,7 +35,7 @@ class FavoriteBoardsFragment : BaseFragment() {
     private var mStartDragListener: StartDragListener? = null
     private var touchHelper: ItemTouchHelper? = null
 
-    private val viewModel: FavoriteBoardsViewModel by viewModels()
+    private val viewModel: FavoriteBoardsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,

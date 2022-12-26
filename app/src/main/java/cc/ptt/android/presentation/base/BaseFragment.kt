@@ -5,7 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.fragment.app.Fragment
-import cc.ptt.android.common.utils.Log
+import cc.ptt.android.common.utils.log
 
 open class BaseFragment : Fragment() {
 
@@ -21,7 +21,7 @@ open class BaseFragment : Fragment() {
     }
 
     protected open fun onAnimOver() {
-        Log(TAG, "onAnimOver")
+        log(TAG, "onAnimOver")
     }
 
     override fun onResume() {
@@ -41,7 +41,7 @@ open class BaseFragment : Fragment() {
             (currentActivity as? BaseActivity)?.loadFragment(toFragment, thisFragment)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log("loadFragment", "Error : " + e.localizedMessage)
+            log("loadFragment", "Error : " + e.localizedMessage)
         }
     }
 
@@ -50,7 +50,7 @@ open class BaseFragment : Fragment() {
             (currentActivity as? BaseActivity)?.loadFragmentNoAnim(toFragment, thisFragment)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log("loadFragmentNoAnim", "Error : " + e.localizedMessage)
+            log("loadFragmentNoAnim", "Error : " + e.localizedMessage)
         }
     }
 }

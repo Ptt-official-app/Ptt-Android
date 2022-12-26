@@ -26,11 +26,9 @@ import cc.ptt.android.presentation.home.hotarticle.HotArticleFilterFragment
 import cc.ptt.android.presentation.login.LoginPageFragment
 import cc.ptt.android.presentation.postarticle.*
 import cc.ptt.android.presentation.searchboards.SearchBoardsFragment
-import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import kotlin.math.abs
 
-@AndroidEntryPoint
 class HomeActivity : BaseActivity() {
     private var themeType = 0
     private var timeTemp: Long = 0
