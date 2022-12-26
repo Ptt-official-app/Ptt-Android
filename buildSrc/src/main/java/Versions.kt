@@ -52,4 +52,8 @@ object GlobalConfig {
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
     val JDKVersion = JavaVersion.VERSION_1_8
+
+    const val BUILD_CONFIG_KEY_FOR_API_HOST = "API_HOST"
+    const val BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT = "TEST_ACCOUNT"
+    const val BUILD_CONFIG_KEY_FOR_TEST_PASSWORD = "TEST_PASSWORD"
 }

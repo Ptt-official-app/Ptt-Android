@@ -55,8 +55,8 @@ open class ApiTestBase constructor(
         loginRepository.login(
             apiHelper.getClientId(),
             apiHelper.getClientSecret(),
-            BuildConfig.test_account,
-            BuildConfig.test_password
+            BuildConfig.TEST_ACCOUNT,
+            BuildConfig.TEST_PASSWORD
         ).catch {
         }.collect()
     }

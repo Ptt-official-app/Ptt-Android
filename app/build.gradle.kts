@@ -125,17 +125,17 @@ android {
     productFlavors {
         create("production") {
             dimension = "api_environment"
-            buildConfigField("String", "api_host", getProductionHost())
-            buildConfigField("String", "test_account", "\"\"")
-            buildConfigField("String", "test_password", "\"\"")
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_API_HOST, getProductionHost())
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT, "\"\"")
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_PASSWORD, "\"\"")
         }
 
         create("staging") {
             isDefault = true
             dimension = "api_environment"
-            buildConfigField("String", "api_host", getStagingHost())
-            buildConfigField("String", "test_account", getTestAccount())
-            buildConfigField("String", "test_password", getTestPassword())
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_API_HOST, getStagingHost())
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT, getTestAccount())
+            buildConfigField("String", GlobalConfig.BUILD_CONFIG_KEY_FOR_TEST_PASSWORD, getTestPassword())
         }
     }
 

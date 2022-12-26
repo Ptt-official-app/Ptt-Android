@@ -19,14 +19,14 @@ class LoginRepositoryTest : ApiTestBase(needLogin = false) {
         loginRepository.login(
             apiHelper.getClientId(),
             apiHelper.getClientSecret(),
-            BuildConfig.test_account,
-            BuildConfig.test_password
+            BuildConfig.TEST_ACCOUNT,
+            BuildConfig.TEST_PASSWORD
         ).catch {
             assert(false)
         }.collect {
             assert(it.accessToken.isNotBlank())
             assert(it.tokenType.isNotBlank())
-            assertEquals(BuildConfig.test_account, it.userId)
+            assertEquals(BuildConfig.TEST_ACCOUNT, it.userId)
         }
     }
 }

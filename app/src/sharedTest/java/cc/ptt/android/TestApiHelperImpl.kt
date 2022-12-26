@@ -5,7 +5,7 @@ import cc.ptt.android.common.apihelper.ApiHelper
 class TestApiHelperImpl : ApiHelper {
 
     override fun getHost(): String {
-        return BuildConfig.api_host
+        return BuildConfig.API_HOST
     }
 
     override fun getClientId(): String {

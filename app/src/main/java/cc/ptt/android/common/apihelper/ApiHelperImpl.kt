@@ -11,7 +11,7 @@ class ApiHelperImpl constructor(
 ) : ApiHelper {
 
     override fun getHost(): String {
-        return preferences.getString(PreferenceConstants.apiDomain, BuildConfig.api_host) ?: BuildConfig.api_host
+        return preferences.getString(PreferenceConstants.apiDomain, BuildConfig.API_HOST) ?: BuildConfig.API_HOST
     }
 
     override fun getClientId(): String {
