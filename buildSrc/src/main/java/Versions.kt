@@ -6,7 +6,7 @@ object Versions {
     const val patchVersion = 1
 
     const val androidGradle = "7.2.2"
-    const val kotlin = "1.7.10"
+    const val kotlin = "1.7.22"
     const val androidXAppCompat = "1.5.1"
     const val androidXArch = "2.1.0"
     const val androidXBrowser = "1.4.0"

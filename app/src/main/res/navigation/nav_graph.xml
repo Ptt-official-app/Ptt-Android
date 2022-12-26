@@ -7,28 +7,28 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="cc.ptt.android.presentation.home.HomeFragment"
+        android:name="cc.ptt.android.home.HomeFragment"
         android:label="HomeFragment"
         tools:layout="@layout/home_fragment_layout"/>
     <fragment
         android:id="@+id/postArticleFragment"
-        android:name="cc.ptt.android.presentation.postarticle.PostArticleFragment"
+        android:name="cc.ptt.android.postarticle.PostArticleFragment"
         android:label="PostArticleFragment"
         tools:layout="@layout/post_article_fragment_layout"/>
     <fragment
         android:id="@+id/articleListSearchFragment"
-        android:name="cc.ptt.android.presentation.articlesearch.ArticleListSearchFragment"
+        android:name="cc.ptt.android.articlesearch.ArticleListSearchFragment"
         android:label="ArticleListSearchFragment"
         tools:layout="@layout/article_list_search_fragment_layout"/>
     <fragment
         android:id="@+id/articleReadFragment"
-        android:name="cc.ptt.android.presentation.articleread.ArticleReadFragment"
+        android:name="cc.ptt.android.articleread.ArticleReadFragment"
         android:label="ArticleReadFragment"
         tools:layout="@layout/article_read_fragment_layout"/>
 
     <fragment
         android:id="@+id/articleListFragment"
-        android:name="cc.ptt.android.presentation.articlelist.ArticleListFragment"
+        android:name="cc.ptt.android.articlelist.ArticleListFragment"
         android:label="ArticleListFragment"
         tools:layout="@layout/article_list_fragment_layout">
         <argument
@@ -40,12 +40,12 @@
     </fragment>
     <fragment
         android:id="@+id/searchBoardsFragment"
-        android:name="cc.ptt.android.presentation.searchboards.SearchBoardsFragment"
+        android:name="cc.ptt.android.searchboards.SearchBoardsFragment"
         android:label="SearchBoardsFragment"
         tools:layout="@layout/search_boards_fragment_layout"/>
     <fragment
         android:id="@+id/hotArticleFilterFragment"
-        android:name="cc.ptt.android.presentation.home.hotarticle.HotArticleFilterFragment"
+        android:name="cc.ptt.android.home.hotarticle.HotArticleFilterFragment"
         android:label="HotArticleFilterFragment"
         tools:layout="@layout/hot_article_list_fragment_layout"/>
 
