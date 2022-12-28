@@ -18,7 +18,7 @@ object Versions {
     const val androidXMultidex = "2.0.1"
     const val androidXSwipeRefreshLayout = "1.1.0"
     const val androidXTextCore = "1.5.0"
-    const val androidXTextJunit = "1.1.2"
+    const val androidXTextJunit = "1.1.3"
     const val androidXTextEspresso = "3.3.0"
     const val jsoup = "1.13.1"
     const val junit = "4.13"
