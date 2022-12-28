@@ -2,7 +2,6 @@ package cc.ptt.android.domain
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -17,6 +16,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        Assert.assertEquals("tw.y_studio.ptt", appContext.packageName)
+        assert(appContext.packageName.startsWith("cc.ptt.android.domain"))
     }
 }
