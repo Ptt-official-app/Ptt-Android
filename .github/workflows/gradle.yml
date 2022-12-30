@@ -46,5 +46,14 @@ jobs:
     - name: Build Test
       run: bash ./gradlew clean assembleStagingDebug
 
-    - name: Unit Test
-      run: bash ./gradlew testStagingDebugUnitTest
+    - name: App layer Unit Test
+      run: bash ./gradlew app:testStagingDebugUnitTest
+      
+    - name: Domain layer Unit Test
+      run: bash ./gradlew domain:testStagingDebugUnitTest
+      
+    - name: Data layer Unit Test
+      run: bash ./gradlew data:testStagingDebugUnitTest
+      
+    - name: Common layer Unit Test
+      run: bash ./gradlew common:testDebugUnitTest
