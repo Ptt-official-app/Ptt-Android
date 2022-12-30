@@ -12,6 +12,9 @@ on:
       - 'release*'
       - 'dev'    
 
+permissions:
+  contents: read
+
 jobs:
   test:
     name: Run Build Tests
@@ -28,9 +31,29 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+      
+    - name: Set up environment
+      env:
+        HOST: ${{ secrets.HOST }}
+        TEST_ACCOUNT: ${{ secrets.TEST_ACCOUNT }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+      shell: bash
+      run: echo -e "HOST=$HOST\nACCOUNT=$TEST_ACCOUNT\nPASSWORD=$TEST_PASSWORD" > ./local.properties
+      
     - name: Spotless Check
       run: bash ./gradlew spotlessCheck    
+      
     - name: Build Test
-      run: bash ./gradlew clean assembleDebug
-    - name: Unit Test
-      run: bash ./gradlew testDebug
+      run: bash ./gradlew clean assembleStagingDebug
+
+    - name: App layer Unit Test
+      run: bash ./gradlew app:testStagingDebugUnitTest
+      
+    - name: Domain layer Unit Test
+      run: bash ./gradlew domain:testStagingDebugUnitTest
+      
+    - name: Data layer Unit Test
+      run: bash ./gradlew data:testStagingDebugUnitTest
+      
+    - name: Common layer Unit Test
+      run: bash ./gradlew common:testDebugUnitTest

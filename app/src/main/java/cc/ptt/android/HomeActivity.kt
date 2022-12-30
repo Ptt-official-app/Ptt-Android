@@ -14,24 +14,25 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import cc.ptt.android.data.common.PreferenceConstants
-import cc.ptt.android.presentation.articlelist.ArticleListFragment
-import cc.ptt.android.presentation.articleread.ArticleReadFragment
-import cc.ptt.android.presentation.articlesearch.ArticleListSearchFragment
-import cc.ptt.android.presentation.base.BaseActivity
-import cc.ptt.android.presentation.common.StaticValue
-import cc.ptt.android.presentation.common.extension.navigateForward
-import cc.ptt.android.presentation.home.HomeFragment
-import cc.ptt.android.presentation.home.hotarticle.HotArticleFilterFragment
-import cc.ptt.android.presentation.login.LoginPageFragment
-import cc.ptt.android.presentation.postarticle.*
-import cc.ptt.android.presentation.searchboards.SearchBoardsFragment
-import dagger.hilt.android.AndroidEntryPoint
+import cc.ptt.android.articlelist.ArticleListFragment
+import cc.ptt.android.articleread.ArticleReadFragment
+import cc.ptt.android.articlesearch.ArticleListSearchFragment
+import cc.ptt.android.base.BaseActivity
+import cc.ptt.android.common.StaticValue
+import cc.ptt.android.common.extension.navigateForward
+import cc.ptt.android.data.preference.MainPreferences
+import cc.ptt.android.home.HomeFragment
+import cc.ptt.android.home.hotarticle.HotArticleFilterFragment
+import cc.ptt.android.login.LoginPageFragment
+import cc.ptt.android.postarticle.PostArticleFragment
+import cc.ptt.android.searchboards.SearchBoardsFragment
+import org.koin.android.ext.android.inject
 import java.util.*
 import kotlin.math.abs
 
-@AndroidEntryPoint
 class HomeActivity : BaseActivity() {
+
+    private val mainPreferences: MainPreferences by inject()
     private var themeType = 0
     private var timeTemp: Long = 0
     private var navController: NavController? = null
@@ -41,8 +42,7 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        val preference2 = getSharedPreferences(PreferenceConstants.prefName, MODE_PRIVATE)
-        themeType = preference2.getInt(PreferenceConstants.theme, 0)
+        themeType = mainPreferences.getThemeType()
         StaticValue.ThemMode = themeType
         when (themeType) {
             1 -> {
