@@ -16,11 +16,6 @@ class LoginRepositoryTest : ApiTestBase(needLogin = false) {
 
     @Test
     fun testLogin() = runBlocking {
-        if (BuildConfig.TEST_ACCOUNT.isBlank() || BuildConfig.TEST_PASSWORD.isBlank()) {
-            // Skip when no testing account
-            assert(true)
-            return@runBlocking
-        }
         loginRepository.login(
             apiHelper.getClientId(),
             apiHelper.getClientSecret(),
