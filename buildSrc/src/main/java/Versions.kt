@@ -6,7 +6,7 @@ object Versions {
     const val patchVersion = 0
 
     const val androidGradle = "7.2.2"
-    const val kotlin = "1.7.22"
+    const val kotlin = "1.8.0"
     const val androidXAppCompat = "1.5.1"
     const val androidXArch = "2.1.0"
     const val androidXBrowser = "1.4.0"
@@ -51,7 +51,7 @@ object GlobalConfig {
 
     const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-    val JDKVersion = JavaVersion.VERSION_1_8
+    val JDKVersion = JavaVersion.VERSION_11
 
     const val BUILD_CONFIG_KEY_FOR_API_HOST = "API_HOST"
     const val BUILD_CONFIG_KEY_FOR_TEST_ACCOUNT = "TEST_ACCOUNT"
