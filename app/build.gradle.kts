@@ -119,7 +119,7 @@ dependencies {
     implementation(Dependencies.jsoup)
 
     // Kotlin
-    implementation(Dependencies.Kotlin.Stdlib.jdk8)
+    //implementation(Dependencies.Kotlin.Stdlib.jdk8)
     implementation(Dependencies.Kotlin.Coroutines.core)
     implementation(Dependencies.Kotlin.Coroutines.android)
     // Square

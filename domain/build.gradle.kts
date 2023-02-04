@@ -54,7 +54,6 @@ dependencies {
     // Koin main features for Android
     implementation(Dependencies.Koin.Android.android)
     // Kotlin
-    implementation(Dependencies.Kotlin.Stdlib.jdk8)
     implementation(Dependencies.Kotlin.Coroutines.core)
     implementation(Dependencies.Kotlin.Coroutines.android)
     // Square
