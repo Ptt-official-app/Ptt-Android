@@ -152,7 +152,7 @@ class SettingFragment : BaseFragment() {
         }
     }
 
-    override fun onAnimOver() {
+    override fun onAnimFinished() {
         lifecycleScope.launch {
             viewModel.loginState.collect {
                 loadData()

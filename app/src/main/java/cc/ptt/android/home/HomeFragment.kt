@@ -145,8 +145,8 @@ class HomeFragment : BaseFragment() {
         navigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener)
     }
 
-    override fun onAnimOver() {
-        super.onAnimOver()
+    override fun onAnimFinished() {
+        super.onAnimFinished()
         changeFragment(navigation.selectedItemId)
     }
 

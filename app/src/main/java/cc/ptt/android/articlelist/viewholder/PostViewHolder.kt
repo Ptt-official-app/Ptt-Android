@@ -1,4 +1,4 @@
-package cc.ptt.android.articlelist
+package cc.ptt.android.articlelist.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
@@ -9,7 +9,9 @@ import cc.ptt.android.common.date.DatePatternConstants
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.databinding.ArticleListItemBinding
 
-class PostViewHolder(private val binding: ArticleListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class PostViewHolder constructor(
+    private val binding: ArticleListItemBinding
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun onBind(data: Article, selected: Boolean) {
         binding.apply {

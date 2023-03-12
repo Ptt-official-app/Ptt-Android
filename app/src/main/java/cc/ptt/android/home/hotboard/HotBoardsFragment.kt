@@ -75,8 +75,8 @@ class HotBoardsFragment : BaseFragment() {
         }
     }
 
-    override fun onAnimOver() {
-        super.onAnimOver()
+    override fun onAnimFinished() {
+        super.onAnimFinished()
         viewModel.loadData()
     }
 

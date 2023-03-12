@@ -116,7 +116,7 @@ class SearchBoardsFragment : BaseFragment() {
         context?.let { LocalBroadcastManager.getInstance(it).sendBroadcast(intent) }
     }
 
-    override fun onAnimOver() {
+    override fun onAnimFinished() {
         viewModel.loadData()
         binding?.searchBoardsFragmentEditTextSearch?.let {
             it.requestFocus()

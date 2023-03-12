@@ -14,7 +14,7 @@ import org.koin.dsl.module
 
 @FlowPreview
 val viewModelModules = module {
-    viewModel { ArticleListViewModel(get()) }
+    viewModel { ArticleListViewModel(get(), get()) }
     viewModel { ArticleReadViewModel(get(), get(), get(), get()) }
     viewModel { FavoriteBoardsViewModel(get(), get()) }
     viewModel { HotArticleListViewModel(get()) }

@@ -104,7 +104,7 @@ class PostArticleFragment : BaseFragment() {
         }
     }
 
-    override fun onAnimOver() {
+    override fun onAnimFinished() {
         loadData()
     }
 
