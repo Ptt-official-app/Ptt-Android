@@ -41,8 +41,18 @@ android {
         }
     }
 
+    signingConfigs {
+        create("ptt_dev") {
+            storeFile = file("debug.jks")
+            storePassword = "PttNeverDie"
+            keyAlias = "Ptt"
+            keyPassword = "PttNeverDie"
+        }
+    }
+
     buildTypes {
         getByName("release") {
+            signingConfig = signingConfigs.getByName("ptt_dev")
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -53,6 +63,7 @@ android {
             multiDexEnabled = true
         }
         getByName("debug") {
+            signingConfig = signingConfigs.getByName("ptt_dev")
             isDefault = true
             isMinifyEnabled = false
             proguardFiles(
@@ -75,7 +86,7 @@ android {
         viewBinding = true
     }
 
-    flavorDimensions.add("api_environment")
+    flavorDimensions += "api_environment"
     productFlavors {
         create("production") {
             dimension = "api_environment"

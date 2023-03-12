@@ -64,8 +64,8 @@ android {
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
+        getByName("release") {
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -78,7 +78,7 @@ android {
         targetCompatibility = GlobalConfig.JDKVersion
     }
 
-    flavorDimensions.add("api_environment")
+    flavorDimensions += "api_environment"
     productFlavors {
         create("production") {
             dimension = "api_environment"

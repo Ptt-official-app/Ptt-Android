@@ -43,7 +43,7 @@ jobs:
       run: bash ./gradlew spotlessCheck    
       
     - name: Build Test
-      run: bash ./gradlew clean assembleStagingDebug
+      run: bash ./gradlew clean assembleStaging
 
     - name: App layer Unit Test
       run: bash ./gradlew app:testStagingDebugUnitTest
