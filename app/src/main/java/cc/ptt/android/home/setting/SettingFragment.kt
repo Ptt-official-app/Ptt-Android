@@ -12,13 +12,13 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import cc.ptt.android.Navigation
 import cc.ptt.android.R
 import cc.ptt.android.base.BaseFragment
 import cc.ptt.android.common.ClickFix
 import cc.ptt.android.common.CustomLinearLayoutManager
 import cc.ptt.android.data.preference.MainPreferences
 import cc.ptt.android.databinding.FragmentSettingBinding
-import cc.ptt.android.login.LoginPageFragment
 import cc.ptt.android.utils.turnOnUrl
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -52,7 +52,7 @@ class SettingFragment : BaseFragment() {
                     if (mClickFix.isFastDoubleClick) return
                     when (data) {
                         SettingItem.PttId -> {
-                            loadFragment(LoginPageFragment.newInstance(), currentFragment)
+                            Navigation.switchToLoginPage(requireActivity())
                         }
                         SettingItem.CleanPttId -> {
                             viewModel.logout()

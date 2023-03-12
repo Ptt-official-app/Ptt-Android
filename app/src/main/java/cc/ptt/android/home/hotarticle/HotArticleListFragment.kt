@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import cc.ptt.android.articleread.ArticleReadFragment
+import cc.ptt.android.Navigation
 import cc.ptt.android.base.BaseFragment
 import cc.ptt.android.common.ClickFix
 import cc.ptt.android.common.CustomLinearLayoutManager
@@ -52,7 +52,7 @@ class HotArticleListFragment : BaseFragment() {
     }
 
     private fun initUI() {
-        mAdapter = HotArticleListAdapter(currentActivity, viewModel.data)
+        mAdapter = HotArticleListAdapter(requireContext(), viewModel.data)
 
         val layoutManager = CustomLinearLayoutManager(context)
         layoutManager.orientation = RecyclerView.VERTICAL
@@ -97,14 +97,10 @@ class HotArticleListFragment : BaseFragment() {
                         item.readed = true
                         mAdapter.setHighLightUrl(item.url)
                         mAdapter.notifyDataSetChanged()
-                        loadFragment(
-                            ArticleReadFragment.newInstance(
-                                Bundle().apply {
-                                    putParcelable("article", item.toArticle())
-                                    putString("boardName", item.board)
-                                }
-                            ),
-                            currentFragment
+                        Navigation.switchToArticleReadPage(
+                            requireActivity(),
+                            item.toArticle(),
+                            item.board
                         )
                     }
                     else -> Unit

@@ -6,15 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import cc.ptt.android.Navigation
 import cc.ptt.android.R
-import cc.ptt.android.articleread.ArticleReadFragment
-import cc.ptt.android.articlesearch.ArticleListSearchFragment
 import cc.ptt.android.base.BaseFragment
 import cc.ptt.android.common.ClickFix
 import cc.ptt.android.common.CustomLinearLayoutManager
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.databinding.ArticleListFragmentLayoutBinding
-import cc.ptt.android.postarticle.PostArticleFragment
 import cc.ptt.android.utils.observeNotNull
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,10 +32,9 @@ class ArticleListFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bundle = arguments // 取得Bundle
-        boardName = bundle?.getString("title", getString(R.string.board_list_title_empty)) ?: ""
-        boardSubName = bundle?.getString("subtitle", getString(R.string.board_list_subtitle_empty))
-            ?: ""
-        boardId = bundle?.getString("board_id", getString(R.string.board_list_bid_empty)) ?: ""
+        boardName = bundle?.getString(KEY_TITLE, getString(R.string.board_list_title_empty)).orEmpty()
+        boardSubName = bundle?.getString(KEY_SUBTITLE, getString(R.string.board_list_subtitle_empty)).orEmpty()
+        boardId = bundle?.getString(KEY_BOARD_ID, getString(R.string.board_list_bid_empty)).orEmpty()
     }
 
     override fun onCreateView(
@@ -64,14 +61,10 @@ class ArticleListFragment : BaseFragment() {
                     object : ArticleListAdapter.OnItemClickListener {
                         override fun onItemClick(article: Article) {
                             if (mClickFix.isFastDoubleClick) return
-                            loadFragment(
-                                ArticleReadFragment.newInstance(
-                                    Bundle().apply {
-                                        putParcelable("article", article)
-                                        putString("boardName", boardName)
-                                    }
-                                ),
-                                currentFragment
+                            Navigation.switchToArticleReadPage(
+                                requireActivity(),
+                                article,
+                                boardName
                             )
                         }
                     }
@@ -104,15 +97,12 @@ class ArticleListFragment : BaseFragment() {
                             return@OnNavigationItemSelectedListener false
                         }
                         R.id.article_list_navigation_item_post -> {
-                            loadFragment(
-                                PostArticleFragment.newInstance(), currentFragment
-                            )
+                            Navigation.switchToPostArticlePage(requireActivity())
                             return@OnNavigationItemSelectedListener false
                         }
-                        R.id.article_list_navigation_item_search -> loadFragment(
-                            ArticleListSearchFragment.newInstance(),
-                            currentFragment
-                        )
+                        R.id.article_list_navigation_item_search -> {
+                            Navigation.switchToArticleListSearchPage(requireActivity())
+                        }
                         R.id.article_list_navigation_item_info -> {
                         }
                         else -> {
@@ -122,7 +112,7 @@ class ArticleListFragment : BaseFragment() {
                 }
             )
             articleReadItemHeaderImageViewBack.setOnClickListener {
-                currentActivity.onBackPressed()
+                requireActivity().onBackPressed()
             }
             articleListFragmentTextViewSubtitle.text = boardSubName
         }
@@ -133,7 +123,7 @@ class ArticleListFragment : BaseFragment() {
             }
 
             observeNotNull(getErrorLiveData()) { e ->
-                Toast.makeText(currentActivity, "Error : $e", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error : $e", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -149,18 +139,8 @@ class ArticleListFragment : BaseFragment() {
     }
 
     companion object {
-        fun newInstance(): ArticleListFragment {
-            val args = Bundle()
-            val fragment = ArticleListFragment()
-            fragment.arguments = args
-            return fragment
-        }
-
-        @JvmStatic
-        fun newInstance(args: Bundle?): ArticleListFragment {
-            val fragment = ArticleListFragment()
-            fragment.arguments = args
-            return fragment
-        }
+        const val KEY_TITLE = "title"
+        const val KEY_SUBTITLE = "subtitle"
+        const val KEY_BOARD_ID = "board_id"
     }
 }

@@ -1,13 +1,11 @@
 package cc.ptt.android.postarticle
 
-import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -47,7 +45,7 @@ class PostArticleFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        go2BackBtn.setOnClickListener { currentActivity.onBackPressed() }
+        go2BackBtn.setOnClickListener { requireActivity().onBackPressed() }
         mOnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { item ->
                 when (item.itemId) {
@@ -55,18 +53,7 @@ class PostArticleFragment : BaseFragment() {
                     R.id.post_article_navigation_item_load_draft -> {}
                     R.id.post_article_navigation_item_insert_image -> {}
                     R.id.post_article_navigation_item_hide_keyboard ->
-                        try {
-                            val inputMethodManager = requireActivity()
-                                .getSystemService(
-                                    Context.INPUT_METHOD_SERVICE
-                                ) as InputMethodManager
-                            inputMethodManager.hideSoftInputFromWindow(
-                                binding.root.windowToken, 0
-                            )
-                            navigation.menu.getItem(4).isVisible = false
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                        hideSoftInput()
                 }
                 false
             }
@@ -132,20 +119,5 @@ class PostArticleFragment : BaseFragment() {
         }
         binding.root.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
         _binding = null
-    }
-
-    companion object {
-        fun newInstance(): PostArticleFragment {
-            val args = Bundle()
-            val fragment = PostArticleFragment()
-            fragment.arguments = args
-            return fragment
-        }
-
-        fun newInstance(args: Bundle?): PostArticleFragment {
-            val fragment = PostArticleFragment()
-            fragment.arguments = args
-            return fragment
-        }
     }
 }

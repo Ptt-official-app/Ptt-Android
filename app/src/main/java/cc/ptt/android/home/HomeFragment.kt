@@ -181,12 +181,6 @@ class HomeFragment : BaseFragment() {
         preFragment = toFragment
     }
 
-    fun closeFragment() {
-        for (fr in childFragmentManager.fragments) {
-            childFragmentManager.beginTransaction().remove(fr!!).commitAllowingStateLoss()
-        }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -195,20 +189,5 @@ class HomeFragment : BaseFragment() {
     override fun onDestroy() {
         super.onDestroy()
         homeFragmentMap.clear()
-    }
-
-    companion object {
-        fun newInstance(): HomeFragment {
-            val args = Bundle()
-            val fragment = HomeFragment()
-            fragment.arguments = args
-            return fragment
-        }
-
-        fun newInstance(args: Bundle?): HomeFragment {
-            val fragment = HomeFragment()
-            fragment.arguments = args
-            return fragment
-        }
     }
 }

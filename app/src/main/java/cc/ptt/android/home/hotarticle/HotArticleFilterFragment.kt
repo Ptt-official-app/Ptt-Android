@@ -36,7 +36,7 @@ class HotArticleFilterFragment : BaseFragment() {
         val bundle = arguments // 取得Bundle
         title = bundle!!.getString("title", "ALL")
         board_list.addAll(bundle.getStringArrayList("BoardList")!!)
-        mAdapter = HotArticleFilterAdapter(currentActivity, data!!)
+        mAdapter = HotArticleFilterAdapter(requireContext(), data!!)
         val layoutManager = CustomLinearLayoutManager(context)
         layoutManager.orientation = RecyclerView.VERTICAL
         mRecyclerView!!.setHasFixedSize(true)
@@ -92,9 +92,9 @@ class HotArticleFilterFragment : BaseFragment() {
                                     .sendBroadcast(intent)
                             }
                         }
-                        currentActivity.onBackPressed()
+                        requireActivity().onBackPressed()
                     } else {
-                        currentActivity.onBackPressed()
+                        requireActivity().onBackPressed()
                     }
                 }
 
@@ -104,8 +104,8 @@ class HotArticleFilterFragment : BaseFragment() {
             }
         )
         recyclerItemClickListener.setDecorator(decorator)
-        mRecyclerView!!.addOnItemTouchListener(recyclerItemClickListener)
-        mAdapter!!.setMoreClickListen { currentActivity.onBackPressed() }
+        mRecyclerView?.addOnItemTouchListener(recyclerItemClickListener)
+        mAdapter?.setMoreClickListen { requireActivity().onBackPressed() }
         return view
     }
 
