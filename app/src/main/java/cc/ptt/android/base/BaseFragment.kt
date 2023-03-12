@@ -18,14 +18,14 @@ open class BaseFragment : Fragment() {
         return view?.findViewById<View>(id) as T
     }
 
-    protected open fun onAnimOver() {
+    protected open fun onAnimFinished() {
         logger.d(TAG, "onAnimOver")
     }
 
     override fun onResume() {
         super.onResume()
         if (!isFirstStart) {
-            onAnimOver()
+            onAnimFinished()
             isFirstStart = true
         }
     }

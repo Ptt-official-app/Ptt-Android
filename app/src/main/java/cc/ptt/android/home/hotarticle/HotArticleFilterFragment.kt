@@ -109,7 +109,7 @@ class HotArticleFilterFragment : BaseFragment() {
         return view
     }
 
-    override fun onAnimOver() {
+    override fun onAnimFinished() {
         loadData()
     }
 

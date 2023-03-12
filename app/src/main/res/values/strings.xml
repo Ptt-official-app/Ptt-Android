@@ -5,7 +5,7 @@
     <string name="home_bottom_navigation_item_hot_articles">熱門文章</string>
     <string name="home_bottom_navigation_item_user_page">個人頁面</string>
     <string name="home_bottom_navigation_item_more_action">更多功能</string>
-    <string name="todo"></string>
+    <string name="todo"> </string>
     <string name="board_list_subtitle_default">[八卦] 我想不到板標</string>
     <string name="board_list_title_default">Gossiping</string>
     <string name="board_list_title_empty">無板名資訊</string>

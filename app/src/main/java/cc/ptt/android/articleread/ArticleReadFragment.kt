@@ -155,7 +155,7 @@ class ArticleReadFragment : BaseFragment() {
         }
     }
 
-    override fun onAnimOver() {
+    override fun onAnimFinished() {
         viewModel.loadData(article)
     }
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.Navigation
 import cc.ptt.android.R
@@ -13,21 +14,22 @@ import cc.ptt.android.common.ClickFix
 import cc.ptt.android.common.CustomLinearLayoutManager
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.databinding.ArticleListFragmentLayoutBinding
-import cc.ptt.android.utils.observeNotNull
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ArticleListFragment : BaseFragment() {
 
     private var _binding: ArticleListFragmentLayoutBinding? = null
     private val binding get() = _binding!!
+    private lateinit var articleListAdapter: ArticleListAdapter
 
     private var boardName = ""
     private var boardSubName = ""
     private var boardId = ""
     private val mClickFix = ClickFix()
 
-    private val articleListViewModel: ArticleListViewModel by viewModel()
+    private val viewModel: ArticleListViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,38 +50,75 @@ class ArticleListFragment : BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initView()
+        initObserver()
+    }
+
+    private fun initObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.data.collectLatest {
+                articleListAdapter.updateArticleList(it)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.actionState.collect {
+                when (it) {
+                    is ArticleListViewModel.ActionState.ShowErrorMsg -> {
+                        Toast.makeText(requireContext(), it.msg, Toast.LENGTH_SHORT).show()
+                    }
+                    is ArticleListViewModel.ActionState.SwitchToArticleReadPage -> {
+                        Navigation.switchToArticleReadPage(requireActivity(), it.article, boardName)
+                    }
+                    ArticleListViewModel.ActionState.SwitchToArticleListSearchPage -> {
+                        Navigation.switchToArticleListSearchPage(requireActivity())
+                    }
+                    ArticleListViewModel.ActionState.SwitchToPostArticlePage -> {
+                        Navigation.switchToPostArticlePage(requireActivity())
+                    }
+                }
+            }
+        }
+
+        viewModel.loadingStateLiveData.observe(viewLifecycleOwner) {
+            binding.articleListFragmentRefreshLayout.isRefreshing = it
+        }
+    }
+
+    private fun initView() {
         binding.apply {
             articleListFragmentTextViewTitle.text = boardName
+            articleListFragmentTextViewSubtitle.text = boardSubName
+
             articleListFragmentRecyclerView.apply {
                 setHasFixedSize(true)
                 val layoutManager = CustomLinearLayoutManager(context).apply {
                     orientation = RecyclerView.VERTICAL
                 }
                 setLayoutManager(layoutManager)
-                adapter = ArticleListAdapter(
-                    articleListViewModel.data,
+                articleListAdapter = ArticleListAdapter(
+                    mutableListOf(),
                     object : ArticleListAdapter.OnItemClickListener {
                         override fun onItemClick(article: Article) {
                             if (mClickFix.isFastDoubleClick) return
-                            Navigation.switchToArticleReadPage(
-                                requireActivity(),
-                                article,
-                                boardName
-                            )
+                            viewModel.switchToArticleReadPage(article)
                         }
                     }
                 )
+                adapter = articleListAdapter
+
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
                         val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                         val totalItemCount = layoutManager.itemCount
                         if (lastVisibleItem >= totalItemCount - 30) {
-                            articleListViewModel.loadNextData(boardId, boardName)
+                            viewModel.loadNextData(boardId)
                         }
                     }
                 })
             }
+
             articleListFragmentRefreshLayout.apply {
                 setColorSchemeResources(
                     android.R.color.holo_red_light,
@@ -87,50 +126,41 @@ class ArticleListFragment : BaseFragment() {
                     android.R.color.holo_green_light,
                     android.R.color.holo_orange_light
                 )
-                setOnRefreshListener { articleListViewModel.loadData(boardId, boardName) }
-            }
-            articleListFragmentBottomNavigation.setOnNavigationItemSelectedListener(
-                BottomNavigationView.OnNavigationItemSelectedListener { item ->
-                    when (item.itemId) {
-                        R.id.article_list_navigation_item_refresh -> {
-                            articleListViewModel.loadData(boardId, boardName)
-                            return@OnNavigationItemSelectedListener false
-                        }
-                        R.id.article_list_navigation_item_post -> {
-                            Navigation.switchToPostArticlePage(requireActivity())
-                            return@OnNavigationItemSelectedListener false
-                        }
-                        R.id.article_list_navigation_item_search -> {
-                            Navigation.switchToArticleListSearchPage(requireActivity())
-                        }
-                        R.id.article_list_navigation_item_info -> {
-                        }
-                        else -> {
-                        }
-                    }
-                    false
+                setOnRefreshListener {
+                    viewModel.loadData(boardId)
                 }
-            )
-            articleReadItemHeaderImageViewBack.setOnClickListener {
-                requireActivity().onBackPressed()
-            }
-            articleListFragmentTextViewSubtitle.text = boardSubName
-        }
-        articleListViewModel.run {
-            observeNotNull(getLoadingStateLiveData()) { isLoading ->
-                binding.articleListFragmentRefreshLayout.isRefreshing = isLoading
-                binding.articleListFragmentRecyclerView.adapter?.notifyDataSetChanged()
             }
 
-            observeNotNull(getErrorLiveData()) { e ->
-                Toast.makeText(requireContext(), "Error : $e", Toast.LENGTH_SHORT).show()
+            articleListFragmentBottomNavigation.setOnItemSelectedListener {
+                return@setOnItemSelectedListener when (it.itemId) {
+                    R.id.article_list_navigation_item_refresh -> {
+                        viewModel.loadData(boardId)
+                        false
+                    }
+                    R.id.article_list_navigation_item_post -> {
+                        viewModel.switchToPostArticlePage()
+                        false
+                    }
+                    R.id.article_list_navigation_item_search -> {
+                        viewModel.switchToArticleListSearchPage()
+                        false
+                    }
+                    R.id.article_list_navigation_item_info -> {
+                        viewModel.switchToBoardInfoPage()
+                        false
+                    }
+                    else -> true
+                }
+            }
+
+            articleReadItemHeaderImageViewBack.setOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
             }
         }
     }
 
-    override fun onAnimOver() {
-        articleListViewModel.loadData(boardId, boardName)
-        binding.articleListFragmentRecyclerView.adapter?.notifyDataSetChanged()
+    override fun onAnimFinished() {
+        viewModel.loadData(boardId)
     }
 
     override fun onDestroyView() {

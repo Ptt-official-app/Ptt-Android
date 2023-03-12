@@ -41,7 +41,7 @@ class EmptyFragment : BaseFragment() {
         return view
     }
 
-    override fun onAnimOver() {}
+    override fun onAnimFinished() {}
 
     companion object {
         @JvmStatic

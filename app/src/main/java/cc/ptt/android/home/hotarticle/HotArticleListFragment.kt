@@ -46,8 +46,8 @@ class HotArticleListFragment : BaseFragment() {
         initUI()
     }
 
-    override fun onAnimOver() {
-        super.onAnimOver()
+    override fun onAnimFinished() {
+        super.onAnimFinished()
         loadData(false)
     }
 

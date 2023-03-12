@@ -188,7 +188,7 @@ class FavoriteBoardsFragment : BaseFragment() {
         LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(mMessageReceiver)
     }
 
-    override fun onAnimOver() {
+    override fun onAnimFinished() {
         viewModel.loadData()
     }
 
