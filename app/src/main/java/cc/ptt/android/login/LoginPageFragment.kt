@@ -1,6 +1,5 @@
 package cc.ptt.android.login
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.os.Bundle
@@ -10,8 +9,6 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import cc.ptt.android.FragmentTouchListener
-import cc.ptt.android.HomeActivity
 import cc.ptt.android.R
 import cc.ptt.android.base.BaseFragment
 import cc.ptt.android.common.KeyboardUtils
@@ -22,24 +19,12 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.absoluteValue
 
-class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickListener {
+class LoginPageFragment : BaseFragment(), View.OnClickListener {
 
     private val viewModel: LoginPageViewModel by viewModel()
     private val userInfoPreferences: UserInfoPreferences by inject()
-
     private lateinit var binding: LoginPageFragmentBinding
-
     private var isShowPassword = false
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity() as HomeActivity).fragmentTouchListener = this
-    }
-
-    override fun onDetach() {
-        (requireActivity() as HomeActivity).fragmentTouchListener = null
-        super.onDetach()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -119,7 +104,7 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickLis
                 }
                 loginSuccess.observe(viewLifecycleOwner) {
                     Toast.makeText(requireActivity(), "登入成功！", Toast.LENGTH_SHORT).show()
-                    currentActivity.onBackPressed()
+                    requireActivity().onBackPressed()
                 }
             }
         }
@@ -141,30 +126,9 @@ class LoginPageFragment : BaseFragment(), FragmentTouchListener, View.OnClickLis
         binding.btnLoginPageLogin.isClickable = isEnable
     }
 
-    override fun onAnimOver() {}
-
     override fun onDestroyView() {
         super.onDestroyView()
         KeyboardUtils.hideSoftInput(requireActivity())
-    }
-
-    override fun onTouchEvent(event: MotionEvent, defaultTouchEvent: Boolean): Boolean {
-        return defaultTouchEvent
-    }
-
-    companion object {
-        fun newInstance(): LoginPageFragment {
-            val args = Bundle()
-            val fragment = LoginPageFragment()
-            fragment.arguments = args
-            return fragment
-        }
-
-        fun newInstance(args: Bundle?): LoginPageFragment {
-            val fragment = LoginPageFragment()
-            fragment.arguments = args
-            return fragment
-        }
     }
 
     override fun onClick(v: View) {

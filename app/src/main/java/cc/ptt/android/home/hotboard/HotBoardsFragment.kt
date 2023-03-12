@@ -5,13 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import cc.ptt.android.articlelist.ArticleListFragment
+import cc.ptt.android.Navigation
 import cc.ptt.android.base.BaseFragment
 import cc.ptt.android.common.ClickFix
 import cc.ptt.android.common.CustomLinearLayoutManager
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
 import cc.ptt.android.databinding.HotBoardsFragmentLayoutBinding
-import cc.ptt.android.searchboards.SearchBoardsFragment
 import cc.ptt.android.utils.observeNotNull
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -35,9 +34,7 @@ class HotBoardsFragment : BaseFragment() {
         binding?.apply {
 
             hotBoardsFragmentSearch.setOnClickListener {
-                loadFragmentNoAnim(
-                    SearchBoardsFragment.newInstance(), currentFragment
-                )
+                Navigation.switchToSearchBoardsPage(requireActivity())
             }
 
             hotBoardsFragmentRecyclerView.apply {
@@ -50,16 +47,7 @@ class HotBoardsFragment : BaseFragment() {
                     object : HotBoardsListAdapter.OnItemClickListener {
                         override fun onItemClick(item: HotBoardsItem) {
                             if (mClickFix.isFastDoubleClick) return
-                            loadFragment(
-                                ArticleListFragment.newInstance(
-                                    Bundle().apply {
-                                        putString("title", item.boardName)
-                                        putString("subtitle", item.subtitle)
-                                        putString("board_id", item.boardId)
-                                    }
-                                ),
-                                currentFragment
-                            )
+                            Navigation.switchToArticleListPage(requireActivity(), item.boardName, item.subtitle, item.boardId)
                         }
                     }
                 )

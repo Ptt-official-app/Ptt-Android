@@ -10,7 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
-import cc.ptt.android.articlelist.ArticleListFragment
+import cc.ptt.android.Navigation
 import cc.ptt.android.base.BaseFragment
 import cc.ptt.android.common.ClickFix
 import cc.ptt.android.common.CustomLinearLayoutManager
@@ -72,28 +72,16 @@ class SearchBoardsFragment : BaseFragment() {
                     object : SearchBoardsAdapter.OnItemClickListener {
                         override fun onItemClick(item: SearchBoardsItem) {
                             if (mClickFix.isFastDoubleClick) return
-
-                            loadFragment(
-                                ArticleListFragment.newInstance(
-                                    Bundle().apply {
-                                        putString("title", item.title as? String)
-                                        putString("subtitle", item.subtitle as? String)
-                                        putString("board_id", item.boardId as? String)
-                                    }
-                                ),
-                                currentFragment
-                            )
+                            Navigation.switchToArticleListPage(requireActivity(), item.title, item.subtitle, item.boardId)
                         }
                     }
                 )
-                (adapter as SearchBoardsAdapter).setLikeOnClickListener(
-                    View.OnClickListener {
-                        if (viewModel.loadingState.value == false && mClickFix.isFastDoubleClick) {
-                            val position: Int = it.tag as Int
-                            viewModel.changeBoardLikeSate(position)
-                        }
+                (adapter as SearchBoardsAdapter).setLikeOnClickListener {
+                    if (viewModel.loadingState.value == false && mClickFix.isFastDoubleClick) {
+                        val position: Int = it.tag as Int
+                        viewModel.changeBoardLikeSate(position)
                     }
-                )
+                }
             }
 
             searchBoardsFragmentEditTextSearch.addTextChangedListener(object : TextWatcher {
@@ -141,22 +129,5 @@ class SearchBoardsFragment : BaseFragment() {
         KeyboardUtils.hideSoftInput(requireActivity())
         _binding = null
         sendChangeMessage()
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(): SearchBoardsFragment {
-            val args = Bundle()
-            val fragment = SearchBoardsFragment()
-            fragment.arguments = args
-            return fragment
-        }
-
-        @JvmStatic
-        fun newInstance(args: Bundle?): SearchBoardsFragment {
-            val fragment = SearchBoardsFragment()
-            fragment.arguments = args
-            return fragment
-        }
     }
 }

@@ -13,6 +13,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import cc.ptt.android.Navigation
 import cc.ptt.android.R
 import cc.ptt.android.base.BaseFragment
 import cc.ptt.android.common.CustomLinearLayoutManager
@@ -22,7 +23,6 @@ import cc.ptt.android.common.extension.bundleDelegate
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.databinding.ArticleReadFragmentLayoutBinding
 import cc.ptt.android.domain.model.ui.article.PostRankMark
-import cc.ptt.android.login.LoginPageFragment
 import cc.ptt.android.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +34,6 @@ class ArticleReadFragment : BaseFragment() {
     private var adapter: ArticleReadAdapter? = null
 
     private val article by bundleDelegate<Article>()
-
     private val boardName by bundleDelegate<String>()
 
     private var progressDialog: ProgressDialog? = null
@@ -122,7 +121,7 @@ class ArticleReadFragment : BaseFragment() {
                 binding.articleReadFragmentRecyclerView.adapter?.notifyDataSetChanged()
             }
             observeNotNull(errorMessage) {
-                Toast.makeText(currentActivity, "Error : $it", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error : $it", Toast.LENGTH_SHORT).show()
             }
             observeNotNull(progressDialogState) {
                 progressDialog?.dismiss()
@@ -132,7 +131,7 @@ class ArticleReadFragment : BaseFragment() {
             }
         }
 
-        val window = currentActivity.window
+        val window = requireActivity().window
         window.statusBarColor = ResourcesUtils.getColor(requireContext(), R.attr.article_header)
 
         // 取得Bundle
@@ -147,7 +146,7 @@ class ArticleReadFragment : BaseFragment() {
                     is ArticleReadViewModel.ActionEvent.ChooseCommentType -> chooseCommentType()
                     is ArticleReadViewModel.ActionEvent.CreateCommentSuccess -> {
                         showEditMode(false)
-                        KeyboardUtils.hideSoftInput(currentActivity)
+                        KeyboardUtils.hideSoftInput(requireActivity())
                         binding.articleReadItemEditTextReply.text.clear()
                         viewModel.loadData(article)
                     }
@@ -162,10 +161,10 @@ class ArticleReadFragment : BaseFragment() {
 
     private fun chooseCommentType() = lifecycleScope.launch(Dispatchers.Main) {
         if (!viewModel.isLogin()) {
-            loadFragment(LoginPageFragment.newInstance(), currentFragment)
+            Navigation.switchToLoginPage(requireActivity())
             return@launch
         }
-        val popupMenu = PopupMenu(currentActivity, binding.articleReadItemImageButtonReplySend)
+        val popupMenu = PopupMenu(requireContext(), binding.articleReadItemImageButtonReplySend)
         popupMenu.menuInflater.inflate(R.menu.carete_article_comment_type_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
             val type = when (item.itemId) {
@@ -174,7 +173,7 @@ class ArticleReadFragment : BaseFragment() {
                 else -> cc.ptt.android.data.model.remote.article.ArticleCommentType.COMMENT
             }
             progressDialog = ProgressDialog.show(
-                currentActivity,
+                requireContext(),
                 "",
                 "Please wait."
             ).apply {
@@ -188,20 +187,20 @@ class ArticleReadFragment : BaseFragment() {
 
     private fun setRankMenu(view: View) {
         if (!viewModel.isLogin()) {
-            loadFragment(LoginPageFragment.newInstance(), currentFragment)
+            Navigation.switchToLoginPage(requireActivity())
             return
         }
-        val popupMenu = PopupMenu(currentActivity, view)
+        val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.post_article_rank_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
-            var rank = when (item.itemId) {
+            val rank = when (item.itemId) {
                 R.id.post_article_rank_like -> PostRankMark.Like
                 R.id.post_article_rank_dislike -> PostRankMark.Dislike
                 R.id.post_article_rank_non -> PostRankMark.None
                 else -> PostRankMark.None
             }
             progressDialog = ProgressDialog.show(
-                currentActivity,
+                requireContext(),
                 "",
                 "Please wait."
             ).apply {
@@ -217,7 +216,7 @@ class ArticleReadFragment : BaseFragment() {
         super.onDestroyView()
         _binding = null
         try {
-            val inputMethodManager = currentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(binding.root.windowToken, 0)
         } catch (e: Exception) {
         }
@@ -227,19 +226,15 @@ class ArticleReadFragment : BaseFragment() {
         super.onDestroy()
         viewModel.data.clear()
         val typedValue = TypedValue()
-        val theme = currentActivity.theme
+        val theme = requireActivity().theme
         theme.resolveAttribute(R.attr.black, typedValue, true)
         @ColorInt val color = typedValue.data
-        val window = currentActivity.window
+        val window = requireActivity().window
         window.statusBarColor = color
     }
 
     companion object {
-        @JvmStatic
-        fun newInstance(args: Bundle?): ArticleReadFragment {
-            val fragment = ArticleReadFragment()
-            fragment.arguments = args
-            return fragment
-        }
+        const val KEY_ARTICLE = "article"
+        const val KEY_BOARD_NAME = "boardName"
     }
 }

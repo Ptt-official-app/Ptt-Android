@@ -14,16 +14,14 @@ import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import cc.ptt.android.Navigation
 import cc.ptt.android.R
-import cc.ptt.android.articlelist.ArticleListFragment
 import cc.ptt.android.base.BaseFragment
 import cc.ptt.android.common.ClickFix
 import cc.ptt.android.common.CustomLinearLayoutManager
 import cc.ptt.android.common.dragitemmove.ItemMoveCallback
 import cc.ptt.android.common.dragitemmove.StartDragListener
 import cc.ptt.android.databinding.FavoriteBoardsFragmentLayoutBinding
-import cc.ptt.android.searchboards.SearchBoardsFragment
 import cc.ptt.android.utils.observeNotNull
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -63,13 +61,7 @@ class FavoriteBoardsFragment : BaseFragment() {
                         mm.show()
                         return@OnClickListener
                     }
-                    try {
-                        loadFragmentNoAnim(
-                            SearchBoardsFragment.newInstance(), currentFragment
-                        )
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
+                    Navigation.switchToSearchBoardsPage(requireActivity())
                 }
             )
 
@@ -84,19 +76,16 @@ class FavoriteBoardsFragment : BaseFragment() {
 
                     if (editMode) {
                         hotBoardsFragmentEdit.setColorFilter(
-                            currentActivity
+                            requireActivity()
                                 .resources
                                 .getColor(R.color.tangerine)
                         )
                     } else {
                         hotBoardsFragmentEdit.setColorFilter(
-                            currentActivity
+                            requireActivity()
                                 .resources
                                 .getColor(R.color.slateGrey)
                         )
-                    }
-                    if (!editMode) {
-                        // UpdateBoardSort()
                     }
                 }
             )
@@ -127,16 +116,7 @@ class FavoriteBoardsFragment : BaseFragment() {
                             if (mClickFix.isFastDoubleClick) return
                             if (!editMode) {
                                 viewModel.data[position].let {
-                                    loadFragment(
-                                        ArticleListFragment.newInstance(
-                                            Bundle().apply {
-                                                putString("title", it.boardName)
-                                                putString("subtitle", it.subtitle)
-                                                putString("board_id", it.boardId)
-                                            }
-                                        ),
-                                        currentFragment
-                                    )
+                                    Navigation.switchToArticleListPage(requireActivity(), it.boardName, it.subtitle, it.boardId)
                                 }
                             }
                         }
@@ -172,11 +152,9 @@ class FavoriteBoardsFragment : BaseFragment() {
                     android.R.color.holo_green_light,
                     android.R.color.holo_orange_light
                 )
-                setOnRefreshListener(
-                    OnRefreshListener {
-                        viewModel.loadData()
-                    }
-                )
+                setOnRefreshListener {
+                    viewModel.loadData()
+                }
             }
 
             LocalBroadcastManager.getInstance(requireContext())
