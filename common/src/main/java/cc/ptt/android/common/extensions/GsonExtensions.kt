@@ -1,4 +1,4 @@
-package cc.ptt.android.utils
+package cc.ptt.android.common.extensions
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
