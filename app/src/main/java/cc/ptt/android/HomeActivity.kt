@@ -60,7 +60,6 @@ class HomeActivity : BaseActivity() {
         StaticValue.widthPixels = metrics.widthPixels.toDouble()
         StaticValue.highPixels = metrics.heightPixels.toDouble()
         StaticValue.backgroundColor = ContextCompat.getColor(this, R.color.darkGreyTwo)
-
         onBackPressedDispatcher.addCallback(backPressedCallback)
         isReadyLaunch = true
     }

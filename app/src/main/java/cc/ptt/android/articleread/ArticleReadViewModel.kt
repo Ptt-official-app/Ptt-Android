@@ -8,7 +8,9 @@ import androidx.lifecycle.viewModelScope
 import cc.ptt.android.common.date.DateFormatUtils
 import cc.ptt.android.common.date.DatePatternConstants
 import cc.ptt.android.common.logger.PttLogger
+import cc.ptt.android.common.network.api.ApiException
 import cc.ptt.android.data.model.remote.board.article.Article
+import cc.ptt.android.data.model.remote.serverMsg
 import cc.ptt.android.data.repository.article.ArticleRepository
 import cc.ptt.android.data.repository.login.LoginRepository
 import cc.ptt.android.domain.model.ui.article.ArticleReadInfo
@@ -100,7 +102,11 @@ class ArticleReadViewModel constructor(
             }.catch { e ->
                 logger.e(TAG, "Load data error: ${Log.getStackTraceString(e)}")
                 _loadingState.value = false
-                _errorMessage.value = "Error : ${e.message}"
+                if (e is ApiException) {
+                    _errorMessage.value = e.serverMsg.msg
+                } else {
+                    _errorMessage.value = "Error : ${e.message}"
+                }
             }.collect {
                 data.clear()
                 data.addAll(it.contentList)

@@ -75,7 +75,7 @@
     <string name="register">註冊</string>
     <string name="service_terms_agree">使用本服務即表示您同意使用者條款</string>
     <string name="forgot_account_or_password">忘記帳號/密碼？</string>
-    <string name="not_this_password">不是這個密碼</string>
+    <string name="not_this_password">帳號或密碼錯誤</string>
     <string name="server_error">伺服器錯誤</string>
     <string-array name="setting_post_bottom_style_array">
         <item>含標籤</item>
