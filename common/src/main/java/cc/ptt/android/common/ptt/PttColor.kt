@@ -30,4 +30,58 @@ object PttColor {
                 }
         }
     }
+
+    @ColorInt
+    fun foregroundColor(int: Int, isHighlight: Boolean): Int {
+        return if (isHighlight) {
+            when (int) {
+                30 -> StaticValue.ArticleFont_130
+                31 -> StaticValue.ArticleFont_131
+                32 -> StaticValue.ArticleFont_132
+                33 -> StaticValue.ArticleFont_133
+                34 -> StaticValue.ArticleFont_134
+                35 -> StaticValue.ArticleFont_135
+                36 -> StaticValue.ArticleFont_136
+                37 ->
+                    if (StaticValue.ThemMode == 1) {
+                        Color.BLACK
+                    } else {
+                        Color.WHITE
+                    }
+                else -> throw IllegalStateException("unknown foreground color: $int")
+            }
+        } else {
+            when (int) {
+                30 -> StaticValue.ArticleFont_30
+                31 -> StaticValue.ArticleFont_31
+                32 -> StaticValue.ArticleFont_32
+                33 -> StaticValue.ArticleFont_33
+                34 -> StaticValue.ArticleFont_34
+                35 -> StaticValue.ArticleFont_35
+                36 -> StaticValue.ArticleFont_36
+                37 ->
+                    if (StaticValue.ThemMode == 1) {
+                        Color.BLACK
+                    } else {
+                        Color.WHITE
+                    }
+                else -> throw IllegalStateException("unknown foreground color: $int")
+            }
+        }
+    }
+
+    @ColorInt
+    fun backgroundColor(int: Int): Int {
+        return when (int) {
+            40 -> Color.TRANSPARENT
+            41 -> StaticValue.ArticleBack_41
+            42 -> StaticValue.ArticleBack_42
+            43 -> StaticValue.ArticleBack_43
+            44 -> StaticValue.ArticleBack_44
+            45 -> StaticValue.ArticleBack_45
+            46 -> StaticValue.ArticleBack_46
+            47 -> StaticValue.ArticleBack_47
+            else -> throw IllegalStateException("unknown background color: $int")
+        }
+    }
 }

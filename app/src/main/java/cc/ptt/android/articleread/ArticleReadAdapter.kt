@@ -1,5 +1,6 @@
 package cc.ptt.android.articleread
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.util.TypedValue
@@ -16,11 +17,12 @@ import cc.ptt.android.common.ResourcesUtils
 import cc.ptt.android.common.StringUtils
 import cc.ptt.android.common.TextViewMovementMethod
 import cc.ptt.android.databinding.*
+import cc.ptt.android.domain.model.ui.article.ArticleReadInfo
 import coil.load
 import java.lang.Exception
 import java.lang.RuntimeException
 
-class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+class ArticleReadAdapter(private val data: List<ArticleReadInfo>) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     class ViewHolderHeader(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ArticleReadItemHeaderBinding.bind(view)
 
@@ -30,12 +32,13 @@ class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<Re
             }
         }
 
-        fun onBind(headerItem: Item.HeaderItem) {
+        @SuppressLint("SetTextI18n")
+        fun onBind(headerInfo: ArticleReadInfo.HeaderInfo) {
             binding.apply {
-                articleReadItemHeaderTextViewTitle.text = headerItem.title
-                articleReadItemHeaderTextViewTime.text = headerItem.date
-                articleReadItemHeaderTextViewAuth.text = headerItem.auth
-                articleReadItemHeaderTextViewBoard.text = "${headerItem.board} / ${headerItem.type}"
+                articleReadItemHeaderTextViewTitle.text = headerInfo.title
+                articleReadItemHeaderTextViewTime.text = headerInfo.date
+                articleReadItemHeaderTextViewAuth.text = headerInfo.auth
+                articleReadItemHeaderTextViewBoard.text = "${headerInfo.board} / ${headerInfo.type}"
             }
         }
     }
@@ -43,14 +46,14 @@ class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<Re
     class ViewHolderContent(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ArticleReadItemContentBinding.bind(view)
 
-        fun onBind(contentLineItem: Item.ContentLineItem) {
+        fun onBind(contentLineInfo: ArticleReadInfo.ContentLineInfo) {
             binding.apply {
                 articleReadItemTextView.apply {
                     StringUtils.TextViewAutoSplitFix(this)
                     movementMethod = TextViewMovementMethod(context)
                     setTextFuture(
                         PrecomputedTextCompat.getTextFuture(
-                            StringUtils.ColorString(contentLineItem.text),
+                            contentLineInfo.richText,
                             textMetricsParamsCompat,
                             null
                         )
@@ -63,9 +66,9 @@ class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<Re
     inner class ViewHolderContentImage(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ArticleReadItemImageBinding.bind(view)
 
-        fun onBind(imageItem: Item.ImageItem) {
+        fun onBind(imageInfo: ArticleReadInfo.ImageInfo) {
             binding.apply {
-                setImageView(articleReadItemPicture, StringUtils.notNullString(imageItem.url))
+                setImageView(articleReadItemPicture, imageInfo.url.orEmpty())
             }
         }
     }
@@ -73,19 +76,19 @@ class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<Re
     inner class ViewHolderCenterBar(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ArticleReadItemCenterBarBinding.bind(view)
 
-        fun onBind(centerBarItem: Item.CenterBarItem) {
+        fun onBind(centerBarInfo: ArticleReadInfo.CenterBarInfo) {
             binding.apply {
                 articleReadItemCenterbarTextViewCommit.apply {
-                    val floorString = StringUtils.sortDecimal(StringUtils.notNullString(centerBarItem.floor))
+                    val floorString = StringUtils.sortDecimal(StringUtils.notNullString(centerBarInfo.floor))
                     text = floorString.toString()
                     setNumberColor(this, floorString)
                 }
                 articleReadItemCenterbarTextViewLike.apply {
-                    val likeString = StringUtils.sortDecimal(StringUtils.notNullString(centerBarItem.like))
+                    val likeString = StringUtils.sortDecimal(StringUtils.notNullString(centerBarInfo.like))
                     text = likeString.toString()
                     setNumberColor(this, likeString)
                     val like = try {
-                        StringUtils.notNullString(centerBarItem.like).toInt()
+                        StringUtils.notNullString(centerBarInfo.like).toInt()
                     } catch (e: Exception) {
                         0
                     }
@@ -107,20 +110,20 @@ class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<Re
     inner class ViewHolderComment(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ArticleReadItemCommitBinding.bind(view)
 
-        fun onBind(commentItem: Item.CommentItem) {
+        fun onBind(commentInfo: ArticleReadInfo.CommentInfo) {
             binding.apply {
 
                 articleReadItemCommitTextViewText.apply {
                     StringUtils.TextViewAutoSplitFix(this)
                     movementMethod = TextViewMovementMethod(context)
                     val future = PrecomputedTextCompat.getTextFuture(
-                        StringUtils.ColorString(commentItem.text),
+                        commentInfo.text,
                         textMetricsParamsCompat,
                         null
                     )
                     setTextFuture(future)
                 }
-                articleReadItemCommitTextviewAuth.text = StringUtils.ColorString(commentItem.auth)
+                articleReadItemCommitTextviewAuth.text = commentInfo.auth
             }
         }
     }
@@ -128,11 +131,11 @@ class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<Re
     inner class ViewHolderCommitBar(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = ArticleReadItemCommitBarBinding.bind(view)
 
-        fun onBind(commentBarItem: Item.CommentBarItem) {
+        fun onBind(commentBarInfo: ArticleReadInfo.CommentBarInfo) {
             binding.apply {
-                articleReadItemCommitTextViewTime.text = commentBarItem.time
-                articleReadItemCommitTextViewFloor.text = commentBarItem.floor
-                val colorString = StringUtils.sortDecimal(StringUtils.notNullString(commentBarItem.like))
+                articleReadItemCommitTextViewTime.text = commentBarInfo.time
+                articleReadItemCommitTextViewFloor.text = commentBarInfo.floor
+                val colorString = StringUtils.sortDecimal(StringUtils.notNullString(commentBarInfo.like))
                 aarticleReadItemCommitTextViewLike.text = colorString.toString()
                 setNumberColor(aarticleReadItemCommitTextViewLike, colorString)
             }
@@ -169,30 +172,30 @@ class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<Re
 
     override fun getItemViewType(position: Int): Int {
         return when (data[position]) {
-            is Item.HeaderItem -> R.layout.article_read_item_header
-            is Item.ContentLineItem -> R.layout.article_read_item_content
-            is Item.ImageItem -> R.layout.article_read_item_image
-            is Item.CenterBarItem -> R.layout.article_read_item_center_bar
-            is Item.CommentItem -> R.layout.article_read_item_commit
-            is Item.CommentBarItem -> R.layout.article_read_item_commit_bar
+            is ArticleReadInfo.HeaderInfo -> R.layout.article_read_item_header
+            is ArticleReadInfo.ContentLineInfo -> R.layout.article_read_item_content
+            is ArticleReadInfo.ImageInfo -> R.layout.article_read_item_image
+            is ArticleReadInfo.CenterBarInfo -> R.layout.article_read_item_center_bar
+            is ArticleReadInfo.CommentInfo -> R.layout.article_read_item_commit
+            is ArticleReadInfo.CommentBarInfo -> R.layout.article_read_item_commit_bar
         }
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val item = data[position]
-        if (viewHolder is ViewHolderHeader && item is Item.HeaderItem) {
+        if (viewHolder is ViewHolderHeader && item is ArticleReadInfo.HeaderInfo) {
             viewHolder.onBind(item)
-        } else if (viewHolder is ViewHolderContent && item is Item.ContentLineItem) {
+        } else if (viewHolder is ViewHolderContent && item is ArticleReadInfo.ContentLineInfo) {
             viewHolder.onBind(item)
-        } else if (viewHolder is ViewHolderComment && item is Item.CommentItem) {
-            viewHolder.onBind(item)
-            updateBackgroundColor(viewHolder, item.index)
-        } else if (viewHolder is ViewHolderCommitBar && item is Item.CommentBarItem) {
+        } else if (viewHolder is ViewHolderComment && item is ArticleReadInfo.CommentInfo) {
             viewHolder.onBind(item)
             updateBackgroundColor(viewHolder, item.index)
-        } else if (viewHolder is ViewHolderCenterBar && item is Item.CenterBarItem) {
+        } else if (viewHolder is ViewHolderCommitBar && item is ArticleReadInfo.CommentBarInfo) {
             viewHolder.onBind(item)
-        } else if (viewHolder is ViewHolderContentImage && item is Item.ImageItem) {
+            updateBackgroundColor(viewHolder, item.index)
+        } else if (viewHolder is ViewHolderCenterBar && item is ArticleReadInfo.CenterBarInfo) {
+            viewHolder.onBind(item)
+        } else if (viewHolder is ViewHolderContentImage && item is ArticleReadInfo.ImageInfo) {
             viewHolder.onBind(item)
             updateBackgroundColor(viewHolder, item.index)
         }
@@ -242,21 +245,5 @@ class ArticleReadAdapter(private val data: List<Item>) : RecyclerView.Adapter<Re
 
     override fun getItemCount(): Int {
         return data.size
-    }
-
-    sealed class Item {
-        data class HeaderItem(
-            val title: String,
-            val auth: String,
-            val date: String,
-            val type: String,
-            val board: String
-        ) : Item()
-
-        data class ContentLineItem(val text: String) : Item()
-        data class ImageItem(val index: Int, val url: String) : Item()
-        data class CenterBarItem(val like: String, val floor: String) : Item()
-        data class CommentItem(val index: Int, val text: String, val auth: String) : Item()
-        data class CommentBarItem(val index: Int, val time: String, val floor: String, val like: String) : Item()
     }
 }
