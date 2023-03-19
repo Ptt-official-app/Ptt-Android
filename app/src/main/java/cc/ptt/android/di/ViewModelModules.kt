@@ -20,6 +20,6 @@ val viewModelModules = module {
     viewModel { HotArticleListViewModel(get()) }
     viewModel { HotBoardsViewModel(get()) }
     viewModel { SettingViewModel(get(), get(), get()) }
-    viewModel { LoginPageViewModel(get()) }
+    viewModel { LoginPageViewModel(get(), get()) }
     viewModel { SearchBoardsModel(get()) }
 }
