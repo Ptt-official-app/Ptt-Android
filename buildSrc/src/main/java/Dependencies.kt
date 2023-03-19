@@ -82,7 +82,6 @@ object Dependencies {
         }
     }
 
-    const val desugar = "com.android.tools:desugar_jdk_libs:${Versions.desugar}"
     const val coil = "io.coil-kt:coil:${Versions.coil}"
 
     object Hilt {

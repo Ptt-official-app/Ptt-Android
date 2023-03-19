@@ -77,7 +77,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = GlobalConfig.JDKVersion
         targetCompatibility = GlobalConfig.JDKVersion
     }
@@ -139,18 +138,12 @@ dependencies {
     implementation(Dependencies.Square.okio)
     implementation(Dependencies.Square.Retrofit.core)
     implementation(Dependencies.Square.Retrofit.gsonConverter)
-
-    // solved AndroidX conflict: Duplicate class guava listenablefuture
-    // see：https://stackoverflow.com/questions/60472354/duplicate-class-com-google-common-util-concurrent-listenablefuture-found-in-modu
-    implementation("com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava")
-
+    
     // Koin Core features
     implementation(Dependencies.Koin.Core.core)
     // Koin main features for Android
     implementation(Dependencies.Koin.Android.android)
     implementation(Dependencies.AndroidX.coreKtx)
-
-    coreLibraryDesugaring(Dependencies.desugar)
 
     // Test
     testImplementation(Dependencies.Google.truth)
