@@ -1,4 +1,4 @@
-package cc.ptt.android.domain.usecase.articlecomment
+package cc.ptt.android.domain.usecase.article
 
 import cc.ptt.android.data.model.remote.article.ArticleComment
 import cc.ptt.android.data.model.remote.article.ArticleCommentType
@@ -13,9 +13,9 @@ class CreateArticleCommentUseCase constructor(
     fun createArticleComment(
         bid: String,
         aid: String,
-        type: cc.ptt.android.data.model.remote.article.ArticleCommentType,
+        type: ArticleCommentType,
         content: String
-    ): Flow<cc.ptt.android.data.model.remote.article.ArticleComment> {
+    ): Flow<ArticleComment> {
         return articleRepository.createArticleComment(bid, aid, type.value, content)
     }
 }

@@ -1,49 +1,20 @@
 package cc.ptt.android.common.date
 
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import android.annotation.SuppressLint
+import java.text.SimpleDateFormat
+import java.util.*
 
 object DateFormatUtils {
 
+    @SuppressLint("SimpleDateFormat")
     fun secondsToDateTime(
         seconds: Long,
         pattern: String,
-        zoneId: ZoneId = ZoneId.systemDefault()
+        timeZone: TimeZone = TimeZone.getDefault()
     ): String {
-        val time = LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(seconds),
-            zoneId
-        )
-
-        return time.format(DateTimeFormatter.ofPattern(pattern)) ?: throw NullPointerException("Date format failed.")
-    }
-
-    fun milliSecondsToDateTime(
-        milliSeconds: Long,
-        pattern: String,
-        zoneId: ZoneId = ZoneId.systemDefault()
-    ): String {
-        val time = LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(milliSeconds),
-            ZoneId.systemDefault()
-        )
-
-        return time.format(DateTimeFormatter.ofPattern(pattern)) ?: throw NullPointerException("Date format failed.")
-    }
-
-    fun dateStringToTimeSeconds(
-        dateString: String,
-        pattern: String,
-        zoneId: ZoneId = ZoneId.systemDefault()
-    ): Long {
-        val dateTime = ZonedDateTime.of(
-            LocalDateTime.parse(dateString, DateTimeFormatter.ofPattern(pattern)),
-            zoneId
-        )
-
-        return dateTime.toEpochSecond()
+        val dateFormat = SimpleDateFormat(pattern).also {
+            it.timeZone = timeZone
+        }
+        return dateFormat.format(Date(seconds * 1000))
     }
 }

@@ -121,7 +121,7 @@ class ArticleReadFragment : BaseFragment() {
                 binding.articleReadFragmentRecyclerView.adapter?.notifyDataSetChanged()
             }
             observeNotNull(errorMessage) {
-                Toast.makeText(requireContext(), "Error : $it", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
             observeNotNull(progressDialogState) {
                 progressDialog?.dismiss()

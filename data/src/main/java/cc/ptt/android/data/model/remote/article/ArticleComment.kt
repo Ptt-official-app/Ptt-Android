@@ -10,7 +10,7 @@ data class ArticleComment(
     @SerializedName("cid")
     val commentId: String,
     @SerializedName("content")
-    val content: List<List<cc.ptt.android.data.model.remote.article.Content>>,
+    val content: List<List<Content>>?,
     @SerializedName("create_time")
     val createTime: Int,
     @SerializedName("deleted")
@@ -32,7 +32,7 @@ data class ArticleComment(
     @SerializedName("type")
     val type: Int
 ) {
-    val articleCommentType get() = cc.ptt.android.data.model.remote.article.ArticleCommentType.Companion.parse(
+    val articleCommentType get() = ArticleCommentType.parse(
         type
     )
 }
@@ -43,8 +43,8 @@ enum class ArticleCommentType(val value: Int) {
     COMMENT(3);
 
     companion object {
-        fun parse(value: Int): cc.ptt.android.data.model.remote.article.ArticleCommentType {
-            return values().find { it.value == value } ?: cc.ptt.android.data.model.remote.article.ArticleCommentType.COMMENT
+        fun parse(value: Int): ArticleCommentType {
+            return values().find { it.value == value } ?: COMMENT
         }
     }
 }

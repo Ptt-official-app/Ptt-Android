@@ -1,5 +1,6 @@
 package cc.ptt.android.common.network.api
 
+import cc.ptt.android.common.BuildConfig
 import cc.ptt.android.common.network.api.apihelper.ApiHelper
 import cc.ptt.android.common.network.retrofit.RetrofitFlowCallAdapterFactory
 import okhttp3.OkHttpClient
@@ -18,16 +19,20 @@ class RetrofitServiceProvider constructor(
     }
 
     fun <T> create(serviceClass: Class<T>): T {
-        val maxLogLevel: HttpLoggingInterceptor.Level = when (
-            serviceClass.getAnnotation(
-                ApiMaxLogLevel::class.java
-            )?.level
-        ) {
-            MaxLogLevel.NONE -> HttpLoggingInterceptor.Level.NONE
-            MaxLogLevel.BASIC -> HttpLoggingInterceptor.Level.BASIC
-            MaxLogLevel.HEADERS -> HttpLoggingInterceptor.Level.HEADERS
-            MaxLogLevel.BODY -> HttpLoggingInterceptor.Level.BODY
-            else -> HttpLoggingInterceptor.Level.BODY
+        val maxLogLevel: HttpLoggingInterceptor.Level = if (BuildConfig.DEBUG) {
+            when (
+                serviceClass.getAnnotation(
+                    ApiMaxLogLevel::class.java
+                )?.level
+            ) {
+                MaxLogLevel.NONE -> HttpLoggingInterceptor.Level.NONE
+                MaxLogLevel.BASIC -> HttpLoggingInterceptor.Level.BASIC
+                MaxLogLevel.HEADERS -> HttpLoggingInterceptor.Level.HEADERS
+                MaxLogLevel.BODY -> HttpLoggingInterceptor.Level.BODY
+                else -> HttpLoggingInterceptor.Level.BODY
+            }
+        } else {
+            HttpLoggingInterceptor.Level.NONE
         }
         return createRetrofit(apiHelper.getHost(), maxLogLevel).create(serviceClass)
     }

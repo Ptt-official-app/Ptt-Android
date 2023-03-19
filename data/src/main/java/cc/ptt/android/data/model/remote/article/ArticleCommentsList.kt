@@ -3,7 +3,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ArticleCommentsList(
     @SerializedName("list")
-    val list: List<cc.ptt.android.data.model.remote.article.ArticleComment>,
+    val list: List<ArticleComment>,
     @SerializedName("next_idx")
     val nextIndex: String
 )

@@ -26,7 +26,6 @@ android {
     }
 
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = GlobalConfig.JDKVersion
         targetCompatibility = GlobalConfig.JDKVersion
     }
@@ -49,8 +48,6 @@ dependencies {
     implementation(Dependencies.Square.Retrofit.core)
     implementation(Dependencies.Square.Retrofit.gsonConverter)
     implementation(Dependencies.AndroidX.coreKtx)
-
-    coreLibraryDesugaring(Dependencies.desugar)
 
     testImplementation(Dependencies.junit)
 

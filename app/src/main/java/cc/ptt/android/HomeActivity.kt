@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import cc.ptt.android.base.BaseActivity
 import cc.ptt.android.common.KeyboardUtils
 import cc.ptt.android.common.StaticValue
@@ -58,6 +59,7 @@ class HomeActivity : BaseActivity() {
         StaticValue.ScreenDensity = metrics.density.toDouble()
         StaticValue.widthPixels = metrics.widthPixels.toDouble()
         StaticValue.highPixels = metrics.heightPixels.toDouble()
+        StaticValue.backgroundColor = ContextCompat.getColor(this, R.color.darkGreyTwo)
 
         onBackPressedDispatcher.addCallback(backPressedCallback)
         isReadyLaunch = true
