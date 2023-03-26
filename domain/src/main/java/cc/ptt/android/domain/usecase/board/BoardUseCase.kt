@@ -13,4 +13,11 @@ interface BoardUseCase {
         limit: Int = 200,
         desc: Boolean = true
     ): Flow<ArticleList>
+
+    fun getFavoriteBoards(
+        level_idx: String,
+        startIndex: String,
+        limit: Int,
+        aces: Boolean
+    ): Flow<BoardList>
 }

@@ -1,10 +1,10 @@
-package cc.ptt.android.data.repository.login
+package cc.ptt.android.data.repository.user
 
 import cc.ptt.android.data.model.remote.user.exist_user.ExistUser
 import cc.ptt.android.data.model.remote.user.login.LoginEntity
 import kotlinx.coroutines.flow.Flow
 
-interface LoginRepository {
+interface UserRepository {
 
     fun login(
         clientId: String,
@@ -26,4 +26,6 @@ interface LoginRepository {
     fun isGuest(): Boolean
 
     fun getUserInfo(): LoginEntity?
+
+    fun userId(): Flow<String>
 }

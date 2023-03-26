@@ -51,8 +51,7 @@ class ArticleListViewModel constructor(
     }
 
     fun switchToPostArticlePage() {
-        // TODO: emitAction(ActionState.SwitchToPostArticlePage)
-        showNotImplementMsg()
+        emitAction(ActionState.SwitchToPostArticlePage)
     }
 
     fun switchToArticleListSearchPage() {

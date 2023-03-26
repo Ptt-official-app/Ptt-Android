@@ -3,7 +3,7 @@ package cc.ptt.android.data
 import cc.ptt.android.common.network.api.apihelper.ApiHelper
 import cc.ptt.android.data.di.localDataSourceModules
 import cc.ptt.android.data.model.remote.user.login.LoginEntity
-import cc.ptt.android.data.repository.login.LoginRepository
+import cc.ptt.android.data.repository.user.UserRepository
 import cc.ptt.android.data.source.local.LoginLocalDataSource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -47,14 +47,14 @@ open class ApiTestBase constructor(
         loadKoinModules(localDataSourceModules)
     }
 
-    private suspend fun login() {
+    protected suspend fun login() {
         if (BuildConfig.TEST_ACCOUNT.isBlank() || BuildConfig.TEST_PASSWORD.isBlank()) {
             println("[Test] Login error: No testing account")
             return
         }
-        val loginRepository: LoginRepository by inject()
+        val userRepository: UserRepository by inject()
         val apiHelper: ApiHelper by inject()
-        loginRepository.login(
+        userRepository.login(
             apiHelper.getClientId(),
             apiHelper.getClientSecret(),
             BuildConfig.TEST_ACCOUNT,

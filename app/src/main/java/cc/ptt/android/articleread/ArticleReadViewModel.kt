@@ -12,7 +12,7 @@ import cc.ptt.android.common.network.api.ApiException
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.data.model.remote.serverMsg
 import cc.ptt.android.data.repository.article.ArticleRepository
-import cc.ptt.android.data.repository.login.LoginRepository
+import cc.ptt.android.data.repository.user.UserRepository
 import cc.ptt.android.domain.model.ui.article.ArticleReadInfo
 import cc.ptt.android.domain.model.ui.article.PostRankMark
 import cc.ptt.android.domain.usecase.article.CreateArticleCommentUseCase
@@ -24,7 +24,7 @@ class ArticleReadViewModel constructor(
     private val articleRepository: ArticleRepository,
     private val getArticleUseCase: GetArticleUseCase,
     private val createArticleCommentUseCase: CreateArticleCommentUseCase,
-    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository,
     private val logger: PttLogger,
 ) : ViewModel() {
 
@@ -56,8 +56,8 @@ class ArticleReadViewModel constructor(
         _actionState.emit(action)
     }
 
-    fun isLogin(): Boolean = loginRepository.isLogin().apply {
-        logger.d(TAG, "isLogin: ${loginRepository.getUserInfo()}")
+    fun isLogin(): Boolean = userRepository.isLogin().apply {
+        logger.d(TAG, "isLogin: ${userRepository.getUserInfo()}")
     }
 
     fun originalTitle(classX: String, title: String) = if (classX.isBlank()) {

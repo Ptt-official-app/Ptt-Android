@@ -10,13 +10,13 @@ import cc.ptt.android.common.StringUtils
 import cc.ptt.android.common.event.Event
 import cc.ptt.android.common.network.api.ApiException
 import cc.ptt.android.data.model.remote.serverMsg
-import cc.ptt.android.domain.usecase.login.LoginUseCase
+import cc.ptt.android.domain.usecase.user.UserUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class LoginPageViewModel constructor(
-    private val loginUseCase: LoginUseCase,
+    private val userUseCase: UserUseCase,
     private val resourcesProvider: ResourcesProvider
 ) : ViewModel() {
 
@@ -38,7 +38,7 @@ class LoginPageViewModel constructor(
         }
         loginJob?.cancel()
         loginJob = viewModelScope.launch {
-            loginUseCase.login(account, password).catch { e ->
+            userUseCase.login(account, password).catch { e ->
                 if (e is ApiException) {
                     _errorMessage.value = Event(e.serverMsg.msg)
                 } else {

@@ -1,19 +1,19 @@
-package cc.ptt.android.data.repository.login
+package cc.ptt.android.data.repository.user
 
 import cc.ptt.android.data.model.remote.user.exist_user.ExistUser
 import cc.ptt.android.data.model.remote.user.login.LoginEntity
 import cc.ptt.android.data.source.local.LoginLocalDataSource
-import cc.ptt.android.data.source.remote.login.LoginRemoteDataSource
+import cc.ptt.android.data.source.remote.user.UserRemoteDataSource
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
-class LoginRepositoryImpl constructor(
+class UserRepositoryImpl constructor(
     private val loginLocalDataSource: LoginLocalDataSource,
-    private val loginRemoteDataSource: LoginRemoteDataSource
-) : LoginRepository, CoroutineScope by MainScope() {
+    private val userRemoteDataSource: UserRemoteDataSource
+) : UserRepository, CoroutineScope by MainScope() {
 
     companion object {
-        private val TAG = LoginRepository::class.java.simpleName
+        private val TAG = UserRepository::class.java.simpleName
     }
 
     override fun login(
@@ -22,7 +22,7 @@ class LoginRepositoryImpl constructor(
         userName: String,
         password: String
     ): Flow<LoginEntity> {
-        return loginRemoteDataSource.login(clientId, clientSecret, userName, password).onEach {
+        return userRemoteDataSource.login(clientId, clientSecret, userName, password).onEach {
             loginLocalDataSource.setUserInfo(it)
         }.flowOn(Dispatchers.IO)
     }
@@ -40,7 +40,7 @@ class LoginRepositoryImpl constructor(
         clientSecret: String,
         userName: String
     ): Flow<ExistUser> {
-        return loginRemoteDataSource.existUser(clientId, clientSecret, userName).flowOn(Dispatchers.IO)
+        return userRemoteDataSource.existUser(clientId, clientSecret, userName).flowOn(Dispatchers.IO)
     }
 
     override fun isLogin(): Boolean {
@@ -53,5 +53,11 @@ class LoginRepositoryImpl constructor(
 
     override fun getUserInfo(): LoginEntity? {
         return loginLocalDataSource.getUserInfo()
+    }
+
+    override fun userId(): Flow<String> {
+        return userRemoteDataSource.userId().map {
+            it.userId
+        }.flowOn(Dispatchers.IO)
     }
 }
