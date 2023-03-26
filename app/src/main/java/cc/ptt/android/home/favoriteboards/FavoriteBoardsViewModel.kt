@@ -1,16 +1,15 @@
 package cc.ptt.android.home.favoriteboards
 
 import androidx.lifecycle.*
+import cc.ptt.android.common.logger.PttLogger
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
-import cc.ptt.android.data.source.remote.favorite.FavoriteRemoteDataSource
-import cc.ptt.android.domain.usecase.login.LoginUseCase
+import cc.ptt.android.domain.usecase.board.BoardUseCase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 
 class FavoriteBoardsViewModel constructor(
-    private val favoriteRemoteDataSource: FavoriteRemoteDataSource,
-    private val loginUseCase: LoginUseCase
+    private val boardUseCase: BoardUseCase,
+    private val logger: PttLogger
 ) : ViewModel() {
     val data: MutableList<HotBoardsItem> = mutableListOf()
 
@@ -41,12 +40,10 @@ class FavoriteBoardsViewModel constructor(
     private fun fetchData(nextIndex: String) {
         viewModelScope.launch {
             _loadingState.value = true
-            favoriteRemoteDataSource.getFavoriteBoards(
-                userid = loginUseCase.getUserInfo()?.id.orEmpty(),
-                startIndex = nextIndex
-            ).flowOn(Dispatchers.IO).catch { e ->
+            boardUseCase.getFavoriteBoards("", nextIndex, 200, false).catch { e ->
                 _loadingState.value = false
                 _errorMessage.postValue("Error: $e")
+                logger.e(TAG, "fetchData error: $e")
             }.collect { hotBoard ->
                 val boardData = hotBoard.list.map {
                     HotBoardsItem(
@@ -62,5 +59,9 @@ class FavoriteBoardsViewModel constructor(
                 _loadingState.value = false
             }
         }
+    }
+
+    companion object {
+        private val TAG = FavoriteBoardsViewModel::class.java.simpleName
     }
 }

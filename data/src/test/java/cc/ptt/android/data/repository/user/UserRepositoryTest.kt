@@ -1,4 +1,4 @@
-package cc.ptt.android.data.repository.login
+package cc.ptt.android.data.repository.user
 
 import cc.ptt.android.common.network.api.apihelper.ApiHelper
 import cc.ptt.android.data.ApiTestBase
@@ -9,14 +9,14 @@ import org.junit.Test
 import org.koin.test.inject
 import kotlin.test.assertEquals
 
-class LoginRepositoryTest : ApiTestBase(needLogin = false) {
+class UserRepositoryTest : ApiTestBase(needLogin = false) {
 
-    private val loginRepository: LoginRepository by inject()
+    private val userRepository: UserRepository by inject()
     private val apiHelper: ApiHelper by inject()
 
     @Test
     fun testLogin() = runBlocking {
-        loginRepository.login(
+        userRepository.login(
             apiHelper.getClientId(),
             apiHelper.getClientSecret(),
             BuildConfig.TEST_ACCOUNT,
@@ -27,6 +27,16 @@ class LoginRepositoryTest : ApiTestBase(needLogin = false) {
             assert(it.accessToken.isNotBlank())
             assert(it.tokenType.isNotBlank())
             assertEquals(BuildConfig.TEST_ACCOUNT, it.userId)
+        }
+    }
+
+    @Test
+    fun testUserId() = runBlocking {
+        login()
+        userRepository.userId().catch {
+            assert(false)
+        }.collect {
+            assertEquals(BuildConfig.TEST_ACCOUNT, it)
         }
     }
 }

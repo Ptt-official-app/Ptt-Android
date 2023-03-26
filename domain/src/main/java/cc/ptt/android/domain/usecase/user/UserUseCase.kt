@@ -1,15 +1,15 @@
-package cc.ptt.android.domain.usecase.login
+package cc.ptt.android.domain.usecase.user
 
 import cc.ptt.android.common.network.api.apihelper.ApiHelper
-import cc.ptt.android.data.repository.login.LoginRepository
+import cc.ptt.android.data.repository.user.UserRepository
 import cc.ptt.android.domain.base.UseCaseBase
 import cc.ptt.android.domain.model.UserType
 import cc.ptt.android.domain.model.ui.user.UserInfo
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class LoginUseCase constructor(
-    private val loginRepository: LoginRepository,
+class UserUseCase constructor(
+    private val userRepository: UserRepository,
     private val apiHelper: ApiHelper
 ) : UseCaseBase() {
 
@@ -21,7 +21,7 @@ class LoginUseCase constructor(
     }
 
     private fun initUserType() = launch {
-        loginRepository.getUserInfo()?.let {
+        userRepository.getUserInfo()?.let {
             _userType.emit(UserType.Login(UserInfo(it.userId, it.accessToken, it.tokenType)))
         } ?: run {
             _userType.emit(UserType.Guest)
@@ -29,16 +29,16 @@ class LoginUseCase constructor(
     }
 
     fun login(id: String, password: String): Flow<UserInfo> {
-        return loginRepository.login(apiHelper.getClientId(), apiHelper.getClientSecret(), id, password).map {
+        return userRepository.login(apiHelper.getClientId(), apiHelper.getClientSecret(), id, password).map {
             UserInfo(it.userId, it.accessToken, it.tokenType)
         }.onEach { initUserType() }
     }
 
     fun logout(): Flow<Unit> {
-        return loginRepository.logout().onEach { initUserType() }
+        return userRepository.logout().onEach { initUserType() }
     }
 
     fun getUserInfo(): UserInfo? {
-        return loginRepository.getUserInfo()?.let { UserInfo(it.userId, it.accessToken, it.tokenType) }
+        return userRepository.getUserInfo()?.let { UserInfo(it.userId, it.accessToken, it.tokenType) }
     }
 }

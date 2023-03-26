@@ -1,18 +1,19 @@
-package cc.ptt.android.data.source.remote.login
+package cc.ptt.android.data.source.remote.user
 
 import cc.ptt.android.data.apiservices.user.UserApi
 import cc.ptt.android.data.model.remote.user.exist_user.ExistUser
 import cc.ptt.android.data.model.remote.user.exist_user.ExistUserRequest
 import cc.ptt.android.data.model.remote.user.login.LoginEntity
 import cc.ptt.android.data.model.remote.user.login.LoginRequest
+import cc.ptt.android.data.model.remote.user.user_id.UserIdEntity
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class LoginRemoteDataSourceImpl constructor(
+class UserRemoteDataSourceImpl constructor(
     private val userApi: UserApi
-) : LoginRemoteDataSource {
+) : UserRemoteDataSource {
 
     override fun login(
         clientId: String,
@@ -47,5 +48,9 @@ class LoginRemoteDataSourceImpl constructor(
         )
         val body = param.toRequestBody("text/plain; charset=utf-8".toMediaType())
         return userApi.existUser(body)
+    }
+
+    override fun userId(): Flow<UserIdEntity> {
+        return userApi.userId()
     }
 }

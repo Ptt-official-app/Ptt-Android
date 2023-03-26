@@ -167,7 +167,7 @@ class FavoriteBoardsFragment : BaseFragment() {
                 binding?.hotBoardsFragmentRecyclerView?.adapter?.notifyDataSetChanged()
             }
             observeNotNull(errorMessage) {
-                Log.e("errorMessage", it)
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
     }

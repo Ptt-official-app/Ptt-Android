@@ -23,4 +23,14 @@ class BoardRepositoryImpl constructor(
     ): Flow<ArticleList> {
         return boardRemoteDataSource.getBoardArticles(boardId, title, startIndex, limit, desc).flowOn(Dispatchers.IO)
     }
+
+    override fun getFavoriteBoards(
+        userid: String,
+        level_idx: String,
+        startIndex: String,
+        limit: Int,
+        aces: Boolean
+    ): Flow<BoardList> {
+        return boardRemoteDataSource.getFavoriteBoards(userid, level_idx, startIndex, limit, aces).flowOn(Dispatchers.IO)
+    }
 }

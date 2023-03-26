@@ -28,4 +28,14 @@ class BoardRemoteDataSourceImpl constructor (
             desc
         )
     }
+
+    override fun getFavoriteBoards(
+        userid: String,
+        level_idx: String,
+        startIndex: String,
+        limit: Int,
+        aces: Boolean
+    ): Flow<BoardList> {
+        return boardApi.favoriteBoards(userid, level_idx, startIndex, limit, aces)
+    }
 }
