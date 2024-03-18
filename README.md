@@ -16,7 +16,7 @@ General Info
 
 Android 專案架構&資訊
 ---
-此專案參考 [Android Architecture](https://developer.android.com/topic/architecture)，分為 `UI layer`, `Domain layer`, `Data Layer`，以 module 形式切分，使用 Kolin 開發並使用 Koin 實作 DI。
+此專案參考 [Android Architecture](https://developer.android.com/topic/architecture)，分為 `UI layer`, `Domain layer`, `Data Layer`，以 module 形式切分，使用 Kotlin 開發並使用 Koin 實作 DI。
 以下將逐一介紹各 module、職責與所使用的技術
 
 #### APP Module 
