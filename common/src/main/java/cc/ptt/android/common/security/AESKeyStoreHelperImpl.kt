@@ -16,13 +16,15 @@ import javax.crypto.spec.IvParameterSpec
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 class AESKeyStoreHelperImpl constructor(
-    private val logger: PttLogger
+    private val logger: PttLogger,
 ) : AESKeyStoreHelper {
-
     companion object {
         private val TAG = AESKeyStoreHelper::class.java.simpleName
         private const val KEYSTORE_PROVIDER = "AndroidKeyStore"
-        private const val AES_MODE = "${KeyProperties.KEY_ALGORITHM_AES}/${KeyProperties.BLOCK_MODE_CBC}/${KeyProperties.ENCRYPTION_PADDING_PKCS7}" // "AES/GCM/NoPadding"
+
+        // "AES/GCM/NoPadding"
+        private const val AES_MODE =
+            "${KeyProperties.KEY_ALGORITHM_AES}/${KeyProperties.BLOCK_MODE_CBC}/${KeyProperties.ENCRYPTION_PADDING_PKCS7}"
         private const val KEYSTORE_ALIAS_AES = "KEYSTORE_AES"
         private const val SEPARATOR = "\u0000"
     }
@@ -38,16 +40,18 @@ class AESKeyStoreHelperImpl constructor(
 
     @Throws(Exception::class)
     private fun generateKey() {
-        val keyGenerator = KeyGenerator
-            .getInstance(KeyProperties.KEY_ALGORITHM_AES, KEYSTORE_PROVIDER)
-        val keyGenParameterSpec = KeyGenParameterSpec.Builder(
-            KEYSTORE_ALIAS_AES,
-            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-        )
-            .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
-            .setKeySize(256)
-            .build()
+        val keyGenerator =
+            KeyGenerator
+                .getInstance(KeyProperties.KEY_ALGORITHM_AES, KEYSTORE_PROVIDER)
+        val keyGenParameterSpec =
+            KeyGenParameterSpec
+                .Builder(
+                    KEYSTORE_ALIAS_AES,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+                ).setBlockModes(KeyProperties.BLOCK_MODE_CBC)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                .setKeySize(256)
+                .build()
         keyGenerator.init(keyGenParameterSpec)
         keyGenerator.generateKey()
     }
@@ -59,8 +63,8 @@ class AESKeyStoreHelperImpl constructor(
         return secretKeyEntry.secretKey
     }
 
-    override fun encrypt(plainText: String?): String {
-        return plainText?.let {
+    override fun encrypt(plainText: String?): String =
+        plainText?.let {
             try {
                 encryptAES(it)
             } catch (e: Exception) {
@@ -68,10 +72,9 @@ class AESKeyStoreHelperImpl constructor(
                 ""
             }
         } ?: ""
-    }
 
-    override fun decrypt(encryptedText: String?): String {
-        return encryptedText?.let {
+    override fun decrypt(encryptedText: String?): String =
+        encryptedText?.let {
             try {
                 decryptAES(it)
             } catch (e: Exception) {
@@ -79,21 +82,21 @@ class AESKeyStoreHelperImpl constructor(
                 ""
             }
         } ?: ""
-    }
 
     @Throws(Exception::class)
     private fun encryptAES(toEncrypt: String): String? {
         val cipher = Cipher.getInstance(AES_MODE)
         cipher.init(Cipher.ENCRYPT_MODE, getAESKey())
         val iv = Base64.encodeToString(cipher.iv, Base64.DEFAULT)
-        val encrypted = Base64.encodeToString(
-            cipher.doFinal(toEncrypt.toByteArray(StandardCharsets.UTF_8)),
-            Base64.DEFAULT
-        )
+        val encrypted =
+            Base64.encodeToString(
+                cipher.doFinal(toEncrypt.toByteArray(StandardCharsets.UTF_8)),
+                Base64.DEFAULT,
+            )
         val out = encrypted + SEPARATOR + iv
         return String(
             Base64.encode(out.toByteArray(StandardCharsets.UTF_8), Base64.DEFAULT),
-            StandardCharsets.UTF_8
+            StandardCharsets.UTF_8,
         )
     }
 

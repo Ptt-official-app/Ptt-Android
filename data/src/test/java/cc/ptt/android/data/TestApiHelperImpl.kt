@@ -3,18 +3,12 @@ package cc.ptt.android.data
 import cc.ptt.android.common.network.api.apihelper.ApiHelper
 
 class TestApiHelperImpl : ApiHelper {
-
-    override fun getHost(): String {
-        return BuildConfig.API_HOST.ifBlank {
+    override fun getHost(): String =
+        BuildConfig.API_HOST.ifBlank {
             ApiHelper.API_HOST
         }
-    }
 
-    override fun getClientId(): String {
-        return ApiHelper.CLIENT_ID
-    }
+    override fun getClientId(): String = ApiHelper.CLIENT_ID
 
-    override fun getClientSecret(): String {
-        return ApiHelper.CLIENT_SECRET
-    }
+    override fun getClientSecret(): String = ApiHelper.CLIENT_SECRET
 }

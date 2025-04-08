@@ -6,11 +6,12 @@ import com.google.gson.annotations.SerializedName
 
 data class ServerMessage(
     @SerializedName("Msg")
-    val msg: String
+    val msg: String,
 )
 
-val ApiException.serverMsg: ServerMessage get() = try {
-    Gson().fromJson(this.message, ServerMessage::class.java)
-} catch (_: Throwable) {
-    ServerMessage(this.message.orEmpty())
-}
+val ApiException.serverMsg: ServerMessage get() =
+    try {
+        Gson().fromJson(this.message, ServerMessage::class.java)
+    } catch (_: Throwable) {
+        ServerMessage(this.message.orEmpty())
+    }

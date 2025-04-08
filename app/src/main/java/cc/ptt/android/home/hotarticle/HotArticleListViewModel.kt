@@ -1,15 +1,20 @@
 package cc.ptt.android.home.hotarticle
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import cc.ptt.android.domain.model.ui.hotarticle.HotArticleUI
 import cc.ptt.android.domain.usecase.GetPopularArticlesUIUseCase
-import kotlinx.coroutines.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
 
 class HotArticleListViewModel constructor(
-    private val getPopularArticlesUIUseCase: GetPopularArticlesUIUseCase
+    private val getPopularArticlesUIUseCase: GetPopularArticlesUIUseCase,
 ) : ViewModel() {
-
     companion object {
         private val TAG = HotArticleListViewModel::class.java.simpleName
     }
@@ -37,18 +42,20 @@ class HotArticleListViewModel constructor(
         }
         _loadingState.value = true
         viewModelScope.launch {
-            getPopularArticlesUIUseCase.getPopularArticles(startIndex, getNext).catch { e ->
-                _loadingState.value = false
-                _errorMessage.value = e.localizedMessage
-            }.collect {
-                startIndex = it.nextIdx
-                hasNext = it.nextIdx.isNotEmpty()
-                if (!getNext) {
-                    data.clear()
+            getPopularArticlesUIUseCase
+                .getPopularArticles(startIndex, getNext)
+                .catch { e ->
+                    _loadingState.value = false
+                    _errorMessage.value = e.localizedMessage
+                }.collect {
+                    startIndex = it.nextIdx
+                    hasNext = it.nextIdx.isNotEmpty()
+                    if (!getNext) {
+                        data.clear()
+                    }
+                    data.addAll(it.data)
+                    _loadingState.value = false
                 }
-                data.addAll(it.data)
-                _loadingState.value = false
-            }
         }
     }
 

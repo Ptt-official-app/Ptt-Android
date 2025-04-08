@@ -12,10 +12,11 @@ import cc.ptt.android.data.repository.user.UserRepository
 import cc.ptt.android.data.repository.user.UserRepositoryImpl
 import org.koin.dsl.module
 
-val repositoryModules = module {
-    factory <PopularArticlesRepository> { PopularArticlesRepositoryImpl(get()) }
-    factory <ArticleRepository> { ArticleRepositoryImpl(get()) }
-    factory <BoardRepository> { BoardRepositoryImpl(get()) }
-    factory <UserRepository> { UserRepositoryImpl(get(), get()) }
-    factory <SearchBoardRepository> { SearchBoardRepositoryImpl(get()) }
-}
+val repositoryModules =
+    module {
+        factory<PopularArticlesRepository> { PopularArticlesRepositoryImpl(get()) }
+        factory<ArticleRepository> { ArticleRepositoryImpl(get()) }
+        factory<BoardRepository> { BoardRepositoryImpl(get()) }
+        factory<UserRepository> { UserRepositoryImpl(get(), get()) }
+        factory<SearchBoardRepository> { SearchBoardRepositoryImpl(get()) }
+    }

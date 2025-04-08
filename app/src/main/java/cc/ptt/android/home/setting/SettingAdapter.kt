@@ -8,10 +8,11 @@ import cc.ptt.android.databinding.ItemSettingBinding
 
 class SettingAdapter(
     private val dataList: List<SettingFragment.SettingItem>,
-    private var mOnItemClickListener: OnItemClickListener
+    private var mOnItemClickListener: OnItemClickListener,
 ) : RecyclerView.Adapter<SettingAdapter.ViewHolder>() {
-
-    class ViewHolder(private val binding: ItemSettingBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(
+        private val binding: ItemSettingBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun onBind(data: SettingFragment.SettingItem) {
             binding.apply {
                 textView.text = itemView.resources.getString(data.titleResId)
@@ -19,23 +20,29 @@ class SettingAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(ItemSettingBinding.inflate(LayoutInflater.from(parent.context), parent, false)).apply {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): ViewHolder =
+        ViewHolder(ItemSettingBinding.inflate(LayoutInflater.from(parent.context), parent, false)).apply {
             itemView.setOnClickListener {
                 mOnItemClickListener.onItemClick(it, dataList[adapterPosition])
             }
         }
-    }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        viewHolder: ViewHolder,
+        position: Int,
+    ) {
         viewHolder.onBind(dataList[position])
     }
 
-    override fun getItemCount(): Int {
-        return dataList.size
-    }
+    override fun getItemCount(): Int = dataList.size
 
     interface OnItemClickListener {
-        fun onItemClick(view: View, data: SettingFragment.SettingItem)
+        fun onItemClick(
+            view: View,
+            data: SettingFragment.SettingItem,
+        )
     }
 }

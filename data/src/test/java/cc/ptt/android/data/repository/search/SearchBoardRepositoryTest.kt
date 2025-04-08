@@ -7,21 +7,23 @@ import org.junit.Test
 import org.koin.test.inject
 
 class SearchBoardRepositoryTest : ApiTestBase(needLogin = true) {
-
     private val searchBoardRepository: SearchBoardRepository by inject()
 
     @Test
-    fun testFetchSearchBoardByKeyword() = runBlocking {
-        val keyWord = "e"
-        val limit = 200
-        searchBoardRepository.searchBoardByKeyword(keyword = keyWord, limit = limit).catch {
-            assert(false)
-        }.collect {
-            assert(it.list.isNotEmpty())
-            assert(it.list.size <= limit)
-            it.list.forEach { article ->
-                assert(article.boardId.isNotEmpty())
-            }
+    fun testFetchSearchBoardByKeyword() =
+        runBlocking {
+            val keyWord = "e"
+            val limit = 200
+            searchBoardRepository
+                .searchBoardByKeyword(keyword = keyWord, limit = limit)
+                .catch {
+                    assert(false)
+                }.collect {
+                    assert(it.list.isNotEmpty())
+                    assert(it.list.size <= limit)
+                    it.list.forEach { article ->
+                        assert(article.boardId.isNotEmpty())
+                    }
+                }
         }
-    }
 }

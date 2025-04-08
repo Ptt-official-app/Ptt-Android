@@ -11,9 +11,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class SearchBoardsModel constructor(
-    private val searchBoardRepository: SearchBoardRepository
+    private val searchBoardRepository: SearchBoardRepository,
 ) : ViewModel() {
-
     val data: MutableList<SearchBoardsItem> = mutableListOf()
 
     private val _loadingState = MutableLiveData<Boolean>()
@@ -40,24 +39,28 @@ class SearchBoardsModel constructor(
         data.clear()
         _loadingState.value = false
         searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            _loadingState.value = true
-            searchBoardRepository.searchBoardByKeyword(text).catch { e ->
-                _errorMessage.postValue("Error: $e")
-                _loadingState.value = false
-            }.collect { boards ->
-                val boardData = boards.list.map {
-                    SearchBoardsItem(
-                        boardId = it.boardId,
-                        title = it.boardName,
-                        subtitle = it.title
-                    )
-                }
-                data.clear()
-                data.addAll(boardData)
-                _loadingState.value = false
+        searchJob =
+            viewModelScope.launch {
+                _loadingState.value = true
+                searchBoardRepository
+                    .searchBoardByKeyword(text)
+                    .catch { e ->
+                        _errorMessage.postValue("Error: $e")
+                        _loadingState.value = false
+                    }.collect { boards ->
+                        val boardData =
+                            boards.list.map {
+                                SearchBoardsItem(
+                                    boardId = it.boardId,
+                                    title = it.boardName,
+                                    subtitle = it.title,
+                                )
+                            }
+                        data.clear()
+                        data.addAll(boardData)
+                        _loadingState.value = false
+                    }
             }
-        }
     }
 
     fun changeBoardLikeSate(position: Int) {

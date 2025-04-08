@@ -12,11 +12,12 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.URLSpan
 import android.widget.TextView
 import java.text.DecimalFormat
-import java.util.*
+import java.util.Locale
 import java.util.regex.Pattern
 
 private const val REGEX_URL = "(http|https|line)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]"
-private const val REGEX_IMG_URL = "(http|https)://(([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|].(jpg|png|jpeg|gif|webp|gifv))|(([im].){0,1}imgur.com/[a-zA-Z0-9]{7,10}[./]{0,1}))"
+private const val REGEX_IMG_URL =
+    "(http|https)://(([-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|].(jpg|png|jpeg|gif|webp|gifv))|(([im].){0,1}imgur.com/[a-zA-Z0-9]{7,10}[./]{0,1}))"
 private const val REGEX_COLOR = "\\[\u0000\\d+\u0000\\]"
 private const val REGEX_ACCOUNT = "[a-zA-Z0-9]{2,}"
 
@@ -26,7 +27,6 @@ private val colorPattern = Pattern.compile(REGEX_COLOR)
 // TODO the maximum length of account name?
 @Deprecated("Refactor this")
 object StringUtils {
-
     @JvmField
     val UrlPattern: Pattern = Pattern.compile(REGEX_URL)
 
@@ -78,7 +78,9 @@ object StringUtils {
 
     @JvmStatic
     fun notNullImageString(input: Any?): String {
-        return if (input == null) "" else {
+        return if (input == null) {
+            ""
+        } else {
             var uri = input.toString()
             if (uri.contains("imgur.com")) {
                 val subname = uri.lowercase(Locale.getDefault())
@@ -101,8 +103,10 @@ object StringUtils {
     }
 
     @JvmStatic
-    fun notNullString(input: Any?): String {
-        return if (input == null) "" else {
+    fun notNullString(input: Any?): String =
+        if (input == null) {
+            ""
+        } else {
             if (input is Int) {
                 input.toString()
             } else if (input is ArrayList<*>) {
@@ -116,10 +120,9 @@ object StringUtils {
                 input.toString()
             }
         }
-    }
 
     @JvmStatic
-    fun TextViewAutoSplitFix(mText: TextView) {
+    fun textViewAutoSplitFix(mText: TextView) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mText.breakStrategy = LineBreaker.BREAK_STRATEGY_SIMPLE
@@ -133,7 +136,7 @@ object StringUtils {
     fun clearStart(input: String): String = input.trim()
 
     @JvmStatic
-    fun ColorString(input: String): SpannableStringBuilder {
+    fun colorString(input: String): SpannableStringBuilder {
         val listStart: MutableList<Int> = ArrayList()
         val listEnd: MutableList<Int> = ArrayList()
         val listColor: MutableList<String> = ArrayList()
@@ -169,19 +172,19 @@ object StringUtils {
             for (j in 0 until listColor.size - 1) {
                 mine += listColor[j].length + 4
                 sp.setSpan(
-                    ForegroundColorSpan(ColorTransFront(listColor[j])),
+                    ForegroundColorSpan(colorTransFront(listColor[j])),
                     listEnd[j] + 2 - mine,
                     listStart[j + 1] - 1 - mine,
-                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE,
                 )
                 val colorint = listColor[j].replace(" ", "")
                 if (colorint.length > 1) {
                     if (colorint[colorint.length - 2] != '0') {
                         sp.setSpan(
-                            BackgroundColorSpan(ColorTransBack(colorint)),
+                            BackgroundColorSpan(colorTransBack(colorint)),
                             listEnd[j] + 2 - mine,
                             listStart[j + 1] - 1 - mine,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
                         )
                     }
                 }
@@ -190,14 +193,14 @@ object StringUtils {
             val m = UrlPattern.matcher(temp2)
             while (m.find()) {
                 val urlTemp = m.group()
-                val Start = temp.indexOf(urlTemp)
-                val endd = Start + urlTemp.length
-                sp.setSpan(URLSpan(urlTemp), Start, endd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val internalStart = temp.indexOf(urlTemp)
+                val internalEnd = internalStart + urlTemp.length
+                sp.setSpan(URLSpan(urlTemp), internalStart, internalEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 sp.setSpan(
                     ForegroundColorSpan(StaticValue.webUrlColor),
-                    Start,
-                    endd,
-                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                    internalStart,
+                    internalEnd,
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE,
                 )
             }
         } catch (e: Exception) {
@@ -206,108 +209,110 @@ object StringUtils {
     }
 
     @JvmStatic
-    fun ColorTransFront(input: String): Int {
+    fun colorTransFront(input: String): Int {
         var input = input
         var oo = 0
         input = input.replace(" ", "")
         input = input.replace("\u0000", "")
         input = input.replace("[", "")
         input = input.replace("]", "")
-        oo = if (input.length > 2) {
-            if (input[input.length - 3] == '1') {
-                when (input[input.length - 1]) {
-                    '0' -> StaticValue.ArticleFont_130
-                    '1' -> StaticValue.ArticleFont_131
-                    '2' -> StaticValue.ArticleFont_132
-                    '3' -> StaticValue.ArticleFont_133
-                    '4' -> StaticValue.ArticleFont_134
-                    '5' -> StaticValue.ArticleFont_135
-                    '6' -> StaticValue.ArticleFont_136
-                    '7' ->
-                        if (StaticValue.ThemMode == 1) {
-                            // mainLayout.setBackgroundColor(Color.parseColor("#ffffff"));
-                            if (StaticValue.ArticleFont_137 == Color.WHITE) {
-                                Color.BLACK
+        oo =
+            if (input.length > 2) {
+                if (input[input.length - 3] == '1') {
+                    when (input[input.length - 1]) {
+                        '0' -> StaticValue.ArticleFont_130
+                        '1' -> StaticValue.ArticleFont_131
+                        '2' -> StaticValue.ArticleFont_132
+                        '3' -> StaticValue.ArticleFont_133
+                        '4' -> StaticValue.ArticleFont_134
+                        '5' -> StaticValue.ArticleFont_135
+                        '6' -> StaticValue.ArticleFont_136
+                        '7' ->
+                            if (StaticValue.themMode == 1) {
+                                // mainLayout.setBackgroundColor(Color.parseColor("#ffffff"));
+                                if (StaticValue.ArticleFont_137 == Color.WHITE) {
+                                    Color.BLACK
+                                } else {
+                                    StaticValue.ArticleFont_137
+                                }
                             } else {
                                 StaticValue.ArticleFont_137
                             }
-                        } else {
-                            StaticValue.ArticleFont_137
-                        }
-                    else ->
-                        if (StaticValue.ThemMode == 1) {
-                            if (StaticValue.ArticleFont_137 == Color.WHITE) {
-                                Color.BLACK
+                        else ->
+                            if (StaticValue.themMode == 1) {
+                                if (StaticValue.ArticleFont_137 == Color.WHITE) {
+                                    Color.BLACK
+                                } else {
+                                    StaticValue.ArticleFont_137
+                                }
                             } else {
                                 StaticValue.ArticleFont_137
                             }
+                    }
+                } else {
+                    if (StaticValue.themMode == 1) {
+                        if (StaticValue.ArticleFont_137 == Color.WHITE) {
+                            Color.BLACK
                         } else {
                             StaticValue.ArticleFont_137
                         }
-                }
-            } else {
-                if (StaticValue.ThemMode == 1) {
-                    if (StaticValue.ArticleFont_137 == Color.WHITE) {
-                        Color.BLACK
                     } else {
                         StaticValue.ArticleFont_137
                     }
-                } else {
-                    StaticValue.ArticleFont_137
+                }
+            } else {
+                when (input[input.length - 1]) {
+                    '0' -> StaticValue.ArticleFont_30
+                    '1' -> StaticValue.ArticleFont_31
+                    '2' -> StaticValue.ArticleFont_32
+                    '3' -> StaticValue.ArticleFont_33
+                    '4' -> StaticValue.ArticleFont_34
+                    '5' -> StaticValue.ArticleFont_35
+                    '6' -> StaticValue.ArticleFont_36
+                    '7' ->
+                        if (StaticValue.themMode == 1) {
+                            // mainLayout.setBackgroundColor(Color.parseColor("#ffffff"));
+                            if (StaticValue.ArticleFont_37 == Color.WHITE) {
+                                Color.BLACK
+                            } else {
+                                StaticValue.ArticleFont_37
+                            }
+                        } else {
+                            StaticValue.ArticleFont_37
+                        }
+                    else ->
+                        if (StaticValue.themMode == 1) {
+                            if (StaticValue.ArticleFont_37 == Color.WHITE) {
+                                Color.BLACK
+                            } else {
+                                StaticValue.ArticleFont_37
+                            }
+                        } else {
+                            StaticValue.ArticleFont_37
+                        }
                 }
             }
-        } else {
-            when (input[input.length - 1]) {
-                '0' -> StaticValue.ArticleFont_30
-                '1' -> StaticValue.ArticleFont_31
-                '2' -> StaticValue.ArticleFont_32
-                '3' -> StaticValue.ArticleFont_33
-                '4' -> StaticValue.ArticleFont_34
-                '5' -> StaticValue.ArticleFont_35
-                '6' -> StaticValue.ArticleFont_36
-                '7' ->
-                    if (StaticValue.ThemMode == 1) {
-                        // mainLayout.setBackgroundColor(Color.parseColor("#ffffff"));
-                        if (StaticValue.ArticleFont_37 == Color.WHITE) {
-                            Color.BLACK
-                        } else {
-                            StaticValue.ArticleFont_37
-                        }
-                    } else {
-                        StaticValue.ArticleFont_37
-                    }
-                else ->
-                    if (StaticValue.ThemMode == 1) {
-                        if (StaticValue.ArticleFont_37 == Color.WHITE) {
-                            Color.BLACK
-                        } else {
-                            StaticValue.ArticleFont_37
-                        }
-                    } else {
-                        StaticValue.ArticleFont_37
-                    }
-            }
-        }
         return oo
     }
 
     @JvmStatic
-    fun ColorTransBack(input: String): Int {
+    fun colorTransBack(input: String): Int {
         var oo = 0
         if (input.length > 1) {
-            oo = when (input[input.length - 2]) {
-                '0' -> StaticValue.ArticleBack_40
-                '1' -> StaticValue.ArticleBack_41
-                '2' -> StaticValue.ArticleBack_42
-                '3' -> StaticValue.ArticleBack_43
-                '4' -> StaticValue.ArticleBack_44
-                '5' -> StaticValue.ArticleBack_45
-                '6' -> StaticValue.ArticleBack_46
-                '7' -> StaticValue.ArticleBack_47
-                else -> StaticValue.ArticleBack_40
-            }
+            oo =
+                when (input[input.length - 2]) {
+                    '0' -> StaticValue.ArticleBack_40
+                    '1' -> StaticValue.ArticleBack_41
+                    '2' -> StaticValue.ArticleBack_42
+                    '3' -> StaticValue.ArticleBack_43
+                    '4' -> StaticValue.ArticleBack_44
+                    '5' -> StaticValue.ArticleBack_45
+                    '6' -> StaticValue.ArticleBack_46
+                    '7' -> StaticValue.ArticleBack_47
+                    else -> StaticValue.ArticleBack_40
+                }
         } else {
-            when (StaticValue.ThemMode) {
+            when (StaticValue.themMode) {
                 0 -> oo = Color.parseColor("#313131")
                 1 -> oo = Color.parseColor("#000000")
             }
@@ -334,17 +339,14 @@ object StringUtils {
     class SortDecimal(
         var sortDecimal: String = "",
         private var overDecimal: Boolean = false,
-        var orgDecimal: Int = 0
+        var orgDecimal: Int = 0,
     ) {
-
         fun isOverDecimal(): Boolean = overDecimal
 
         fun setOverDecimal(overDecimal: Boolean) {
             this.overDecimal = overDecimal
         }
 
-        override fun toString(): String {
-            return sortDecimal
-        }
+        override fun toString(): String = sortDecimal
     }
 }

@@ -5,5 +5,5 @@ data class Comment(
     val tag: String,
     val content: String,
     val ip: String,
-    val date: String
+    val date: String,
 )

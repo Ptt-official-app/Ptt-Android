@@ -4,14 +4,12 @@ import cc.ptt.android.data.model.remote.user.login.LoginEntity
 import cc.ptt.android.data.preference.UserInfoPreferences
 
 class LoginLocalDataSourceImpl constructor(
-    private val userInfoPreferences: UserInfoPreferences
+    private val userInfoPreferences: UserInfoPreferences,
 ) : LoginLocalDataSource {
-
-    override fun isLogin(): Boolean {
-        return getUserInfo()?.let {
+    override fun isLogin(): Boolean =
+        getUserInfo()?.let {
             true
         } ?: false
-    }
 
     override fun cleanUserInfo() {
         userInfoPreferences.setLogin(null)
@@ -21,7 +19,5 @@ class LoginLocalDataSourceImpl constructor(
         userInfoPreferences.setLogin(loginEntity)
     }
 
-    override fun getUserInfo(): LoginEntity? {
-        return userInfoPreferences.getLogin()
-    }
+    override fun getUserInfo(): LoginEntity? = userInfoPreferences.getLogin()
 }

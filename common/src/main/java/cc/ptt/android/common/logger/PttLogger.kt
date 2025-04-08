@@ -5,8 +5,27 @@ interface PttLogger {
         val TAG: String = PttLogger::class.java.simpleName
     }
 
-    fun d(tag: String? = TAG, msg: String? = null, t: Throwable? = null)
-    fun i(tag: String? = TAG, msg: String? = null, t: Throwable? = null)
-    fun w(tag: String? = TAG, msg: String? = null, t: Throwable? = null)
-    fun e(tag: String? = TAG, msg: String? = null, t: Throwable? = null)
+    fun d(
+        tag: String? = TAG,
+        msg: String? = null,
+        t: Throwable? = null,
+    )
+
+    fun i(
+        tag: String? = TAG,
+        msg: String? = null,
+        t: Throwable? = null,
+    )
+
+    fun w(
+        tag: String? = TAG,
+        msg: String? = null,
+        t: Throwable? = null,
+    )
+
+    fun e(
+        tag: String? = TAG,
+        msg: String? = null,
+        t: Throwable? = null,
+    )
 }

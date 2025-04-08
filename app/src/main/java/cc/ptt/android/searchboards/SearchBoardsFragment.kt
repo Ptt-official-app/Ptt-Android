@@ -22,7 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchBoardsFragment : BaseFragment() {
     private var _binding: SearchBoardsFragmentLayoutBinding? = null
-    private val binding get() = _binding
+    val binding get() = _binding
     private val mClickFix = ClickFix()
 
     private val viewModel: SearchBoardsModel by viewModel()
@@ -30,14 +30,18 @@ class SearchBoardsFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return SearchBoardsFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
-    }
+        savedInstanceState: Bundle?,
+    ): View =
+        SearchBoardsFragmentLayoutBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
             searchBoardsItemImageViewLike.setOnClickListener {
@@ -54,7 +58,7 @@ class SearchBoardsFragment : BaseFragment() {
                     android.R.color.holo_red_light,
                     android.R.color.holo_blue_light,
                     android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light
+                    android.R.color.holo_orange_light,
                 )
                 setOnRefreshListener {
                     viewModel.loadData()
@@ -67,15 +71,16 @@ class SearchBoardsFragment : BaseFragment() {
                 setHasFixedSize(true)
                 this.layoutManager = layoutManager
 
-                adapter = SearchBoardsAdapter(
-                    viewModel.data,
-                    object : SearchBoardsAdapter.OnItemClickListener {
-                        override fun onItemClick(item: SearchBoardsItem) {
-                            if (mClickFix.isFastDoubleClick) return
-                            Navigation.switchToArticleListPage(requireActivity(), item.title, item.subtitle, item.boardId)
-                        }
-                    }
-                )
+                adapter =
+                    SearchBoardsAdapter(
+                        viewModel.data,
+                        object : SearchBoardsAdapter.OnItemClickListener {
+                            override fun onItemClick(item: SearchBoardsItem) {
+                                if (mClickFix.isFastDoubleClick) return
+                                Navigation.switchToArticleListPage(requireActivity(), item.title, item.subtitle, item.boardId)
+                            }
+                        },
+                    )
                 (adapter as SearchBoardsAdapter).setLikeOnClickListener {
                     if (viewModel.loadingState.value == false && mClickFix.isFastDoubleClick) {
                         val position: Int = it.tag as Int
@@ -84,17 +89,29 @@ class SearchBoardsFragment : BaseFragment() {
                 }
             }
 
-            searchBoardsFragmentEditTextSearch.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    viewModel.searchBoard(s.toString())
-                }
+            searchBoardsFragmentEditTextSearch.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        viewModel.searchBoard(s.toString())
+                    }
 
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int,
+                    ) {
+                    }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                }
-            })
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int,
+                    ) {
+                    }
+                },
+            )
         }
 
         viewModel.apply {

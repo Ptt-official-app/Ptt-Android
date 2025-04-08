@@ -7,6 +7,6 @@ interface PopularArticlesRepository {
     fun getPopularArticles(
         startIndex: String,
         limit: Int,
-        desc: Boolean
+        desc: Boolean,
     ): Flow<HotArticleList>
 }

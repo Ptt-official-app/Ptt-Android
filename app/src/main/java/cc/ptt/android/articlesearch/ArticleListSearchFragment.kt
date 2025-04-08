@@ -10,9 +10,8 @@ import cc.ptt.android.databinding.ArticleListSearchFragmentLayoutBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ArticleListSearchFragment : BaseFragment() {
-
     private var _binding: ArticleListSearchFragmentLayoutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val boardName = "搜尋文章"
     private val boardSubName = ""
@@ -20,14 +19,18 @@ class ArticleListSearchFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ArticleListSearchFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
-    }
+        savedInstanceState: Bundle?,
+    ): View =
+        ArticleListSearchFragmentLayoutBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         binding.apply {
             binding.articleListFragmentTextViewTitle.text = boardName
             binding.articleListFragmentTextViewSubtitle.text = boardSubName
@@ -50,7 +53,7 @@ class ArticleListSearchFragment : BaseFragment() {
                         }
                     }
                     false
-                }
+                },
             )
         }
     }

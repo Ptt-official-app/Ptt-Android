@@ -5,10 +5,9 @@ import androidx.annotation.ColorInt
 import cc.ptt.android.common.StaticValue
 
 object PttColor {
-
     @ColorInt
-    fun colorTrans(input: String): Int {
-        return when (input[input.length - 1]) {
+    fun colorTrans(input: String): Int =
+        when (input[input.length - 1]) {
             '0' -> Color.parseColor("#666666") // 銀灰
             '1' -> Color.parseColor("#FF6666") // 大紅
             '2' -> Color.parseColor("#66ff66") // 淺綠
@@ -17,23 +16,25 @@ object PttColor {
             '5' -> Color.parseColor("#FF66FF") // 粉紅
             '6' -> Color.parseColor("#66ffff") //
             '7' ->
-                if (StaticValue.ThemMode == 1) {
+                if (StaticValue.themMode == 1) {
                     Color.BLACK
                 } else {
                     Color.WHITE
                 }
             else ->
-                if (StaticValue.ThemMode == 1) {
+                if (StaticValue.themMode == 1) {
                     Color.BLACK
                 } else {
                     Color.WHITE
                 }
         }
-    }
 
     @ColorInt
-    fun foregroundColor(int: Int, isHighlight: Boolean): Int {
-        return if (isHighlight) {
+    fun foregroundColor(
+        int: Int,
+        isHighlight: Boolean,
+    ): Int =
+        if (isHighlight) {
             when (int) {
                 30 -> StaticValue.ArticleFont_130
                 31 -> StaticValue.ArticleFont_131
@@ -43,7 +44,7 @@ object PttColor {
                 35 -> StaticValue.ArticleFont_135
                 36 -> StaticValue.ArticleFont_136
                 37 ->
-                    if (StaticValue.ThemMode == 1) {
+                    if (StaticValue.themMode == 1) {
                         Color.BLACK
                     } else {
                         Color.WHITE
@@ -60,7 +61,7 @@ object PttColor {
                 35 -> StaticValue.ArticleFont_35
                 36 -> StaticValue.ArticleFont_36
                 37 ->
-                    if (StaticValue.ThemMode == 1) {
+                    if (StaticValue.themMode == 1) {
                         Color.BLACK
                     } else {
                         Color.WHITE
@@ -68,11 +69,10 @@ object PttColor {
                 else -> throw IllegalStateException("unknown foreground color: $int")
             }
         }
-    }
 
     @ColorInt
-    fun backgroundColor(int: Int): Int {
-        return when (int) {
+    fun backgroundColor(int: Int): Int =
+        when (int) {
             40 -> Color.TRANSPARENT
             41 -> StaticValue.ArticleBack_41
             42 -> StaticValue.ArticleBack_42
@@ -83,5 +83,4 @@ object PttColor {
             47 -> StaticValue.ArticleBack_47
             else -> throw IllegalStateException("unknown background color: $int")
         }
-    }
 }

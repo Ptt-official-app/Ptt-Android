@@ -21,10 +21,9 @@ import org.koin.android.ext.android.inject
 import java.lang.Exception
 
 class PostArticleFragment : BaseFragment() {
-
     private val mainPreferences: MainPreferences by inject()
     private var _binding: PostArticleFragmentLayoutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val boardNameTextView: TextView get() = binding.postArticleFragmentTextViewTitle
     private val go2BackBtn: ImageButton get() = binding.articleReadItemHeaderImageViewBack
@@ -38,12 +37,18 @@ class PostArticleFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = PostArticleFragmentLayoutBinding.inflate(inflater, container, false).apply {
-        _binding = this
-    }.root
+        savedInstanceState: Bundle?,
+    ): View =
+        PostArticleFragmentLayoutBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         go2BackBtn.setOnClickListener { requireActivity().onBackPressed() }
         mOnNavigationItemSelectedListener =
@@ -74,35 +79,36 @@ class PostArticleFragment : BaseFragment() {
     }
 
     private var keyboardMode = false
-    private val globalLayoutListener = OnGlobalLayoutListener {
-        _binding?.root?.let {
-            val r = Rect()
-            it.getWindowVisibleDisplayFrame(r)
-            if (!keyboardMode &&
-                it.rootView.height -
-                (r.bottom - r.top)
-            > StaticValue.widthPixels.coerceAtMost(StaticValue.highPixels) /
-                2
-            ) {
-                navigation.menu.clear()
-                navigation.inflateMenu(
-                    R.menu.post_article_bottom_navigation_menu3
-                )
-                keyboardMode = true
-            } else if (keyboardMode &&
-                it.rootView.height -
-                (r.bottom - r.top)
-                < StaticValue.widthPixels.coerceAtMost(StaticValue.highPixels) /
-                2
-            ) {
-                keyboardMode = false
-                navigation.menu.clear()
-                navigation.inflateMenu(
-                    R.menu.post_article_bottom_navigation_menu2
-                )
+    private val globalLayoutListener =
+        OnGlobalLayoutListener {
+            _binding?.root?.let {
+                val r = Rect()
+                it.getWindowVisibleDisplayFrame(r)
+                if (!keyboardMode &&
+                    it.rootView.height -
+                    (r.bottom - r.top)
+                    > StaticValue.widthPixels.coerceAtMost(StaticValue.highPixels) /
+                    2
+                ) {
+                    navigation.menu.clear()
+                    navigation.inflateMenu(
+                        R.menu.post_article_bottom_navigation_menu3,
+                    )
+                    keyboardMode = true
+                } else if (keyboardMode &&
+                    it.rootView.height -
+                    (r.bottom - r.top)
+                    < StaticValue.widthPixels.coerceAtMost(StaticValue.highPixels) /
+                    2
+                ) {
+                    keyboardMode = false
+                    navigation.menu.clear()
+                    navigation.inflateMenu(
+                        R.menu.post_article_bottom_navigation_menu2,
+                    )
+                }
             }
         }
-    }
 
     override fun onAnimFinished() {
         loadData()

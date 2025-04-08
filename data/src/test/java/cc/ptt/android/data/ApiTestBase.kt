@@ -21,9 +21,8 @@ import org.koin.test.inject
 @FlowPreview
 @ExperimentalCoroutinesApi
 open class ApiTestBase constructor(
-    private val needLogin: Boolean = true
+    private val needLogin: Boolean = true,
 ) : KoinTestBase() {
-
     companion object {
         @JvmStatic
         var userInfo: LoginEntity? = null
@@ -33,13 +32,14 @@ open class ApiTestBase constructor(
     var mainCoroutineRule = MainCoroutineRule()
 
     @Before
-    fun setUp() = runBlocking {
-        unloadKoinModules(localDataSourceModules)
-        loadKoinModules(testLocalDataSourceModules)
-        if (needLogin) {
-            login()
+    fun setUp() =
+        runBlocking {
+            unloadKoinModules(localDataSourceModules)
+            loadKoinModules(testLocalDataSourceModules)
+            if (needLogin) {
+                login()
+            }
         }
-    }
 
     @After
     fun tearDown() {
@@ -54,24 +54,24 @@ open class ApiTestBase constructor(
         }
         val userRepository: UserRepository by inject()
         val apiHelper: ApiHelper by inject()
-        userRepository.login(
-            apiHelper.getClientId(),
-            apiHelper.getClientSecret(),
-            BuildConfig.TEST_ACCOUNT,
-            BuildConfig.TEST_PASSWORD
-        ).catch { e ->
-            println("[Test] Login error: $e")
-        }.collect()
+        userRepository
+            .login(
+                apiHelper.getClientId(),
+                apiHelper.getClientSecret(),
+                BuildConfig.TEST_ACCOUNT,
+                BuildConfig.TEST_PASSWORD,
+            ).catch { e ->
+                println("[Test] Login error: $e")
+            }.collect()
     }
 
-    private val testLocalDataSourceModules = module {
-        single <LoginLocalDataSource> { TestLoginLocalDataSource() }
-    }
+    private val testLocalDataSourceModules =
+        module {
+            single<LoginLocalDataSource> { TestLoginLocalDataSource() }
+        }
 
     class TestLoginLocalDataSource : LoginLocalDataSource {
-        override fun isLogin(): Boolean {
-            return userInfo != null
-        }
+        override fun isLogin(): Boolean = userInfo != null
 
         override fun cleanUserInfo() {
             userInfo = null
@@ -81,8 +81,6 @@ open class ApiTestBase constructor(
             Companion.userInfo = userInfo
         }
 
-        override fun getUserInfo(): LoginEntity? {
-            return userInfo
-        }
+        override fun getUserInfo(): LoginEntity? = userInfo
     }
 }

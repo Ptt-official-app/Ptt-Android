@@ -7,7 +7,7 @@ import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.databinding.ArticleListItemDeleteBinding
 
 class DeletedViewHolder constructor(
-    private val binding: ArticleListItemDeleteBinding
+    private val binding: ArticleListItemDeleteBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
     fun onBind(data: Article) {
         binding.apply {

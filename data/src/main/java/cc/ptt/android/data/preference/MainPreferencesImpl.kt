@@ -4,9 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 
 class MainPreferencesImpl constructor(
-    private val context: Context
+    private val context: Context,
 ) : MainPreferences {
-
     private val preference: SharedPreferences by lazy { context.getSharedPreferences(KEY_FOR_PREFERENCE, Context.MODE_PRIVATE) }
 
     override fun setApiDomain(text: String?) {
@@ -23,9 +22,7 @@ class MainPreferencesImpl constructor(
         }
     }
 
-    override fun getApiDomain(): String {
-        return preference.getString(KEY_FOR_API_DOMAIN, "").orEmpty()
-    }
+    override fun getApiDomain(): String = preference.getString(KEY_FOR_API_DOMAIN, "").orEmpty()
 
     override fun setThemeType(type: Int) {
         val editor = preference.edit()
@@ -33,9 +30,7 @@ class MainPreferencesImpl constructor(
         editor.apply()
     }
 
-    override fun getThemeType(): Int {
-        return preference.getInt(KEY_FOR_APP_THEME, VALUE_FOR_DEFAULT_APP_THEME)
-    }
+    override fun getThemeType(): Int = preference.getInt(KEY_FOR_APP_THEME, VALUE_FOR_DEFAULT_APP_THEME)
 
     override fun setSearchStyle(type: Int) {
         val editor = preference.edit()
@@ -43,9 +38,7 @@ class MainPreferencesImpl constructor(
         editor.apply()
     }
 
-    override fun getSearchStyle(): Int {
-        return preference.getInt(KEY_FOR_APP_SEARCH_STYLE, VALUE_FOR_DEFAULT_APP_SEARCH_STYLE)
-    }
+    override fun getSearchStyle(): Int = preference.getInt(KEY_FOR_APP_SEARCH_STYLE, VALUE_FOR_DEFAULT_APP_SEARCH_STYLE)
 
     override fun setPostBottomStyle(type: Int) {
         val editor = preference.edit()
@@ -53,9 +46,7 @@ class MainPreferencesImpl constructor(
         editor.apply()
     }
 
-    override fun getPostBottomStyle(): Int {
-        return preference.getInt(KEY_FOR_APP_POST_BOTTOM_STYLE, VALUE_FOR_DEFAULT_APP_POST_BOTTOM_STYLE)
-    }
+    override fun getPostBottomStyle(): Int = preference.getInt(KEY_FOR_APP_POST_BOTTOM_STYLE, VALUE_FOR_DEFAULT_APP_POST_BOTTOM_STYLE)
 
     companion object {
         const val KEY_FOR_PREFERENCE = "main_preferences"

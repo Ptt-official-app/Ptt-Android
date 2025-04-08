@@ -17,11 +17,12 @@ import cc.ptt.android.home.personalpage.PersonalPageFragment
 import cc.ptt.android.home.setting.SettingFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemReselectedListener
-import java.util.*
+import java.util.EnumMap
 
 class HomeFragment : BaseFragment() {
-
-    enum class PageType(val value: Int) {
+    enum class PageType(
+        val value: Int,
+    ) {
         HotBoards(1),
         FavoriteBoards(2),
         HotArticles(4),
@@ -38,16 +39,19 @@ class HomeFragment : BaseFragment() {
     private var mOnNavigationItemReselectedListener: OnNavigationItemReselectedListener? = null
 
     private var _binding: HomeFragmentLayoutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        val view = HomeFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
+        val view =
+            HomeFragmentLayoutBinding
+                .inflate(inflater, container, false)
+                .apply {
+                    _binding = this
+                }.root
         return view
     }
 
@@ -58,11 +62,12 @@ class HomeFragment : BaseFragment() {
                     homeFragmentMap[PageType.FavoriteBoards] is FavoriteBoardsFragment
                 ) {
                     if ((homeFragmentMap[PageType.FavoriteBoards] as? FavoriteBoardsFragment)?.isEditMode() == true) {
-                        val mm = Toast.makeText(
-                            context,
-                            R.string.attion_close_edit_mode,
-                            Toast.LENGTH_SHORT
-                        )
+                        val mm =
+                            Toast.makeText(
+                                context,
+                                R.string.attion_close_edit_mode,
+                                Toast.LENGTH_SHORT,
+                            )
                         mm.setGravity(Gravity.CENTER, 0, 0)
                         mm.show()
                         return false
@@ -72,22 +77,26 @@ class HomeFragment : BaseFragment() {
         val fragment: Fragment?
         val key = getPageTypeById(id)
         if (!homeFragmentMap.containsKey(key)) {
-            fragment = when (id) {
-                R.id.home_bottom_navigation_item_hot_boards -> HotBoardsFragment.newInstance(Bundle())
-                R.id.home_bottom_navigation_item_favorite_boards -> FavoriteBoardsFragment.newInstance(
-                    Bundle()
-                )
-                R.id.home_bottom_navigation_item_hot_articles -> HotArticleListFragment.newInstance(
-                    Bundle()
-                )
-                R.id.home_bottom_navigation_item_more_action -> SettingFragment.newInstance(Bundle())
-                R.id.home_bottom_navigation_item_user_page -> PersonalPageFragment.newInstance(
-                    Bundle()
-                )
-                else -> EmptyFragment.newInstance(Bundle())
-            }.apply {
-                homeFragmentMap[key] = this
-            }
+            fragment =
+                when (id) {
+                    R.id.home_bottom_navigation_item_hot_boards -> HotBoardsFragment.newInstance(Bundle())
+                    R.id.home_bottom_navigation_item_favorite_boards ->
+                        FavoriteBoardsFragment.newInstance(
+                            Bundle(),
+                        )
+                    R.id.home_bottom_navigation_item_hot_articles ->
+                        HotArticleListFragment.newInstance(
+                            Bundle(),
+                        )
+                    R.id.home_bottom_navigation_item_more_action -> SettingFragment.newInstance(Bundle())
+                    R.id.home_bottom_navigation_item_user_page ->
+                        PersonalPageFragment.newInstance(
+                            Bundle(),
+                        )
+                    else -> EmptyFragment.newInstance(Bundle())
+                }.apply {
+                    homeFragmentMap[key] = this
+                }
         } else {
             fragment = homeFragmentMap[key]
         }
@@ -98,8 +107,8 @@ class HomeFragment : BaseFragment() {
         return true
     }
 
-    private fun getPageTypeById(id: Int): PageType {
-        return when (id) {
+    private fun getPageTypeById(id: Int): PageType =
+        when (id) {
             R.id.home_bottom_navigation_item_hot_boards -> PageType.HotBoards
             R.id.home_bottom_navigation_item_favorite_boards -> PageType.FavoriteBoards
             R.id.home_bottom_navigation_item_hot_articles -> PageType.HotArticles
@@ -107,40 +116,43 @@ class HomeFragment : BaseFragment() {
             R.id.home_bottom_navigation_item_user_page -> PageType.UserPage
             else -> PageType.EmptyPage
         }
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         mOnNavigationItemSelectedListener =
             BottomNavigationView.OnNavigationItemSelectedListener { item -> changeFragment(item.itemId) }
-        mOnNavigationItemReselectedListener = OnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.home_bottom_navigation_item_hot_boards ->
-                    if (homeFragmentMap.containsKey(
-                            PageType.HotBoards
-                        )
-                    ) {
-                        (homeFragmentMap[PageType.HotBoards] as? HotBoardsFragment)?.scrollToTop()
-                    }
-                R.id.home_bottom_navigation_item_favorite_boards ->
-                    if (homeFragmentMap.containsKey(
-                            PageType.FavoriteBoards
-                        )
-                    ) {
-                        (homeFragmentMap[PageType.FavoriteBoards] as? FavoriteBoardsFragment)?.scrollToTop()
-                    }
-                R.id.home_bottom_navigation_item_hot_articles ->
-                    if (homeFragmentMap.containsKey(
-                            PageType.HotArticles
-                        )
-                    ) {
-                        (homeFragmentMap[PageType.HotArticles] as? HotArticleListFragment)?.scrollToTop()
-                    }
-                R.id.home_bottom_navigation_item_user_page -> {}
-                R.id.home_bottom_navigation_item_more_action -> {}
-                else -> {}
+        mOnNavigationItemReselectedListener =
+            OnNavigationItemReselectedListener { item ->
+                when (item.itemId) {
+                    R.id.home_bottom_navigation_item_hot_boards ->
+                        if (homeFragmentMap.containsKey(
+                                PageType.HotBoards,
+                            )
+                        ) {
+                            (homeFragmentMap[PageType.HotBoards] as? HotBoardsFragment)?.scrollToTop()
+                        }
+                    R.id.home_bottom_navigation_item_favorite_boards ->
+                        if (homeFragmentMap.containsKey(
+                                PageType.FavoriteBoards,
+                            )
+                        ) {
+                            (homeFragmentMap[PageType.FavoriteBoards] as? FavoriteBoardsFragment)?.scrollToTop()
+                        }
+                    R.id.home_bottom_navigation_item_hot_articles ->
+                        if (homeFragmentMap.containsKey(
+                                PageType.HotArticles,
+                            )
+                        ) {
+                            (homeFragmentMap[PageType.HotArticles] as? HotArticleListFragment)?.scrollToTop()
+                        }
+                    R.id.home_bottom_navigation_item_user_page -> {}
+                    R.id.home_bottom_navigation_item_more_action -> {}
+                    else -> {}
+                }
             }
-        }
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         navigation.setOnNavigationItemReselectedListener(mOnNavigationItemReselectedListener)
     }
@@ -164,9 +176,8 @@ class HomeFragment : BaseFragment() {
                     .add(
                         R.id.framelayout_home,
                         toFragment,
-                        toFragment.javaClass.simpleName
-                    )
-                    .hide(preFragment!!)
+                        toFragment.javaClass.simpleName,
+                    ).hide(preFragment!!)
                     .show(toFragment)
                     .commit()
             }

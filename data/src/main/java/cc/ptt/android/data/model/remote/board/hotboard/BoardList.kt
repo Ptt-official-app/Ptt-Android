@@ -6,7 +6,7 @@ data class BoardList(
     @SerializedName("list")
     val list: List<Board>,
     @SerializedName("next_idx")
-    val nextId: String
+    val nextId: String,
 )
 
 data class Board(
@@ -35,5 +35,5 @@ data class Board(
     @SerializedName("total")
     val totalArticles: Int,
     @SerializedName("type")
-    val type: String
+    val type: String,
 )

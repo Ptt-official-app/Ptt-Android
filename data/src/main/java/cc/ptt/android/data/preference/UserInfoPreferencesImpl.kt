@@ -7,9 +7,8 @@ import cc.ptt.android.data.model.remote.user.login.LoginEntity
 
 class UserInfoPreferencesImpl constructor(
     private val context: Context,
-    private val keyStoreHelper: AESKeyStoreHelper
+    private val keyStoreHelper: AESKeyStoreHelper,
 ) : UserInfoPreferences {
-
     private val preference: SharedPreferences by lazy { context.getSharedPreferences(KEY_FOR_PREFERENCE, Context.MODE_PRIVATE) }
 
     override fun setLogin(loginEntity: LoginEntity?) {

@@ -7,14 +7,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
 class SearchBoardRepositoryImpl constructor(
-    private val searchBoardRemoteDataSource: SearchBoardRemoteDataSource
+    private val searchBoardRemoteDataSource: SearchBoardRemoteDataSource,
 ) : SearchBoardRepository {
     override fun searchBoardByKeyword(
         keyword: String,
         startIndex: String,
         limit: Int,
-        aces: Boolean
-    ): Flow<BoardList> {
-        return searchBoardRemoteDataSource.searchBoardByKeyword(keyword, startIndex, limit, aces).flowOn(Dispatchers.IO)
-    }
+        aces: Boolean,
+    ): Flow<BoardList> = searchBoardRemoteDataSource.searchBoardByKeyword(keyword, startIndex, limit, aces).flowOn(Dispatchers.IO)
 }

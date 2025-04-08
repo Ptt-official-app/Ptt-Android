@@ -17,8 +17,12 @@ import cc.ptt.android.domain.model.ui.article.ArticleReadInfo
 import cc.ptt.android.domain.model.ui.article.PostRankMark
 import cc.ptt.android.domain.usecase.article.CreateArticleCommentUseCase
 import cc.ptt.android.domain.usecase.article.GetArticleUseCase
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.launch
 
 class ArticleReadViewModel constructor(
     private val articleRepository: ArticleRepository,
@@ -27,7 +31,6 @@ class ArticleReadViewModel constructor(
     private val userRepository: UserRepository,
     private val logger: PttLogger,
 ) : ViewModel() {
-
     val data: MutableList<ArticleReadInfo> = mutableListOf()
 
     private var headerArticleReadInfo: ArticleReadInfo? = null
@@ -49,18 +52,26 @@ class ArticleReadViewModel constructor(
 
     sealed class ActionEvent {
         object ChooseCommentType : ActionEvent()
-        data class CreateCommentSuccess(val comment: cc.ptt.android.data.model.remote.article.ArticleComment) : ActionEvent()
+
+        data class CreateCommentSuccess(
+            val comment: cc.ptt.android.data.model.remote.article.ArticleComment,
+        ) : ActionEvent()
     }
 
-    private fun emitActionState(action: ActionEvent) = viewModelScope.launch {
-        _actionState.emit(action)
-    }
+    private fun emitActionState(action: ActionEvent) =
+        viewModelScope.launch {
+            _actionState.emit(action)
+        }
 
-    fun isLogin(): Boolean = userRepository.isLogin().apply {
-        logger.d(TAG, "isLogin: ${userRepository.getUserInfo()}")
-    }
+    fun isLogin(): Boolean =
+        userRepository.isLogin().apply {
+            logger.d(TAG, "isLogin: ${userRepository.getUserInfo()}")
+        }
 
-    fun originalTitle(classX: String, title: String) = if (classX.isBlank()) {
+    fun originalTitle(
+        classX: String,
+        title: String,
+    ) = if (classX.isBlank()) {
         title
     } else {
         "[$classX] $title"
@@ -71,19 +82,19 @@ class ArticleReadViewModel constructor(
         articleAuth: String,
         articleTime: Int,
         articleClass: String,
-        articleBoard: String
+        articleBoard: String,
     ) {
-
-        headerArticleReadInfo = ArticleReadInfo.HeaderInfo(
-            articleTitle,
-            articleAuth,
-            DateFormatUtils.secondsToDateTime(
-                articleTime.toLong(),
-                DatePatternConstants.articleDateTime
-            ),
-            articleClass,
-            articleBoard
-        )
+        headerArticleReadInfo =
+            ArticleReadInfo.HeaderInfo(
+                articleTitle,
+                articleAuth,
+                DateFormatUtils.secondsToDateTime(
+                    articleTime.toLong(),
+                    DatePatternConstants.ARTICLE_DATE_TIME,
+                ),
+                articleClass,
+                articleBoard,
+            )
     }
 
     fun putDefaultHeader() {
@@ -94,55 +105,62 @@ class ArticleReadViewModel constructor(
         if (_loadingState.value == true) return
         viewModelScope.launch {
             _loadingState.value = true
-            getArticleUseCase.getArticleDetail(
-                article.boardId,
-                article.articleId
-            ).combine(getArticleUseCase.getArticleComments(article.boardId, article.articleId)) { detail, comments ->
-                detail.copy(contentList = detail.contentList + comments)
-            }.catch { e ->
-                logger.e(TAG, "Load data error: ${Log.getStackTraceString(e)}")
-                _loadingState.value = false
-                if (e is ApiException) {
-                    _errorMessage.value = e.serverMsg.msg
-                } else {
-                    _errorMessage.value = "Error : ${e.message}"
+            getArticleUseCase
+                .getArticleDetail(
+                    article.boardId,
+                    article.articleId,
+                ).combine(getArticleUseCase.getArticleComments(article.boardId, article.articleId)) { detail, comments ->
+                    detail.copy(contentList = detail.contentList + comments)
+                }.catch { e ->
+                    logger.e(TAG, "Load data error: ${Log.getStackTraceString(e)}")
+                    _loadingState.value = false
+                    if (e is ApiException) {
+                        _errorMessage.value = e.serverMsg.msg
+                    } else {
+                        _errorMessage.value = "Error : ${e.message}"
+                    }
+                }.collect {
+                    data.clear()
+                    data.addAll(it.contentList)
+                    _likeNumber.postValue(it.rank.toString())
+                    _loadingState.value = false
                 }
-            }.collect {
-                data.clear()
-                data.addAll(it.contentList)
-                _likeNumber.postValue(it.rank.toString())
-                _loadingState.value = false
-            }
         }
     }
 
     fun setRank(
         article: Article,
-        rankMark: PostRankMark
+        rankMark: PostRankMark,
     ) = viewModelScope.launch {
         _loadingState.value = true
-        articleRepository.postArticleRank(rankMark.value, article.boardId, article.articleId).flatMapMerge {
-            articleRepository.getArticleDetail(article.boardId, article.articleId)
-        }.catch { e ->
-            logger.d(TAG, "set rank error: $e")
-            _progressDialogState.value = false
-            _errorMessage.value = "Error : ${e.message}"
-        }.collect { detail ->
-            for (i in data.indices) {
-                val item = data[i]
-                if (item !is ArticleReadInfo.CenterBarInfo) continue
-                data[i] =
-                    ArticleReadInfo.CenterBarInfo(detail.recommend.toString(), item.floor)
-                break
+        articleRepository
+            .postArticleRank(rankMark.value, article.boardId, article.articleId)
+            .flatMapMerge {
+                articleRepository.getArticleDetail(article.boardId, article.articleId)
+            }.catch { e ->
+                logger.d(TAG, "set rank error: $e")
+                _progressDialogState.value = false
+                _errorMessage.value = "Error : ${e.message}"
+            }.collect { detail ->
+                for (i in data.indices) {
+                    val item = data[i]
+                    if (item !is ArticleReadInfo.CenterBarInfo) continue
+                    data[i] =
+                        ArticleReadInfo.CenterBarInfo(detail.recommend.toString(), item.floor)
+                    break
+                }
+                val rank = detail.rank
+                _likeNumber.value = rank.toString()
+                _loadingState.value = false
+                _progressDialogState.value = false
             }
-            val rank = detail.rank
-            _likeNumber.value = rank.toString()
-            _loadingState.value = false
-            _progressDialogState.value = false
-        }
     }
 
-    fun createComment(article: Article, text: String?, type: cc.ptt.android.data.model.remote.article.ArticleCommentType?) {
+    fun createComment(
+        article: Article,
+        text: String?,
+        type: cc.ptt.android.data.model.remote.article.ArticleCommentType?,
+    ) {
         if (text.isNullOrEmpty()) {
             return
         }
@@ -150,13 +168,15 @@ class ArticleReadViewModel constructor(
         type?.let {
             _progressDialogState.value = true
             viewModelScope.launch {
-                createArticleCommentUseCase.createArticleComment(article.boardId, article.articleId, it, text).catch { e ->
-                    _errorMessage.value = e.message
-                    _progressDialogState.value = false
-                }.collect {
-                    _progressDialogState.value = false
-                    emitActionState(ActionEvent.CreateCommentSuccess(it))
-                }
+                createArticleCommentUseCase
+                    .createArticleComment(article.boardId, article.articleId, it, text)
+                    .catch { e ->
+                        _errorMessage.value = e.message
+                        _progressDialogState.value = false
+                    }.collect {
+                        _progressDialogState.value = false
+                        emitActionState(ActionEvent.CreateCommentSuccess(it))
+                    }
             }
         } ?: run {
             emitActionState(ActionEvent.ChooseCommentType)

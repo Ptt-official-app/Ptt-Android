@@ -5,5 +5,5 @@ data class HotBoardsItem(
     val boardName: String = "",
     val subtitle: String = "",
     val online: String = "",
-    val onlineColor: String = ""
+    val onlineColor: String = "",
 )

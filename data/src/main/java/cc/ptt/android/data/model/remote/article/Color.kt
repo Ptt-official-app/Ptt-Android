@@ -13,9 +13,8 @@ data class Color(
     @SerializedName("highlight")
     val highlight: Boolean,
     @SerializedName("reset")
-    val reset: Boolean
+    val reset: Boolean,
 ) {
-
     val backgroundColor: Int
         get() = PttColor.backgroundColor(background)
 

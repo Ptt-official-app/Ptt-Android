@@ -11,10 +11,11 @@ import cc.ptt.android.common.CustomLinearLayoutManager
 
 class EmptyFragment : BaseFragment() {
     private var recyclerView: RecyclerView? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.empty_fragment_layout, container, false)
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView_empty)
@@ -22,22 +23,23 @@ class EmptyFragment : BaseFragment() {
         layoutManager.orientation = RecyclerView.VERTICAL
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = layoutManager
-        recyclerView?.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
-            override fun getItemCount(): Int {
-                return 0
-            }
+        recyclerView?.adapter =
+            object : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
+                override fun getItemCount(): Int = 0
 
-            override fun onCreateViewHolder(
-                parent: ViewGroup,
-                viewType: Int
-            ): RecyclerView.ViewHolder {
-                return object : RecyclerView.ViewHolder(View(null)) {
+                override fun onCreateViewHolder(
+                    parent: ViewGroup,
+                    viewType: Int,
+                ): RecyclerView.ViewHolder =
+                    object : RecyclerView.ViewHolder(View(null)) {
+                    }
+
+                override fun onBindViewHolder(
+                    holder: RecyclerView.ViewHolder,
+                    position: Int,
+                ) {
                 }
             }
-
-            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            }
-        }
         return view
     }
 

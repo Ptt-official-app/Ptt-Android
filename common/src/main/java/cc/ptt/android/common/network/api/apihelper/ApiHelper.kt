@@ -2,7 +2,9 @@ package cc.ptt.android.common.network.api.apihelper
 
 interface ApiHelper {
     fun getHost(): String
+
     fun getClientId(): String
+
     fun getClientSecret(): String
 
     companion object {

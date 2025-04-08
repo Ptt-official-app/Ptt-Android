@@ -13,15 +13,25 @@ import android.widget.TextView
 import cc.ptt.android.utils.turnOnUrl
 import java.lang.Exception
 
-class TextViewMovementMethod(mContext: Context?) : ArrowKeyMovementMethod() {
+class TextViewMovementMethod(
+    mContext: Context?,
+) : ArrowKeyMovementMethod() {
     private var sInstance: TextViewMovementMethod? = null
     private val cMethod: MovementMethod = LinkMovementMethod.getInstance()
     private val mContext: Context? = mContext
-    override fun initialize(widget: TextView, text: Spannable) {
+
+    override fun initialize(
+        widget: TextView,
+        text: Spannable,
+    ) {
         cMethod.initialize(widget, text)
     }
 
-    override fun onTouchEvent(widget: TextView, text: Spannable, event: MotionEvent): Boolean {
+    override fun onTouchEvent(
+        widget: TextView,
+        text: Spannable,
+        event: MotionEvent,
+    ): Boolean {
         // super.onTouchEvent(widget, text, event);
         val action = event.action
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
@@ -43,7 +53,9 @@ class TextViewMovementMethod(mContext: Context?) : ArrowKeyMovementMethod() {
                 }
                 if (action == MotionEvent.ACTION_DOWN) {
                     Selection.setSelection(
-                        text, text.getSpanStart(link[0]), text.getSpanEnd(link[0])
+                        text,
+                        text.getSpanStart(link[0]),
+                        text.getSpanEnd(link[0]),
                     )
                 }
                 return true

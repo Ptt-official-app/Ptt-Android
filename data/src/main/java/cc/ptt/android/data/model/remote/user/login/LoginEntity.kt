@@ -7,5 +7,5 @@ data class LoginEntity(
     @SerializedName("token_type")
     val tokenType: String,
     @SerializedName("user_id")
-    val userId: String
+    val userId: String,
 )

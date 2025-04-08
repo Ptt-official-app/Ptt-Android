@@ -1,13 +1,16 @@
 package cc.ptt.android.home.hotboard
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
 import cc.ptt.android.data.repository.board.BoardRepository
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
 
 class HotBoardsViewModel constructor(
-    private val boardRepository: BoardRepository
+    private val boardRepository: BoardRepository,
 ) : ViewModel() {
     val data: MutableList<HotBoardsItem> = mutableListOf()
 
@@ -25,23 +28,26 @@ class HotBoardsViewModel constructor(
     private fun fetchData() {
         viewModelScope.launch {
             _loadingState.value = true
-            boardRepository.getPopularBoards().catch { e ->
-                _errorMessage.postValue("Error: $e")
-                _loadingState.value = false
-            }.collect { popularBoards ->
-                val boardData = popularBoards.list.map {
-                    HotBoardsItem(
-                        it.boardId,
-                        it.boardName,
-                        it.title,
-                        it.onlineUser.toString(),
-                        "7"
-                    )
+            boardRepository
+                .getPopularBoards()
+                .catch { e ->
+                    _errorMessage.postValue("Error: $e")
+                    _loadingState.value = false
+                }.collect { popularBoards ->
+                    val boardData =
+                        popularBoards.list.map {
+                            HotBoardsItem(
+                                it.boardId,
+                                it.boardName,
+                                it.title,
+                                it.onlineUser.toString(),
+                                "7",
+                            )
+                        }
+                    data.clear()
+                    data.addAll(boardData)
+                    _loadingState.value = false
                 }
-                data.clear()
-                data.addAll(boardData)
-                _loadingState.value = false
-            }
         }
     }
 }

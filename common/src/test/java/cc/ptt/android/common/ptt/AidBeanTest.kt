@@ -4,7 +4,6 @@ import org.junit.Assert
 import org.junit.Test
 
 class AidBeanTest {
-
     private val aid = "1Xpy6SRj"
     private val boardName = "Test"
     private val url = "https://www.ptt.cc/bbs/Test/M.1641005468.A.6ED.html"

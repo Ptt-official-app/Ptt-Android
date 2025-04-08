@@ -10,7 +10,10 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 import cc.ptt.android.R
 
-fun turnOnUrl(context: Context, url: String?) {
+fun turnOnUrl(
+    context: Context,
+    url: String?,
+) {
     val sharingIntent = Intent(Intent.ACTION_SEND)
     sharingIntent.type = "text/plain"
     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, url)

@@ -7,7 +7,8 @@ import cc.ptt.android.data.preference.UserInfoPreferencesImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-val preferenceModules = module {
-    single <UserInfoPreferences> { UserInfoPreferencesImpl(androidContext(), get()) }
-    single <MainPreferences> { MainPreferencesImpl(androidContext()) }
-}
+val preferenceModules =
+    module {
+        single<UserInfoPreferences> { UserInfoPreferencesImpl(androidContext(), get()) }
+        single<MainPreferences> { MainPreferencesImpl(androidContext()) }
+    }

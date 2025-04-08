@@ -26,7 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingFragment : BaseFragment() {
     private var _binding: FragmentSettingBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val viewModel: SettingViewModel by viewModel()
     private val mainPreferences: MainPreferences by inject()
@@ -37,36 +37,44 @@ class SettingFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return FragmentSettingBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
-    }
+        savedInstanceState: Bundle?,
+    ): View =
+        FragmentSettingBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
     private fun createAdapter(): SettingAdapter {
         return SettingAdapter(
             dataList,
             object : SettingAdapter.OnItemClickListener {
-                override fun onItemClick(view: View, data: SettingItem) {
+                override fun onItemClick(
+                    view: View,
+                    data: SettingItem,
+                ) {
                     if (mClickFix.isFastDoubleClick) return
                     when (data) {
                         SettingItem.PttId -> {
                             Navigation.switchToLoginPage(requireActivity())
                         }
+
                         SettingItem.CleanPttId -> {
                             viewModel.logout()
                         }
+
                         SettingItem.Policy -> {
                             turnOnUrl(requireContext(), "https://www.ptt.cc/index.ua.html")
                         }
+
                         SettingItem.ApiDomain -> {
                             showSetApiHostEditTextDialog(data)
                         }
+
                         else -> showSingleChoiceDialog(data)
                     }
                 }
-            }
+            },
         )
     }
 
@@ -75,7 +83,10 @@ class SettingFragment : BaseFragment() {
         _binding = null
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             articleListFragmentRecyclerView.apply {
@@ -90,7 +101,7 @@ class SettingFragment : BaseFragment() {
                     android.R.color.holo_red_light,
                     android.R.color.holo_blue_light,
                     android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light
+                    android.R.color.holo_orange_light,
                 )
                 setOnRefreshListener {
                     isRefreshing = false
@@ -101,55 +112,78 @@ class SettingFragment : BaseFragment() {
 
     private fun showSetApiHostEditTextDialog(data: SettingItem) {
         val context = requireContext()
-        AlertDialog.Builder(context).apply {
-            setTitle(data.titleResId)
-            val editText = AppCompatEditText(context).apply {
-                setText(mainPreferences.getApiDomain())
+        AlertDialog
+            .Builder(context)
+            .apply {
+                setTitle(data.titleResId)
+                val editText =
+                    AppCompatEditText(context).apply {
+                        setText(mainPreferences.getApiDomain())
+                    }
+                setView(editText)
+                setNegativeButton(R.string.cancel_button) { dialog, which ->
+                    dialog.dismiss()
+                }
+                setPositiveButton(R.string.save_button) { dialog, which ->
+                    dialog.dismiss()
+                    mainPreferences.setApiDomain(editText.text?.toString())
+                }
+            }.create()
+            .run {
+                window?.setBackgroundDrawableResource(R.drawable.dialog_background)
+                show()
+                getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        cc.ptt.android.data.R.color.colorAccent,
+                    ),
+                )
+                getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        cc.ptt.android.data.R.color.colorAccent,
+                    ),
+                )
             }
-            setView(editText)
-            setNegativeButton(R.string.cancel_button) { dialog, which ->
-                dialog.dismiss()
-            }
-            setPositiveButton(R.string.save_button) { dialog, which ->
-                dialog.dismiss()
-                mainPreferences.setApiDomain(editText.text?.toString())
-            }
-        }.create().run {
-            window?.setBackgroundDrawableResource(R.drawable.dialog_background)
-            show()
-            getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(ContextCompat.getColor(context, cc.ptt.android.data.R.color.colorAccent))
-            getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, cc.ptt.android.data.R.color.colorAccent))
-        }
     }
 
     private fun showSingleChoiceDialog(data: SettingItem) {
         val context = context ?: return
-        val currentValue = when (data) {
-            SettingItem.Theme -> mainPreferences.getThemeType()
-            SettingItem.SearchStyle -> mainPreferences.getSearchStyle()
-            SettingItem.PostBottomStyle -> mainPreferences.getPostBottomStyle()
-            else -> 0
-        }
-        AlertDialog.Builder(context).apply {
-            setTitle(data.titleResId)
-            setSingleChoiceItems(data.valueArrayKey, currentValue) { dialog, which ->
-                dialog.dismiss()
-                when (data) {
-                    SettingItem.Theme -> mainPreferences.setThemeType(which)
-                    SettingItem.SearchStyle -> mainPreferences.setSearchStyle(which)
-                    SettingItem.PostBottomStyle -> mainPreferences.setPostBottomStyle(which)
-                    else -> Unit
+        val currentValue =
+            when (data) {
+                SettingItem.Theme -> mainPreferences.getThemeType()
+                SettingItem.SearchStyle -> mainPreferences.getSearchStyle()
+                SettingItem.PostBottomStyle -> mainPreferences.getPostBottomStyle()
+                else -> 0
+            }
+        AlertDialog
+            .Builder(context)
+            .apply {
+                setTitle(data.titleResId)
+                setSingleChoiceItems(data.valueArrayKey, currentValue) { dialog, which ->
+                    dialog.dismiss()
+                    when (data) {
+                        SettingItem.Theme -> mainPreferences.setThemeType(which)
+                        SettingItem.SearchStyle -> mainPreferences.setSearchStyle(which)
+                        SettingItem.PostBottomStyle -> mainPreferences.setPostBottomStyle(which)
+                        else -> Unit
+                    }
+                    data.onChoice(which)
                 }
-                data.onChoice(which)
+                setPositiveButton(R.string.cancel_button) { dialog, _ ->
+                    dialog.dismiss()
+                }
+            }.create()
+            .run {
+                window?.setBackgroundDrawableResource(R.drawable.dialog_background)
+                show()
+                getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        cc.ptt.android.data.R.color.colorAccent,
+                    ),
+                )
             }
-            setPositiveButton(R.string.cancel_button) { dialog, _ ->
-                dialog.dismiss()
-            }
-        }.create().run {
-            window?.setBackgroundDrawableResource(R.drawable.dialog_background)
-            show()
-            getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, cc.ptt.android.data.R.color.colorAccent))
-        }
     }
 
     override fun onAnimFinished() {
@@ -184,7 +218,7 @@ class SettingFragment : BaseFragment() {
         val titleResId: Int,
         val key: String = "",
         val valueArrayKey: Int = 0,
-        val onChoice: (which: Int) -> Unit = {}
+        val onChoice: (which: Int) -> Unit = {},
     ) {
         Theme(
             R.string.setting_theme,
@@ -196,14 +230,22 @@ class SettingFragment : BaseFragment() {
                     0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     else -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 }
-            }
+            },
         ),
-        SearchStyle(R.string.setting_search_item_style, "SEARCHSTYLE", R.array.setting_search_item_style_array),
-        PostBottomStyle(R.string.setting_post_bottom_style, "POSTBOTTOMSTYLE", R.array.setting_post_bottom_style_array),
+        SearchStyle(
+            R.string.setting_search_item_style,
+            "SEARCHSTYLE",
+            R.array.setting_search_item_style_array,
+        ),
+        PostBottomStyle(
+            R.string.setting_post_bottom_style,
+            "POSTBOTTOMSTYLE",
+            R.array.setting_post_bottom_style_array,
+        ),
         Policy(R.string.ptt_policy),
         PttId(R.string.set_ptt_id, "APIPTTID"),
         CleanPttId(R.string.clean_ptt_id, "APIPTTID"),
-        ApiDomain(R.string.set_api_domain, "APIDOMAIN");
+        ApiDomain(R.string.set_api_domain, "APIDOMAIN"),
     }
 
     companion object {

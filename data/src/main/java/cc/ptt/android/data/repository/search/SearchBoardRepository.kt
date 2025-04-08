@@ -8,6 +8,6 @@ interface SearchBoardRepository {
         keyword: String,
         startIndex: String = "",
         limit: Int = 200,
-        aces: Boolean = true
+        aces: Boolean = true,
     ): Flow<BoardList>
 }

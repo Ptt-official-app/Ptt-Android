@@ -5,37 +5,31 @@ import cc.ptt.android.data.model.remote.board.article.ArticleList
 import cc.ptt.android.data.model.remote.board.hotboard.BoardList
 import kotlinx.coroutines.flow.Flow
 
-class BoardRemoteDataSourceImpl constructor (
-    private val boardApi: BoardApi
+class BoardRemoteDataSourceImpl constructor(
+    private val boardApi: BoardApi,
 ) : BoardRemoteDataSource {
-
-    override fun getPopularBoards(): Flow<BoardList> {
-        return boardApi.getPopularBoard()
-    }
+    override fun getPopularBoards(): Flow<BoardList> = boardApi.getPopularBoard()
 
     override fun getBoardArticles(
         boardId: String,
         title: String,
         startIndex: String,
         limit: Int,
-        desc: Boolean
-    ): Flow<ArticleList> {
-        return boardApi.getArticles(
+        desc: Boolean,
+    ): Flow<ArticleList> =
+        boardApi.getArticles(
             boardId,
             title,
             startIndex,
             limit,
-            desc
+            desc,
         )
-    }
 
     override fun getFavoriteBoards(
         userid: String,
         level_idx: String,
         startIndex: String,
         limit: Int,
-        aces: Boolean
-    ): Flow<BoardList> {
-        return boardApi.favoriteBoards(userid, level_idx, startIndex, limit, aces)
-    }
+        aces: Boolean,
+    ): Flow<BoardList> = boardApi.favoriteBoards(userid, level_idx, startIndex, limit, aces)
 }

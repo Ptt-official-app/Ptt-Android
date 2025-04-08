@@ -7,5 +7,5 @@ data class Post(
     val auth: String,
     val authNickName: String,
     val content: String,
-    val comments: List<cc.ptt.android.data.model.remote.Comment>
+    val comments: List<cc.ptt.android.data.model.remote.Comment>,
 )

@@ -23,78 +23,85 @@ import kotlinx.coroutines.flow.map
 
 class GetArticleUseCase constructor(
     private val articleRepository: ArticleRepository,
-    private val logger: PttLogger
+    private val logger: PttLogger,
 ) : UseCaseBase() {
-
-    fun getArticleDetail(boardId: String, articleId: String): Flow<ArticleInfo> {
-        return articleRepository.getArticleDetail(boardId, articleId).map { detail ->
-            val list = mutableListOf<ArticleReadInfo>().apply {
-                add(getHeaderInfo(detail))
-                addAll(getContent(detail))
-                add(getCenterBarInfo(detail))
-            }.toList()
+    fun getArticleDetail(
+        boardId: String,
+        articleId: String,
+    ): Flow<ArticleInfo> =
+        articleRepository.getArticleDetail(boardId, articleId).map { detail ->
+            val list =
+                mutableListOf<ArticleReadInfo>()
+                    .apply {
+                        add(getHeaderInfo(detail))
+                        addAll(getContent(detail))
+                        add(getCenterBarInfo(detail))
+                    }.toList()
             ArticleInfo(list, detail.rank)
         }
-    }
 
-    fun getArticleComments(boardId: String, articleId: String): Flow<List<ArticleReadInfo>> {
-        return articleRepository.getArticleComments(boardId, articleId).map { comments ->
-            val list = mutableListOf<ArticleReadInfo>()
-            for ((index, articleComment) in comments.list.withIndex()) {
-                val content = articleComment.content
-                if (content == null) {
-                    list.add(ArticleReadInfo.CommentInfo(index, "", articleComment.owner))
-                    list.add(
-                        ArticleReadInfo.CommentBarInfo(
-                            index,
-                            DateFormatUtils.secondsToDateTime(
-                                articleComment.createTime.toLong(),
-                                DatePatternConstants.articleCommentDateTime
-                            ),
-                            "${index + 1}F",
-                            "0"
-                        )
-                    )
-                } else {
-                    content.forEach { listContent ->
-                        val text = StringBuilder()
-                        listContent.forEach { content ->
-                            text.append(content.text)
-                        }
-
-                        list.add(ArticleReadInfo.CommentInfo(index, text.toString(), articleComment.owner))
-                        val imageUrl: List<String> = StringUtils.getImgUrl(text.toString())
-                        for (urlString in imageUrl) {
-                            list.add(ArticleReadInfo.ImageInfo(index, urlString))
-                        }
-
+    fun getArticleComments(
+        boardId: String,
+        articleId: String,
+    ): Flow<List<ArticleReadInfo>> =
+        articleRepository
+            .getArticleComments(boardId, articleId)
+            .map { comments ->
+                val list = mutableListOf<ArticleReadInfo>()
+                for ((index, articleComment) in comments.list.withIndex()) {
+                    val content = articleComment.content
+                    if (content == null) {
+                        list.add(ArticleReadInfo.CommentInfo(index, "", articleComment.owner))
                         list.add(
                             ArticleReadInfo.CommentBarInfo(
                                 index,
-                                DateFormatUtils.secondsToDateTime(articleComment.createTime.toLong(), DatePatternConstants.articleCommentDateTime),
+                                DateFormatUtils.secondsToDateTime(
+                                    articleComment.createTime.toLong(),
+                                    DatePatternConstants.ARTICLE_COMMENT_DATE_TIME,
+                                ),
                                 "${index + 1}F",
-                                "0"
-                            )
+                                "0",
+                            ),
                         )
+                    } else {
+                        content.forEach { listContent ->
+                            val text = StringBuilder()
+                            listContent.forEach { content ->
+                                text.append(content.text)
+                            }
+
+                            list.add(ArticleReadInfo.CommentInfo(index, text.toString(), articleComment.owner))
+                            val imageUrl: List<String> = StringUtils.getImgUrl(text.toString())
+                            for (urlString in imageUrl) {
+                                list.add(ArticleReadInfo.ImageInfo(index, urlString))
+                            }
+
+                            list.add(
+                                ArticleReadInfo.CommentBarInfo(
+                                    index,
+                                    DateFormatUtils.secondsToDateTime(
+                                        articleComment.createTime.toLong(),
+                                        DatePatternConstants.ARTICLE_COMMENT_DATE_TIME,
+                                    ),
+                                    "${index + 1}F",
+                                    "0",
+                                ),
+                            )
+                        }
                     }
                 }
+                list.toList()
+            }.catch { e ->
+                logger.e(TAG, "$e", e)
+                throw e
             }
-            list.toList()
-        }.catch { e ->
-            logger.e(TAG, "$e", e)
-            throw e
-        }
-    }
 
     @kotlin.jvm.Throws
-    private fun getCenterBarInfo(detail: ArticleDetail): ArticleReadInfo.CenterBarInfo {
-        return ArticleReadInfo.CenterBarInfo(detail.recommend.toString(), detail.nComments.toString())
-    }
+    private fun getCenterBarInfo(detail: ArticleDetail): ArticleReadInfo.CenterBarInfo =
+        ArticleReadInfo.CenterBarInfo(detail.recommend.toString(), detail.nComments.toString())
 
     @kotlin.jvm.Throws
-    private fun getContent(
-        detail: ArticleDetail
-    ): List<ArticleReadInfo> {
+    private fun getContent(detail: ArticleDetail): List<ArticleReadInfo> {
         val list = mutableListOf<ArticleReadInfo>()
         val contentBuilder = StringBuilder()
         val spannedString = SpannableStringBuilder()
@@ -108,13 +115,13 @@ class GetArticleUseCase constructor(
                     ForegroundColorSpan(it.color0.foregroundColor),
                     0,
                     it.text.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
                 )
                 spannable.setSpan(
                     BackgroundColorSpan(it.color0.backgroundColor),
                     0,
                     it.text.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
                 )
 
                 val matcher = StringUtils.UrlPattern.matcher(it.text)
@@ -126,13 +133,13 @@ class GetArticleUseCase constructor(
                         URLSpan(urlTemp),
                         start,
                         end,
-                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
                     )
                     spannable.setSpan(
                         ForegroundColorSpan(StaticValue.webUrlColor),
                         start,
                         end,
-                        Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                        Spannable.SPAN_EXCLUSIVE_INCLUSIVE,
                     )
                 }
 
@@ -158,15 +165,14 @@ class GetArticleUseCase constructor(
     }
 
     @kotlin.jvm.Throws
-    private fun getHeaderInfo(detail: ArticleDetail): ArticleReadInfo.HeaderInfo {
-        return ArticleReadInfo.HeaderInfo(
+    private fun getHeaderInfo(detail: ArticleDetail): ArticleReadInfo.HeaderInfo =
+        ArticleReadInfo.HeaderInfo(
             detail.title,
             detail.owner,
-            DateFormatUtils.secondsToDateTime(detail.createTime.toLong(), DatePatternConstants.articleDateTime),
+            DateFormatUtils.secondsToDateTime(detail.createTime.toLong(), DatePatternConstants.ARTICLE_DATE_TIME),
             detail.classX,
-            detail.boardName
+            detail.boardName,
         )
-    }
 
     companion object {
         private val TAG = GetArticleUseCase::class.java.simpleName

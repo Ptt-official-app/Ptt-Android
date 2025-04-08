@@ -7,9 +7,8 @@ import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.core.module.Module
 
 class KoinTestRule(
-    private val modules: List<Module>
+    private val modules: List<Module>,
 ) : TestWatcher() {
-
     override fun starting(description: Description) {
         startKoin {
             modules(modules)

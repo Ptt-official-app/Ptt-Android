@@ -16,7 +16,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HotBoardsFragment : BaseFragment() {
     private var _binding: HotBoardsFragmentLayoutBinding? = null
-    private val binding get() = _binding
+    val binding get() = _binding
     private val mClickFix = ClickFix()
 
     private val viewModel: HotBoardsViewModel by viewModel()
@@ -24,15 +24,20 @@ class HotBoardsFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = HotBoardsFragmentLayoutBinding.inflate(inflater, container, false).apply {
-        _binding = this
-    }.root
+        savedInstanceState: Bundle?,
+    ): View =
+        HotBoardsFragmentLayoutBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
-
             hotBoardsFragmentSearch.setOnClickListener {
                 Navigation.switchToSearchBoardsPage(requireActivity())
             }
@@ -42,22 +47,23 @@ class HotBoardsFragment : BaseFragment() {
                 layoutManager.orientation = RecyclerView.VERTICAL
                 setHasFixedSize(true)
                 this.layoutManager = layoutManager
-                adapter = HotBoardsListAdapter(
-                    viewModel.data,
-                    object : HotBoardsListAdapter.OnItemClickListener {
-                        override fun onItemClick(item: HotBoardsItem) {
-                            if (mClickFix.isFastDoubleClick) return
-                            Navigation.switchToArticleListPage(requireActivity(), item.boardName, item.subtitle, item.boardId)
-                        }
-                    }
-                )
+                adapter =
+                    HotBoardsListAdapter(
+                        viewModel.data,
+                        object : HotBoardsListAdapter.OnItemClickListener {
+                            override fun onItemClick(item: HotBoardsItem) {
+                                if (mClickFix.isFastDoubleClick) return
+                                Navigation.switchToArticleListPage(requireActivity(), item.boardName, item.subtitle, item.boardId)
+                            }
+                        },
+                    )
             }
             hotBoardsFragmentRefreshLayout.apply {
                 setColorSchemeResources(
                     android.R.color.holo_red_light,
                     android.R.color.holo_blue_light,
                     android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light
+                    android.R.color.holo_orange_light,
                 )
                 setOnRefreshListener {
                     viewModel.loadData()

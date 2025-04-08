@@ -9,43 +9,51 @@ import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener
 import cc.ptt.android.common.stickyheader.StickyHeaderItemDecorator
 
 class RecyclerItemClickListener : SimpleOnItemTouchListener {
-
     private var clickListener: OnItemClickListener? = null
 
     private var gestureDetector:
         GestureDetectorCompat? = null
 
     interface OnItemClickListener {
-        fun onItemClick(view: View?, position: Int)
-        fun onItemLongClick(view: View?, position: Int)
+        fun onItemClick(
+            view: View?,
+            position: Int,
+        )
+
+        fun onItemLongClick(
+            view: View?,
+            position: Int,
+        )
     }
 
     constructor(
         recyclerView: RecyclerView,
-        listener: OnItemClickListener?
+        listener: OnItemClickListener?,
     ) {
         clickListener = listener
-        gestureDetector = GestureDetectorCompat(
-            recyclerView.context,
-            object : SimpleOnGestureListener() {
-                override fun onSingleTapUp(e: MotionEvent): Boolean {
-                    return true
-                }
+        gestureDetector =
+            GestureDetectorCompat(
+                recyclerView.context,
+                object : SimpleOnGestureListener() {
+                    override fun onSingleTapUp(e: MotionEvent): Boolean = true
 
-                override fun onLongPress(e: MotionEvent) {
-                    val childView = recyclerView.findChildViewUnder(e.x, e.y)
-                    if (childView != null && clickListener != null) {
-                        clickListener!!.onItemLongClick(
-                            childView,
-                            recyclerView.getChildAdapterPosition(childView)
-                        )
+                    override fun onLongPress(e: MotionEvent) {
+                        val childView = recyclerView.findChildViewUnder(e.x, e.y)
+                        if (childView != null && clickListener != null) {
+                            clickListener!!.onItemLongClick(
+                                childView,
+                                recyclerView.getChildAdapterPosition(childView),
+                            )
+                        }
                     }
-                }
-            }
-        )
+                },
+            )
     }
 
-    override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(
+        rv: RecyclerView,
+        e: MotionEvent,
+    ): Boolean {
         if (decorator != null) {
             val childView = rv.findChildViewUnder(e.x, e.y)
             if (childView != null && clickListener != null && gestureDetector!!.onTouchEvent(e)) {
@@ -67,6 +75,7 @@ class RecyclerItemClickListener : SimpleOnItemTouchListener {
     }
 
     private var decorator: StickyHeaderItemDecorator? = null
+
     fun setDecorator(decorator: StickyHeaderItemDecorator?) {
         this.decorator = decorator
     }

@@ -42,5 +42,5 @@ data class HotArticle(
     @SerializedName("rank")
     var rank: Int,
     @SerializedName("subject_type")
-    var subjectType: String
+    var subjectType: String,
 )
