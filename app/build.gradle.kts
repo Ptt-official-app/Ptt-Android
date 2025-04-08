@@ -115,66 +115,67 @@ dependencies {
 
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     // AndroidX
-    implementation(Dependencies.AndroidX.appcompat)
-    implementation(Dependencies.AndroidX.browser)
-    implementation(Dependencies.AndroidX.constraintLayout)
-    implementation(Dependencies.AndroidX.legacy)
-    implementation(Dependencies.AndroidX.Lifecycle.compiler)
-    implementation(Dependencies.AndroidX.Lifecycle.viewModelKTX)
-    implementation(Dependencies.AndroidX.Lifecycle.runtime)
-    implementation(Dependencies.AndroidX.localBroadcastManager)
-    implementation(Dependencies.AndroidX.multidex)
-    implementation(Dependencies.AndroidX.swipeRefreshLayout)
-    implementation(Dependencies.AndroidX.Navigation.fragment)
-    implementation(Dependencies.AndroidX.Navigation.ui)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.browser)
+    implementation(libs.androidx.constraintlayout)
+
+    implementation(libs.androidx.lifecycle.compiler)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.runtime)
+    implementation(libs.androidx.localbroadcastmanager)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
 
     // Coil
-    implementation(Dependencies.coil)
+    implementation(libs.coil)
 
     // Google
-    implementation(Dependencies.Google.material)
-    implementation(Dependencies.Google.gson)
+    implementation(libs.google.material)
+    implementation(libs.google.gson)
 
     // Jsoup
-    implementation(Dependencies.jsoup)
+    implementation(libs.jsoup)
 
     // Kotlin
     //implementation(Dependencies.Kotlin.Stdlib.jdk8)
-    implementation(Dependencies.Kotlin.Coroutines.core)
-    implementation(Dependencies.Kotlin.Coroutines.android)
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
     // Square
-    implementation(Dependencies.Square.okhttp)
-    implementation(Dependencies.Square.log)
-    implementation(Dependencies.Square.okio)
-    implementation(Dependencies.Square.Retrofit.core)
-    implementation(Dependencies.Square.Retrofit.gsonConverter)
+    implementation(libs.square.okhttp)
+    implementation(libs.square.log)
+    implementation(libs.square.okio)
+    implementation(libs.square.retrofit.core)
+    implementation(libs.square.retrofit.gson.converter)
 
     // Koin Core features
-    implementation(Dependencies.Koin.Core.core)
+    implementation(libs.koin.core)
     // Koin main features for Android
-    implementation(Dependencies.Koin.Android.android)
-    implementation(Dependencies.AndroidX.coreKtx)
+    implementation(libs.koin.android)
+    implementation(libs.androidx.core)
 
     // Test
-    testImplementation(Dependencies.Google.truth)
-    testImplementation(Dependencies.junit)
-    testImplementation(Dependencies.MockK.core)
-    testImplementation(Dependencies.AndroidX.arch)
-    testImplementation(Dependencies.Kotlin.Coroutines.test)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk.core)
+    testImplementation(libs.androidx.arch)
+    testImplementation(libs.coroutines.test)
 
     // Koin Test features
-    testImplementation(Dependencies.Koin.Core.test)
+    testImplementation(libs.koin.test)
     // Koin for JUnit 4
-    testImplementation(Dependencies.Koin.Core.junit4)
-    testImplementation(Dependencies.AndroidX.Test.Core.core)
+    testImplementation(libs.koin.junit4)
+    testImplementation(libs.androidx.test.core)
 
-    androidTestImplementation(Dependencies.AndroidX.Test.Ext.junit)
-    androidTestImplementation(Dependencies.AndroidX.Test.Ext.espresso)
-    androidTestImplementation(Dependencies.Google.truth)
-    androidTestImplementation(Dependencies.MockK.android)
-    androidTestImplementation(Dependencies.AndroidX.arch)
-    androidTestImplementation(Dependencies.Kotlin.Coroutines.test)
+    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.espresso)
 
-    debugImplementation(Dependencies.Square.leakcanary)
+    androidTestImplementation(libs.google.truth)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.androidx.arch)
+    androidTestImplementation(libs.coroutines.test)
+
+    debugImplementation(libs.square.leakcanary)
+
 }
 

@@ -1,0 +1,86 @@
+[versions]
+androidGradle = "8.9.0"
+kotlin = "1.9.20"
+androidXAppCompat = "1.7.0"
+androidXArch = "2.2.0"
+androidXBrowser = "1.8.0"
+androidXConstraintLayout = "2.2.0"
+androidXCore = "1.15.0"
+androidXLegacy = "1.0.0"
+androidXLifecycle = "2.8.7"
+androidXLocalBroadcastManager = "1.1.0"
+androidXMultidex = "2.0.1"
+androidXNavigation = "2.8.5"
+androidXSwipeRefreshLayout = "1.1.0"
+androidXTestCore = "1.6.1"
+androidXTestEspresso = "3.6.1"
+androidXTestJunit = "1.2.1"
+jsoup = "1.18.3"
+junit = "4.13.2"
+material = "1.12.0"
+mockK = "1.13.13"
+okhttp = "4.12.0"
+okio = "3.9.1"
+retrofit = "2.11.0"
+truth = "1.4.4"
+leakcanary = "2.14"
+gson = "2.11.0"
+coroutines = "1.9.0"
+coil = "2.7.0"
+koinCore = "4.0.0"
+koinAndroid = "4.0.0"
+spotless = "6.22.0"
+
+[libraries]
+android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidXAppCompat"}
+androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidXBrowser"}
+androidx-arch = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidXArch"}
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidXConstraintLayout"}
+
+androidx-lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "androidXLifecycle" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidXLifecycle" }
+androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidXLifecycle" }
+
+androidx-navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidXNavigation" }
+androidx-navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidXNavigation" }
+
+androidx-localbroadcastmanager = { group = "androidx.localbroadcastmanager", name = "localbroadcastmanager", version.ref = "androidXLocalBroadcastManager" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "androidXSwipeRefreshLayout" }
+androidx-core = { group = "androidx.core", name = "core-ktx", version.ref = "androidXCore" }
+
+androidx-test-core = { group = "androidx.test", name = "core-ktx", version.ref = "androidXTestCore" }
+androidx-test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidXTestJunit" }
+androidx-test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidXTestEspresso" }
+
+google-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+google-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+mockk-core = { group = "io.mockk", name = "mockk", version.ref = "mockK" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockK" }
+
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+
+coil = { group = "io.coil-kt", name = "coil", version.ref = "coil"}
+
+square-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+square-log = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+square-okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
+square-leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+square-retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+square-retrofit-gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+
+koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinCore" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koinCore" }
+koin-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koinCore" }
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
+
+[plugins]

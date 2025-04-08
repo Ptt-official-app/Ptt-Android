@@ -110,37 +110,37 @@ android {
 dependencies {
     api(project(":common"))
 
-    implementation(Dependencies.AndroidX.appcompat)
-    implementation(Dependencies.Google.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.google.material)
     // Koin Core features
-    implementation(Dependencies.Koin.Core.core)
+    implementation(libs.koin.core)
     // Koin main features for Android
-    implementation(Dependencies.Koin.Android.android)
+    implementation(libs.koin.android)
     // Kotlin
-    implementation(Dependencies.Kotlin.Coroutines.core)
-    implementation(Dependencies.Kotlin.Coroutines.android)
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
     // Square
-    implementation(Dependencies.Square.okhttp)
-    implementation(Dependencies.Square.log)
-    implementation(Dependencies.Square.okio)
-    implementation(Dependencies.Square.Retrofit.core)
-    implementation(Dependencies.Square.Retrofit.gsonConverter)
-    implementation(Dependencies.AndroidX.coreKtx)
+    implementation(libs.square.okhttp)
+    implementation(libs.square.log)
+    implementation(libs.square.okio)
+    implementation(libs.square.retrofit.core)
+    implementation(libs.square.retrofit.gson.converter)
+    implementation(libs.androidx.core)
 
-    testImplementation(Dependencies.Google.truth)
-    testImplementation(Dependencies.junit)
-    testImplementation(Dependencies.MockK.core)
-    testImplementation(Dependencies.AndroidX.arch)
-    testImplementation(Dependencies.Kotlin.Coroutines.test)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk.core)
+    testImplementation(libs.androidx.arch)
+    testImplementation(libs.coroutines.test)
 
     // Koin Test features
-    testImplementation(Dependencies.Koin.Core.test)
+    testImplementation(libs.koin.test)
     // Koin for JUnit 4
-    testImplementation(Dependencies.Koin.Core.junit4)
-    testImplementation(Dependencies.AndroidX.Test.Core.core)
+    testImplementation(libs.koin.junit4)
+    testImplementation(libs.androidx.test.core)
 
-    testImplementation(Dependencies.junit)
+    testImplementation(libs.junit)
 
-    androidTestImplementation(Dependencies.AndroidX.Test.Ext.junit)
-    androidTestImplementation(Dependencies.AndroidX.Test.Ext.espresso)
+    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.espresso)
 }
