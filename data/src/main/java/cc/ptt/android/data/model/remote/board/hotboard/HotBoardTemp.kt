@@ -6,5 +6,5 @@ data class HotBoardTemp(
     val subtitle: String,
     val boardType: Int,
     val online: Int,
-    val onlineColor: String
+    val onlineColor: String,
 )

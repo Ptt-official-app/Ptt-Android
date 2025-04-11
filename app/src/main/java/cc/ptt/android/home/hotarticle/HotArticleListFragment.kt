@@ -20,9 +20,8 @@ import cc.ptt.android.utils.observeNotNull
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HotArticleListFragment : BaseFragment() {
-
     private var _binding: HotArticleListFragmentLayoutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val mRecyclerView: RecyclerView get() = binding.articleListFragmentRecyclerView
     private val mSwipeRefreshLayout: SwipeRefreshLayout get() = binding.articleListFragmentRefreshLayout
@@ -34,14 +33,18 @@ class HotArticleListFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return HotArticleListFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
-    }
+        savedInstanceState: Bundle?,
+    ): View =
+        HotArticleListFragmentLayoutBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         initUI()
     }
@@ -67,14 +70,18 @@ class HotArticleListFragment : BaseFragment() {
             R.color.holo_red_light,
             R.color.holo_blue_light,
             R.color.holo_green_light,
-            R.color.holo_orange_light
+            R.color.holo_orange_light,
         )
 
         mSwipeRefreshLayout.setOnRefreshListener { loadData(false) }
 
         mRecyclerView.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                override fun onScrolled(
+                    recyclerView: RecyclerView,
+                    dx: Int,
+                    dy: Int,
+                ) {
                     super.onScrolled(recyclerView, dx, dy)
                     val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                     val totalItemCount = layoutManager.itemCount
@@ -82,37 +89,44 @@ class HotArticleListFragment : BaseFragment() {
                         // loadData(true)
                     }
                 }
-            })
+            },
+        )
 
-        mAdapter.setOnItemClickListener(object : HotArticleListAdapter.OnItemClickListener {
-            override fun onItemClick(view: View?, position: Int, data: HotArticleUI) {
-                if (mClickFix.isFastDoubleClick) return
-                val item = viewModel.data.getOrNull(position) ?: return
+        mAdapter.setOnItemClickListener(
+            object : HotArticleListAdapter.OnItemClickListener {
+                override fun onItemClick(
+                    view: View?,
+                    position: Int,
+                    data: HotArticleUI,
+                ) {
+                    if (mClickFix.isFastDoubleClick) return
+                    val item = viewModel.data.getOrNull(position) ?: return
 
-                when (item.type) {
-                    HotArticleUIType.TITLE -> {
-                        // TODO
+                    when (item.type) {
+                        HotArticleUIType.TITLE -> {
+                            // TODO
+                        }
+                        HotArticleUIType.NORMAL -> {
+                            item.readed = true
+                            mAdapter.setHighLightUrl(item.url)
+                            mAdapter.notifyDataSetChanged()
+                            Navigation.switchToArticleReadPage(
+                                requireActivity(),
+                                item.toArticle(),
+                                item.board,
+                            )
+                        }
+                        else -> Unit
                     }
-                    HotArticleUIType.NORMAL -> {
-                        item.readed = true
-                        mAdapter.setHighLightUrl(item.url)
-                        mAdapter.notifyDataSetChanged()
-                        Navigation.switchToArticleReadPage(
-                            requireActivity(),
-                            item.toArticle(),
-                            item.board
-                        )
-                    }
-                    else -> Unit
                 }
-            }
-        })
+            },
+        )
 
         mAdapter.setMoreClickListen(
             View.OnClickListener {
                 if (mClickFix.isFastDoubleClick) return@OnClickListener
                 // TODO
-            }
+            },
         )
 
         viewModel.run {
@@ -143,17 +157,15 @@ class HotArticleListFragment : BaseFragment() {
     companion object {
         private val TAG = HotArticleListFragment.javaClass.simpleName
 
-        fun newInstance(): HotArticleListFragment {
-            return HotArticleListFragment().apply {
+        fun newInstance(): HotArticleListFragment =
+            HotArticleListFragment().apply {
                 arguments = Bundle()
             }
-        }
 
         @JvmStatic
-        fun newInstance(args: Bundle?): HotArticleListFragment {
-            return HotArticleListFragment().apply {
+        fun newInstance(args: Bundle?): HotArticleListFragment =
+            HotArticleListFragment().apply {
                 arguments = args
             }
-        }
     }
 }

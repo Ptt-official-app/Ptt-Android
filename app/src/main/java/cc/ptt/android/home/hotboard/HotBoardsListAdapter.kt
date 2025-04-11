@@ -16,8 +16,11 @@ class HotBoardsListAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder?>() {
     private val editMode = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder =
+        when (viewType) {
             TYPE_NORMAL -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.hot_boards_list_item, parent, false)
                 ViewHolder(view)
@@ -28,11 +31,13 @@ class HotBoardsListAdapter(
             }
             else -> throw IllegalStateException("illegal view type: $viewType")
         }
-    }
 
     override fun getItemViewType(position: Int): Int = if (editMode) TYPE_EDIT else TYPE_NORMAL
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         when (getItemViewType(position)) {
             TYPE_NORMAL -> {
                 (holder as? ViewHolder)?.apply {
@@ -41,8 +46,8 @@ class HotBoardsListAdapter(
                     textViewOnlinePeople.text = data[position].online
                     person.setColorFilter(
                         PttColor.colorTrans(
-                            data[position].onlineColor
-                        )
+                            data[position].onlineColor,
+                        ),
                     )
                     itemView.setOnClickListener { onItemClickListener.onItemClick(data[position]) }
                 }
@@ -58,18 +63,20 @@ class HotBoardsListAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
+    override fun getItemCount(): Int = data.size
 
-    private inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolder(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.textView_hot_boards_title)
         val textViewSubtitle: TextView = v.findViewById(R.id.textView_hot_boards_subtitle)
         val textViewOnlinePeople: TextView = v.findViewById(R.id.textView_hot_boards_online)
         val person: AppCompatImageButton = v.findViewById(R.id.hot_boards_online_imageButton_person)
     }
 
-    private inner class ViewHolderEdit(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolderEdit(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.textView_hot_boards_title)
         val textViewSubtitle: TextView = v.findViewById(R.id.textView_hot_boards_subtitle)
         val textViewOnlinePeople: TextView = v.findViewById(R.id.textView_hot_boards_online)

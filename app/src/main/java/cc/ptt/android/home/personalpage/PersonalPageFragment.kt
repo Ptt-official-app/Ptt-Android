@@ -27,11 +27,10 @@ import java.util.ArrayList
 import kotlin.math.abs
 
 class PersonalPageFragment : BaseFragment() {
-
     private val userInfoPreferences: UserInfoPreferences by inject()
 
     private var _binding: PersionalPageFragmentLayoutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
 
     private val mTabs: TabLayout get() = binding.pageTabs
     private val personPicture: ImageView get() = binding.personPagePicture
@@ -53,21 +52,28 @@ class PersonalPageFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        val view = PersionalPageFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
+        val view =
+            PersionalPageFragmentLayoutBinding
+                .inflate(inflater, container, false)
+                .apply {
+                    _binding = this
+                }.root
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
-        fragmentArrayList = arrayListOf(
-            Pair(getString(R.string.persion_page_tabs_info), PersonInfoFragment.newInstance()),
-            Pair(getString(R.string.persion_page_tabs_articles), EmptyFragment.newInstance()),
-            Pair(getString(R.string.persion_page_tabs_comments), EmptyFragment.newInstance())
-        )
+        fragmentArrayList =
+            arrayListOf(
+                Pair(getString(R.string.persion_page_tabs_info), PersonInfoFragment.newInstance()),
+                Pair(getString(R.string.persion_page_tabs_articles), EmptyFragment.newInstance()),
+                Pair(getString(R.string.persion_page_tabs_comments), EmptyFragment.newInstance()),
+            )
 
         fragmentArrayList.apply {
             onEach {
@@ -77,18 +83,19 @@ class PersonalPageFragment : BaseFragment() {
 
         mAppBar.addOnOffsetChangedListener(offsetChangedListener)
 
-        mViewPager.adapter = GeneralFragmentStatePagerAdapter(
-            requireActivity(),
-            fragmentArrayList.map {
-                it.second
+        mViewPager.adapter =
+            GeneralFragmentStatePagerAdapter(
+                requireActivity(),
+                fragmentArrayList.map {
+                    it.second
+                },
+            ).apply {
+                fragmentStatePagerAdapter = this
             }
-        ).apply {
-            fragmentStatePagerAdapter = this
-        }
 
         TabLayoutMediator(
             mTabs,
-            mViewPager
+            mViewPager,
         ) { tab: TabLayout.Tab, position: Int ->
             tab.text = fragmentArrayList[position].first
         }.attach()
@@ -96,18 +103,20 @@ class PersonalPageFragment : BaseFragment() {
         loadData()
     }
 
-    private val offsetChangedListener = OnOffsetChangedListener { _, verticalOffset ->
-        val percent = (
-            abs(verticalOffset).toFloat() /
-                abs(headerRelativeLayout.height).toFloat() *
-                100.0
-            ).toInt()
-        val height = headerRelativeLayoutMini.height
-        if (height > 0) {
-            headerRelativeLayoutMini.y =
-                (height * -1 + height * (percent / 100.0)).toFloat()
+    private val offsetChangedListener =
+        OnOffsetChangedListener { _, verticalOffset ->
+            val percent =
+                (
+                    abs(verticalOffset).toFloat() /
+                        abs(headerRelativeLayout.height).toFloat() *
+                        100.0
+                ).toInt()
+            val height = headerRelativeLayoutMini.height
+            if (height > 0) {
+                headerRelativeLayoutMini.y =
+                    (height * -1 + height * (percent / 100.0)).toFloat()
+            }
         }
-    }
 
     @SuppressLint("SetTextI18n")
     fun loadData() {
@@ -120,7 +129,10 @@ class PersonalPageFragment : BaseFragment() {
         personLikeTextView.text = "1.8k"
     }
 
-    private fun setImageView(imageView: ImageView, url: String?) {
+    private fun setImageView(
+        imageView: ImageView,
+        url: String?,
+    ) {
         if (imageView.tag != null) {
             if (imageView.tag.toString() == url) {
                 return

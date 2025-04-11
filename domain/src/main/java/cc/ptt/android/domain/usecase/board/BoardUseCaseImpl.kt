@@ -10,32 +10,26 @@ import kotlinx.coroutines.flow.flatMapMerge
 
 class BoardUseCaseImpl constructor(
     private val boardRepository: BoardRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) : BoardUseCase {
-
-    override fun getPopularBoards(): Flow<BoardList> {
-        return boardRepository.getPopularBoards()
-    }
+    override fun getPopularBoards(): Flow<BoardList> = boardRepository.getPopularBoards()
 
     override fun getBoardArticles(
         boardId: String,
         title: String,
         startIndex: String,
         limit: Int,
-        desc: Boolean
-    ): Flow<ArticleList> {
-        return boardRepository.getBoardArticles(boardId, title, startIndex, limit, desc)
-    }
+        desc: Boolean,
+    ): Flow<ArticleList> = boardRepository.getBoardArticles(boardId, title, startIndex, limit, desc)
 
     @OptIn(FlowPreview::class)
     override fun getFavoriteBoards(
         level_idx: String,
         startIndex: String,
         limit: Int,
-        aces: Boolean
-    ): Flow<BoardList> {
-        return userRepository.userId().flatMapMerge {
+        aces: Boolean,
+    ): Flow<BoardList> =
+        userRepository.userId().flatMapMerge {
             boardRepository.getFavoriteBoards(it, level_idx, startIndex, limit, aces)
         }
-    }
 }

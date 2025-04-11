@@ -6,18 +6,19 @@ import kotlinx.coroutines.flow.Flow
 
 interface BoardUseCase {
     fun getPopularBoards(): Flow<BoardList>
+
     fun getBoardArticles(
         boardId: String,
         title: String = "",
         startIndex: String = "",
         limit: Int = 200,
-        desc: Boolean = true
+        desc: Boolean = true,
     ): Flow<ArticleList>
 
     fun getFavoriteBoards(
         level_idx: String,
         startIndex: String,
         limit: Int,
-        aces: Boolean
+        aces: Boolean,
     ): Flow<BoardList>
 }

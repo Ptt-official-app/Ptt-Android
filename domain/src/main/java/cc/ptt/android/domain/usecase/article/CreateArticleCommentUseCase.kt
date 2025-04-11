@@ -7,15 +7,12 @@ import cc.ptt.android.domain.base.UseCaseBase
 import kotlinx.coroutines.flow.Flow
 
 class CreateArticleCommentUseCase constructor(
-    private val articleRepository: ArticleRepository
+    private val articleRepository: ArticleRepository,
 ) : UseCaseBase() {
-
     fun createArticleComment(
         bid: String,
         aid: String,
         type: ArticleCommentType,
-        content: String
-    ): Flow<ArticleComment> {
-        return articleRepository.createArticleComment(bid, aid, type.value, content)
-    }
+        content: String,
+    ): Flow<ArticleComment> = articleRepository.createArticleComment(bid, aid, type.value, content)
 }

@@ -10,9 +10,10 @@ import cc.ptt.android.data.source.remote.user.UserRemoteDataSource
 import cc.ptt.android.data.source.remote.user.UserRemoteDataSourceImpl
 import org.koin.dsl.module
 
-val remoteDataSourceModules = module {
-    factory <BoardRemoteDataSource> { BoardRemoteDataSourceImpl(get()) }
-    factory <SearchBoardRemoteDataSource> { SearchBoardRemoteDataSourceImpl(get()) }
-    factory <ArticleRemoteDataSource> { ArticleRemoteDataSourceImpl(get()) }
-    factory <UserRemoteDataSource> { UserRemoteDataSourceImpl(get()) }
-}
+val remoteDataSourceModules =
+    module {
+        factory<BoardRemoteDataSource> { BoardRemoteDataSourceImpl(get()) }
+        factory<SearchBoardRemoteDataSource> { SearchBoardRemoteDataSourceImpl(get()) }
+        factory<ArticleRemoteDataSource> { ArticleRemoteDataSourceImpl(get()) }
+        factory<UserRemoteDataSource> { UserRemoteDataSourceImpl(get()) }
+    }

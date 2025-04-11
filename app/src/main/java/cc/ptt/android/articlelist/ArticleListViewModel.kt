@@ -7,14 +7,19 @@ import androidx.lifecycle.viewModelScope
 import cc.ptt.android.common.logger.PttLogger
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.domain.usecase.board.BoardUseCase
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class ArticleListViewModel constructor(
     private val boardUseCase: BoardUseCase,
-    private val logger: PttLogger
+    private val logger: PttLogger,
 ) : ViewModel() {
-
     private val _actionState: MutableSharedFlow<ActionState> = MutableSharedFlow()
     val actionState: SharedFlow<ActionState> = _actionState.asSharedFlow()
 
@@ -25,7 +30,7 @@ class ArticleListViewModel constructor(
     private var nextIndex: String = ""
 
     private val _loadingState = MutableLiveData<Boolean>()
-    val loadingStateLiveData: LiveData<Boolean> get() = _loadingState
+    val loadingState: LiveData<Boolean> get() = _loadingState
 
     fun loadData(boardId: String) {
         if (_loadingState.value == true) {
@@ -67,29 +72,42 @@ class ArticleListViewModel constructor(
         emitAction(ActionState.ShowErrorMsg("Not implement yet"))
     }
 
-    private fun fetchData(boardId: String, nextIndex: String) {
+    private fun fetchData(
+        boardId: String,
+        nextIndex: String,
+    ) {
         viewModelScope.launch {
             _loadingState.value = true
-            boardUseCase.getBoardArticles(boardId = boardId, startIndex = nextIndex).catch { e ->
-                emitAction(ActionState.ShowErrorMsg(e.message.orEmpty()))
-                _loadingState.value = false
-            }.collect {
-                articleList.addAll(it.list)
-                this@ArticleListViewModel.nextIndex = it.nextIndex
-                _loadingState.value = false
-                _data.value = articleList.toList()
-            }
+            boardUseCase
+                .getBoardArticles(boardId = boardId, startIndex = nextIndex)
+                .catch { e ->
+                    emitAction(ActionState.ShowErrorMsg(e.message.orEmpty()))
+                    _loadingState.value = false
+                }.collect {
+                    articleList.addAll(it.list)
+                    this@ArticleListViewModel.nextIndex = it.nextIndex
+                    _loadingState.value = false
+                    _data.value = articleList.toList()
+                }
         }
     }
 
-    private fun emitAction(action: ActionState) = viewModelScope.launch {
-        _actionState.emit(action)
-    }
+    private fun emitAction(action: ActionState) =
+        viewModelScope.launch {
+            _actionState.emit(action)
+        }
 
     sealed class ActionState {
-        data class SwitchToArticleReadPage(val article: Article) : ActionState()
-        data class ShowErrorMsg(val msg: String) : ActionState()
+        data class SwitchToArticleReadPage(
+            val article: Article,
+        ) : ActionState()
+
+        data class ShowErrorMsg(
+            val msg: String,
+        ) : ActionState()
+
         object SwitchToArticleListSearchPage : ActionState()
+
         object SwitchToPostArticlePage : ActionState()
     }
 

@@ -8,5 +8,5 @@ data class Content(
     @SerializedName("color1")
     val color1: Color,
     @SerializedName("text")
-    val text: String
+    val text: String,
 )

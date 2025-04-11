@@ -17,7 +17,7 @@ interface BoardApi {
         @Query("title") title: String,
         @Query("start_idx") startIndex: String,
         @Query("limit") limit: Int,
-        @Query("desc") desc: Boolean
+        @Query("desc") desc: Boolean,
     ): Flow<ArticleList>
 
     @GET("api/boards")
@@ -25,7 +25,7 @@ interface BoardApi {
         @Query("keyword") keyword: String,
         @Query("start_idx") start_idx: String,
         @Query("limit") limit: Int,
-        @Query("asc") asc: Boolean
+        @Query("asc") asc: Boolean,
     ): Flow<BoardList>
 
     @GET("api/user/{user_id}/favorites")
@@ -34,6 +34,6 @@ interface BoardApi {
         @Query("level_idx") level_idx: String,
         @Query("start_idx") start_idx: String,
         @Query("limit") limit: Int,
-        @Query("asc") asc: Boolean
+        @Query("asc") asc: Boolean,
     ): Flow<BoardList>
 }

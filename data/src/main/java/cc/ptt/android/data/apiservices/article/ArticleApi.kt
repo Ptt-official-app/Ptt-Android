@@ -8,21 +8,25 @@ import cc.ptt.android.data.model.remote.article.ArticleRank
 import cc.ptt.android.data.model.remote.article.hotarticle.HotArticleList
 import kotlinx.coroutines.flow.Flow
 import okhttp3.RequestBody
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ArticleApi {
-
     @GET("api/board/{bid}/article/{aid}")
     fun getArticleDetail(
         @Path("bid") boardId: String,
-        @Path("aid") articleId: String
+        @Path("aid") articleId: String,
     ): Flow<ArticleDetail>
 
     @GET("api/board/{bid}/article/{aid}/comments")
     fun getArticleComments(
         @Path("bid") boardId: String,
         @Path("aid") articleId: String,
-        @Query("desc") desc: Boolean
+        @Query("desc") desc: Boolean,
     ): Flow<ArticleCommentsList>
 
     @Headers("Content-Type: text/plain; charset=utf-8")
@@ -30,7 +34,7 @@ interface ArticleApi {
     fun postArticleRank(
         @Path("bid") boardId: String,
         @Path("aid") articleId: String,
-        @Body body: RequestBody
+        @Body body: RequestBody,
     ): Flow<ArticleRank>
 
     @Headers("Content-Type: text/plain; charset=utf-8")
@@ -46,13 +50,13 @@ interface ArticleApi {
     fun createArticleComment(
         @Path("bid") boardId: String,
         @Path("aid") articleId: String,
-        @Body body: RequestBody
+        @Body body: RequestBody,
     ): Flow<ArticleComment>
 
     @Deprecated("")
     @GET("api/Rank/{bid}/{aid}")
     fun getArticleRank(
         @Path("bid") boardId: String,
-        @Path("aid") articleId: String
+        @Path("aid") articleId: String,
     ): Flow<PostRank>
 }

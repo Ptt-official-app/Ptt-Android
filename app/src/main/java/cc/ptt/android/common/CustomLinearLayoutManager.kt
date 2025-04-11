@@ -14,7 +14,7 @@ class CustomLinearLayoutManager : LinearLayoutManager {
     constructor(context: Context?, orientation: Int, reverseLayout: Boolean) : super(
         context,
         orientation,
-        reverseLayout
+        reverseLayout,
     ) {
     }
 
@@ -22,11 +22,14 @@ class CustomLinearLayoutManager : LinearLayoutManager {
         context: Context?,
         attrs: AttributeSet?,
         defStyleAttr: Int,
-        defStyleRes: Int
+        defStyleRes: Int,
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
     }
 
-    override fun onLayoutChildren(recycler: Recycler, state: RecyclerView.State) {
+    override fun onLayoutChildren(
+        recycler: Recycler,
+        state: RecyclerView.State,
+    ) {
         try {
             super.onLayoutChildren(recycler, state)
         } catch (e: IndexOutOfBoundsException) {
@@ -38,17 +41,15 @@ class CustomLinearLayoutManager : LinearLayoutManager {
     override fun smoothScrollToPosition(
         recyclerView: RecyclerView,
         state: RecyclerView.State,
-        position: Int
+        position: Int,
     ) {
         val linearSmoothScroller: LinearSmoothScroller =
             object : LinearSmoothScroller(recyclerView.context) {
-                override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
-                    return super.computeScrollVectorForPosition(targetPosition)
-                }
+                override fun computeScrollVectorForPosition(targetPosition: Int): PointF? =
+                    super.computeScrollVectorForPosition(targetPosition)
 
-                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                    return MILLISECONDS_PER_INCH / displayMetrics.densityDpi
-                }
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float =
+                    MILLISECONDS_PER_INCH / displayMetrics.densityDpi
             }
         linearSmoothScroller.targetPosition = position
         startSmoothScroll(linearSmoothScroller)

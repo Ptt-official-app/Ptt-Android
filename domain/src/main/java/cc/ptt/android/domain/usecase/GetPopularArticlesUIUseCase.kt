@@ -5,14 +5,18 @@ import cc.ptt.android.domain.base.UseCaseBase
 import cc.ptt.android.domain.model.ui.hotarticle.HotArticleUI
 import cc.ptt.android.domain.model.ui.hotarticle.HotArticleUIType
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flowOf
 
 @FlowPreview
 class GetPopularArticlesUIUseCase constructor(
-    private val popularArticlesRepository: PopularArticlesRepository
+    private val popularArticlesRepository: PopularArticlesRepository,
 ) : UseCaseBase() {
-
-    fun getPopularArticles(startIndex: String? = null, getNext: Boolean): Flow<Results> {
+    fun getPopularArticles(
+        startIndex: String? = null,
+        getNext: Boolean,
+    ): Flow<Results> {
         if (getNext && startIndex.isNullOrEmpty()) {
             throw Exception("Can not get next.")
         }
@@ -39,8 +43,8 @@ class GetPopularArticlesUIUseCase constructor(
                         item.url,
                         item.read,
                         "",
-                        item
-                    )
+                        item,
+                    ),
                 )
             }
             flowOf(Results(data, it.nextIdx))
@@ -49,6 +53,6 @@ class GetPopularArticlesUIUseCase constructor(
 
     data class Results(
         val data: MutableList<HotArticleUI>,
-        val nextIdx: String
+        val nextIdx: String,
     )
 }

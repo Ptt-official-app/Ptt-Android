@@ -12,9 +12,8 @@ import cc.ptt.android.databinding.ArticleListItemDeleteBinding
 
 class ArticleListAdapter(
     private val articleList: MutableList<Article> = mutableListOf(),
-    private val mOnItemClickListener: OnItemClickListener
+    private val mOnItemClickListener: OnItemClickListener,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
     private var selectArticle: Article? = null
 
     @SuppressLint("NotifyDataSetChanged")
@@ -24,38 +23,43 @@ class ArticleListAdapter(
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder =
+        when (viewType) {
             ViewHolderType.Normal.ordinal -> {
                 PostViewHolder(
                     ArticleListItemBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ),
                 )
             }
+
             else -> {
                 DeletedViewHolder(
                     ArticleListItemDeleteBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
-                        false
-                    )
+                        false,
+                    ),
                 )
             }
         }
-    }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (articleList[position].deleted) {
+    override fun getItemViewType(position: Int): Int =
+        if (articleList[position].deleted) {
             ViewHolderType.Deleted.ordinal
         } else {
             ViewHolderType.Normal.ordinal
         }
-    }
 
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        viewHolder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         val article = articleList[position]
         if (viewHolder is PostViewHolder) {
             viewHolder.onBind(article, article == selectArticle)
@@ -72,12 +76,11 @@ class ArticleListAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return articleList.size
-    }
+    override fun getItemCount(): Int = articleList.size
 
     enum class ViewHolderType {
-        Normal, Deleted
+        Normal,
+        Deleted,
     }
 
     interface OnItemClickListener {

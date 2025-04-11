@@ -10,10 +10,11 @@ import kotlinx.coroutines.FlowPreview
 import org.koin.dsl.module
 
 @FlowPreview
-val useCaseModules = module {
-    factory <CreateArticleCommentUseCase> { CreateArticleCommentUseCase(get()) }
-    factory <GetArticleUseCase> { GetArticleUseCase(get(), get()) }
-    single <UserUseCase> { UserUseCase(get(), get()) }
-    factory <GetPopularArticlesUIUseCase> { GetPopularArticlesUIUseCase(get()) }
-    factory <BoardUseCase> { BoardUseCaseImpl(get(), get()) }
-}
+val useCaseModules =
+    module {
+        factory<CreateArticleCommentUseCase> { CreateArticleCommentUseCase(get()) }
+        factory<GetArticleUseCase> { GetArticleUseCase(get(), get()) }
+        single<UserUseCase> { UserUseCase(get(), get()) }
+        factory<GetPopularArticlesUIUseCase> { GetPopularArticlesUIUseCase(get()) }
+        factory<BoardUseCase> { BoardUseCaseImpl(get(), get()) }
+    }

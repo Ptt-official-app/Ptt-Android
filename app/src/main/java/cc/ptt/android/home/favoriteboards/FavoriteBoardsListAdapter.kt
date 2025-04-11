@@ -13,19 +13,23 @@ import cc.ptt.android.common.dragitemmove.ItemMoveCallback.ItemTouchHelperContra
 import cc.ptt.android.common.dragitemmove.StartDragListener
 import cc.ptt.android.common.ptt.PttColor
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
-import java.util.*
+import java.util.Collections
 
 class FavoriteBoardsListAdapter(
     private val data: MutableList<HotBoardsItem>,
-    private val mStartDragListener: StartDragListener
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperContract {
+    private val mStartDragListener: StartDragListener,
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+    ItemTouchHelperContract {
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
     private var dislikeOnClickListener: View.OnClickListener? = null
     private var editMode = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder =
+        when (viewType) {
             TYPE_NORMAL -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.hot_boards_list_item, parent, false)
                 ViewHolder(view)
@@ -36,12 +40,14 @@ class FavoriteBoardsListAdapter(
             }
             else -> throw IllegalStateException("illegal view type: $viewType")
         }
-    }
 
     override fun getItemViewType(position: Int): Int = if (editMode) TYPE_EDIT else TYPE_NORMAL
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         when (getItemViewType(position)) {
             TYPE_NORMAL -> {
                 (holder as? ViewHolder)?.apply {
@@ -50,8 +56,8 @@ class FavoriteBoardsListAdapter(
                     textViewOnlinePeople.text = data[position].online ?: ""
                     person.setColorFilter(
                         PttColor.colorTrans(
-                            data[position].onlineColor ?: ""
-                        )
+                            data[position].onlineColor ?: "",
+                        ),
                     )
                     itemView.setOnClickListener { mOnItemClickListener?.onItemClick(it, adapterPosition) }
                     holder.itemView.setOnLongClickListener {
@@ -82,11 +88,12 @@ class FavoriteBoardsListAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
+    override fun getItemCount(): Int = data.size
 
-    override fun onRowMoved(fromPosition: Int, toPosition: Int) {
+    override fun onRowMoved(
+        fromPosition: Int,
+        toPosition: Int,
+    ) {
         if (fromPosition < toPosition) {
             for (x in fromPosition until toPosition) {
                 Collections.swap(data, x, x + 1)
@@ -121,14 +128,18 @@ class FavoriteBoardsListAdapter(
         mOnItemLongClickListener = listener
     }
 
-    private inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolder(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.textView_hot_boards_title)
         val textViewSubtitle: TextView = v.findViewById(R.id.textView_hot_boards_subtitle)
         val textViewOnlinePeople: TextView = v.findViewById(R.id.textView_hot_boards_online)
         val person: AppCompatImageButton = v.findViewById(R.id.hot_boards_online_imageButton_person)
     }
 
-    inner class ViewHolderEdit(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ViewHolderEdit(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.textView_hot_boards_title)
         val textViewSubtitle: TextView = v.findViewById(R.id.textView_hot_boards_subtitle)
         var unfav: AppCompatImageButton = v.findViewById(R.id.hot_boards_online_imageButton_unfav)
@@ -137,11 +148,17 @@ class FavoriteBoardsListAdapter(
 
     // define interface
     interface OnItemClickListener {
-        fun onItemClick(view: View?, position: Int)
+        fun onItemClick(
+            view: View?,
+            position: Int,
+        )
     }
 
     interface OnItemLongClickListener {
-        fun onItemClick(view: View?, position: Int)
+        fun onItemClick(
+            view: View?,
+            position: Int,
+        )
     }
 
     companion object {

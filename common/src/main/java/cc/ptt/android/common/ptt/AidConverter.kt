@@ -1,22 +1,20 @@
 package cc.ptt.android.common.ptt
 
-import java.util.*
+import java.util.Locale
 import java.util.regex.Pattern
 import kotlin.Exception
 
 object AidConverter {
     private const val DOMAIN_URL = "https://www.ptt.cc/bbs/"
     private const val FILE_EXT = ".html"
-    private const val aidTable = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
+    private const val AID_TABLE = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
 
     private val table = tableInitializer()
     private val inverseTable = inverseTableInitializer()
 
     private val boardNameChangeMapping: Map<String, String> = mapOf("iPhone" to "iOS")
 
-    private fun checkBoardNameChange(boardName: String): String {
-        return boardNameChangeMapping[boardName] ?: boardName
-    }
+    private fun checkBoardNameChange(boardName: String): String = boardNameChangeMapping[boardName] ?: boardName
 
     /**
      * 建立文章編號字元 Map, 方便取得對應數值
@@ -26,9 +24,9 @@ object AidConverter {
     private fun tableInitializer(): HashMap<String, Long> {
         val table = HashMap<String, Long>()
         var index: Long = 0
-        val size = aidTable.length
+        val size = AID_TABLE.length
         for (i in 0 until size) {
-            table[aidTable[i].toString() + ""] = index
+            table[AID_TABLE[i].toString() + ""] = index
             index++
         }
         return table
@@ -37,9 +35,9 @@ object AidConverter {
     private fun inverseTableInitializer(): HashMap<Long, String> {
         val inverseTable = HashMap<Long, String>()
         val index: Long = 0
-        val size = aidTable.length
+        val size = AID_TABLE.length
         for (i in 0 until size) {
-            inverseTable[i.toLong()] = aidTable[i].toString() + ""
+            inverseTable[i.toLong()] = AID_TABLE[i].toString() + ""
         }
         return inverseTable
     }
@@ -79,11 +77,12 @@ object AidConverter {
 
         if (fnList[2] != "A") return 0
         if (!isNumeric(v1String) || v1String.length != 10) return 0
-        type = when (typeString) {
-            "M" -> 0
-            "G" -> 1
-            else -> return 0
-        }
+        type =
+            when (typeString) {
+                "M" -> 0
+                "G" -> 1
+                else -> return 0
+            }
         v1 = v1String.toLong()
         v2 = v2String.toLong(16)
         aidu = type and 0xf shl 44 or (v1 and 0xffffffffL shl 12) or (v2 and 0xfff)
@@ -143,7 +142,10 @@ object AidConverter {
         val v1 = aidU shr 12 and 0xffffffffL
         val v2 = aidU and 0xfff
 
-        val hex = java.lang.Long.toHexString(v2).uppercase(Locale.getDefault())
+        val hex =
+            java.lang.Long
+                .toHexString(v2)
+                .uppercase(Locale.getDefault())
         return (if (type == 0L) "M" else "G") + "." + v1 + ".A." + stringLeftPad(hex, 3, "0")
     }
 
@@ -155,13 +157,12 @@ object AidConverter {
      * 最後的16進位表示法若未滿3個字將以0從左邊開始補齊<br></br>
      * 範例: M.1451100858.A.71E
      */
-    private fun aidToFileName(aid: String): String {
-        return try {
+    private fun aidToFileName(aid: String): String =
+        try {
             aidU2fn(aidC2aidU(aid))
         } catch (e: Exception) {
             throw Exception("Not correct aid")
         }
-    }
 
     /**
      * 將文章編號轉換為 WEB 版 URL
@@ -170,15 +171,15 @@ object AidConverter {
      * @param aid 文章編號
      * @return WEB 版的完整 URL
      */
-    fun aidToUrl(aidBean: AidBean): String {
-        return if (aidBean.isEmpty()) {
+    fun aidToUrl(aidBean: AidBean): String =
+        if (aidBean.isEmpty()) {
             ""
         } else {
-            "$DOMAIN_URL${checkBoardNameChange(aidBean.boardName!!)}/" + aidToFileName(
-                aidBean.aid!!
-            ) + FILE_EXT
+            "$DOMAIN_URL${checkBoardNameChange(aidBean.boardName!!)}/" +
+                aidToFileName(
+                    aidBean.aid!!,
+                ) + FILE_EXT
         }
-    }
 
     /**
      * 將檔案名稱(也就是 URL 的最後一段 不包含副檔名)轉換為文章編號
@@ -201,7 +202,12 @@ object AidConverter {
     fun urlToAid(url: String): AidBean {
         var url = url
         try {
-            url = url.replace("https:", "").replace("http:", "").replace(" ", "").replace("//", "")
+            url =
+                url
+                    .replace("https:", "")
+                    .replace("http:", "")
+                    .replace(" ", "")
+                    .replace("//", "")
             val urlList = splitterString("/", url)
             if (url.indexOf("www.ptt.cc") == -1) return AidBean()
             var fileWhere = -1
@@ -225,7 +231,10 @@ object AidConverter {
         return AidBean()
     }
 
-    private fun splitterString(cut: String, input: String): List<String> {
+    private fun splitterString(
+        cut: String,
+        input: String,
+    ): List<String> {
         val output: MutableList<String> = ArrayList()
         val cmds = input.split(cut.toRegex()).toTypedArray()
         for (cmd in cmds) {
@@ -240,7 +249,11 @@ object AidConverter {
         return isNum.matches()
     }
 
-    private fun stringLeftPad(input: String, num: Int, put: String): String {
+    private fun stringLeftPad(
+        input: String,
+        num: Int,
+        put: String,
+    ): String {
         var input = input
         while (input.length < num) {
             input = put + input

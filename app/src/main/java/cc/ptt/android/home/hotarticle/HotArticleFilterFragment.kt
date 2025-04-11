@@ -23,11 +23,12 @@ class HotArticleFilterFragment : BaseFragment() {
     private var mAdapter: HotArticleFilterAdapter? = null
     private val data: MutableList<Map<String, Any>>? = ArrayList()
     private var title = ""
-    private val board_list: MutableList<String> = ArrayList()
+    private val boardList: MutableList<String> = ArrayList()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         val view = inflater.inflate(R.layout.hot_article_list_fragment_layout, container, false)
         mRecyclerView = findViewById<RecyclerView>(R.id.article_list_fragment_recycler_view)
@@ -35,7 +36,7 @@ class HotArticleFilterFragment : BaseFragment() {
             findViewById<SwipeRefreshLayout>(R.id.article_list_fragment_refresh_layout)
         val bundle = arguments // 取得Bundle
         title = bundle!!.getString("title", "ALL")
-        board_list.addAll(bundle.getStringArrayList("BoardList")!!)
+        boardList.addAll(bundle.getStringArrayList("BoardList")!!)
         mAdapter = HotArticleFilterAdapter(requireContext(), data!!)
         val layoutManager = CustomLinearLayoutManager(context)
         layoutManager.orientation = RecyclerView.VERTICAL
@@ -48,61 +49,77 @@ class HotArticleFilterFragment : BaseFragment() {
             android.R.color.holo_red_light,
             android.R.color.holo_blue_light,
             android.R.color.holo_green_light,
-            android.R.color.holo_orange_light
+            android.R.color.holo_orange_light,
         )
         mSwipeRefreshLayout!!.isEnabled = false
         mSwipeRefreshLayout!!.setOnRefreshListener { loadData() }
         mRecyclerView!!.addOnScrollListener(
             object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                override fun onScrolled(
+                    recyclerView: RecyclerView,
+                    dx: Int,
+                    dy: Int,
+                ) {
                     super.onScrolled(recyclerView, dx, dy)
                     val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                     val totalItemCount = layoutManager.itemCount
-                    if (!GattingData) if (lastVisibleItem >= totalItemCount - 30) {
-                        // loadNextData();
-                    }
-                }
-            })
-        val recyclerItemClickListener = RecyclerItemClickListener(
-            mRecyclerView!!,
-            object : RecyclerItemClickListener.OnItemClickListener {
-                override fun onItemClick(view: View?, position: Int) {
-                    // System.out.println("onItemClick " + adapter.getItem(position));
-                    if (position > 0) {
-                        if (!notNullString(data[position]["title"])
-                            .equals(title, ignoreCase = true)
-                        ) {
-                            val intent = Intent("puty-hot-HotArticle-change")
-                            // You can also include some extra data.
-                            val board = notNullString(
-                                data[position]["title"]
-                            )
-                            if (board.equals("ALL", ignoreCase = true)) {
-                                intent.putExtra("message", "")
-                            } else {
-                                intent.putExtra(
-                                    "message",
-                                    notNullString(
-                                        data[position]["title"]
-                                    )
-                                )
-                            }
-                            context?.let {
-                                LocalBroadcastManager.getInstance(it)
-                                    .sendBroadcast(intent)
-                            }
+                    if (!gattingData) {
+                        if (lastVisibleItem >= totalItemCount - 30) {
+                            // loadNextData();
                         }
-                        requireActivity().onBackPressed()
-                    } else {
-                        requireActivity().onBackPressed()
                     }
                 }
-
-                override fun onItemLongClick(view: View?, position: Int) {
-                    // System.out.println("onItemLongClick " + position);
-                }
-            }
+            },
         )
+        val recyclerItemClickListener =
+            RecyclerItemClickListener(
+                mRecyclerView!!,
+                object : RecyclerItemClickListener.OnItemClickListener {
+                    override fun onItemClick(
+                        view: View?,
+                        position: Int,
+                    ) {
+                        // System.out.println("onItemClick " + adapter.getItem(position));
+                        if (position > 0) {
+                            if (!notNullString(data[position]["title"])
+                                    .equals(title, ignoreCase = true)
+                            ) {
+                                val intent = Intent("puty-hot-HotArticle-change")
+                                // You can also include some extra data.
+                                val board =
+                                    notNullString(
+                                        data[position]["title"],
+                                    )
+                                if (board.equals("ALL", ignoreCase = true)) {
+                                    intent.putExtra("message", "")
+                                } else {
+                                    intent.putExtra(
+                                        "message",
+                                        notNullString(
+                                            data[position]["title"],
+                                        ),
+                                    )
+                                }
+                                context?.let {
+                                    LocalBroadcastManager
+                                        .getInstance(it)
+                                        .sendBroadcast(intent)
+                                }
+                            }
+                            requireActivity().onBackPressed()
+                        } else {
+                            requireActivity().onBackPressed()
+                        }
+                    }
+
+                    override fun onItemLongClick(
+                        view: View?,
+                        position: Int,
+                    ) {
+                        // System.out.println("onItemLongClick " + position);
+                    }
+                },
+            )
         recyclerItemClickListener.setDecorator(decorator)
         mRecyclerView?.addOnItemTouchListener(recyclerItemClickListener)
         mAdapter?.setMoreClickListen { requireActivity().onBackPressed() }
@@ -113,25 +130,26 @@ class HotArticleFilterFragment : BaseFragment() {
         loadData()
     }
 
-    private val GattingData = false
+    private val gattingData = false
+
     private fun loadData() {
-        if (GattingData) return
+        if (gattingData) return
         data!!.clear()
-        for (i in -1 until board_list.size) {
+        for (i in -1 until boardList.size) {
             val mm: MutableMap<String, Any> = HashMap()
             if (i == -1) {
                 mm["title"] = title
                 mm["type"] = "title"
             } else {
-                mm["title"] = board_list[i]
-                mm["select"] = board_list[i].equals(title, ignoreCase = true)
+                mm["title"] = boardList[i]
+                mm["select"] = boardList[i].equals(title, ignoreCase = true)
             }
             data.add(mm)
             if (i == -1) {
                 mAdapter!!.notifyDataSetChanged()
             }
         }
-        mAdapter!!.notifyItemRangeInserted(1, 1 + board_list.size)
+        mAdapter!!.notifyItemRangeInserted(1, 1 + boardList.size)
     }
 
     override fun onDestroyView() {

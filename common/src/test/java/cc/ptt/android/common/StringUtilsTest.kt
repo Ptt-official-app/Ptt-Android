@@ -6,7 +6,6 @@ import org.junit.Before
 import org.junit.Test
 
 class StringUtilsTest {
-
     @Before
     fun setUp() {
     }
@@ -32,7 +31,10 @@ class StringUtilsTest {
     @Test
     fun getImgUrl() {
         val expected = listOf("https://i.imgur.com/MbkBGEG.jpg", "https://i.imgur.com/MbkBGEG.jpg")
-        Assert.assertArrayEquals(expected.toTypedArray(), StringUtils.getImgUrl("https://i.imgur.com/MbkBGEG.jpg 嗨 https://i.imgur.com/MbkBGEG.jpg").toTypedArray())
+        Assert.assertArrayEquals(
+            expected.toTypedArray(),
+            StringUtils.getImgUrl("https://i.imgur.com/MbkBGEG.jpg 嗨 https://i.imgur.com/MbkBGEG.jpg").toTypedArray(),
+        )
     }
 
     @Test

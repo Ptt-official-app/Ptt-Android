@@ -5,5 +5,5 @@ data class ArticleCommentsList(
     @SerializedName("list")
     val list: List<ArticleComment>,
     @SerializedName("next_idx")
-    val nextIndex: String
+    val nextIndex: String,
 )

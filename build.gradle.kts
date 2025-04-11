@@ -8,8 +8,8 @@ buildscript {
         maven(url = "https://cdn.reproio.com/android")
     }
     dependencies {
-        classpath(Dependencies.ProjectDependencies.androidGradlePlugin)
-        classpath(Dependencies.ProjectDependencies.Kotlin.gradlePlugin)
+        classpath(libs.android.gradle.plugin)
+        classpath(libs.kotlin.gradle.plugin)
     }
 }
 

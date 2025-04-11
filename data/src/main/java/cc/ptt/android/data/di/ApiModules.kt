@@ -12,12 +12,13 @@ import cc.ptt.android.data.apiservices.board.BoardApi
 import cc.ptt.android.data.apiservices.user.UserApi
 import org.koin.dsl.module
 
-val apiModules = module {
-    factory <AESKeyStoreHelper> { AESKeyStoreHelperImpl(get()) }
-    factory <ApiHelper> { ApiHelperImpl(get()) }
-    single <TokenInterceptor> { TokenInterceptorImpl(get()) }
-    factory { RetrofitServiceProvider(get(), get()) }
-    single <BoardApi> { get<RetrofitServiceProvider>().create(BoardApi::class.java) }
-    single <UserApi> { get<RetrofitServiceProvider>().create(UserApi::class.java) }
-    single <ArticleApi> { get<RetrofitServiceProvider>().create(ArticleApi::class.java) }
-}
+val apiModules =
+    module {
+        factory<AESKeyStoreHelper> { AESKeyStoreHelperImpl(get()) }
+        factory<ApiHelper> { ApiHelperImpl(get()) }
+        single<TokenInterceptor> { TokenInterceptorImpl(get()) }
+        factory { RetrofitServiceProvider(get(), get()) }
+        single<BoardApi> { get<RetrofitServiceProvider>().create(BoardApi::class.java) }
+        single<UserApi> { get<RetrofitServiceProvider>().create(UserApi::class.java) }
+        single<ArticleApi> { get<RetrofitServiceProvider>().create(ArticleApi::class.java) }
+    }

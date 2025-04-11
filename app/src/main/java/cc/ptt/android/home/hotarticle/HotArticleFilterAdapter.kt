@@ -13,16 +13,15 @@ import androidx.annotation.ColorInt
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
 import cc.ptt.android.common.StringUtils
-import cc.ptt.android.common.StringUtils.TextViewAutoSplitFix
 import cc.ptt.android.common.StringUtils.notNullString
+import cc.ptt.android.common.StringUtils.textViewAutoSplitFix
 import cc.ptt.android.common.stickyheader.StickyAdapter
 import coil.load
 
 class HotArticleFilterAdapter(
     private val context: Context,
-    private val data: List<Map<String, Any>>
+    private val data: List<Map<String, Any>>,
 ) : StickyAdapter<RecyclerView.ViewHolder?, RecyclerView.ViewHolder?>() {
-
     private var moreClickListen: View.OnClickListener? = null
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
@@ -30,29 +29,35 @@ class HotArticleFilterAdapter(
 
     @ColorInt
     private var ringColor = 0
+
     @ColorInt
     private var ringBackgroundColor = 0
 
-    override fun getHeaderPositionForItem(itemPosition: Int): Int {
-        return 0
-    }
+    override fun getHeaderPositionForItem(itemPosition: Int): Int = 0
 
-    override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder?, headerPosition: Int) {
+    override fun onBindHeaderViewHolder(
+        holder: RecyclerView.ViewHolder?,
+        headerPosition: Int,
+    ) {
         holder?.run {
             onBindViewHolder(this, headerPosition)
         }
     }
 
-    override fun onCreateHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return onCreateViewHolder(parent, TYPE_TITLE)
-    }
+    override fun onCreateHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder = onCreateViewHolder(parent, TYPE_TITLE)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder {
         when (viewType) {
             TYPE_SUBITEM -> {
-                val view = LayoutInflater.from(parent.context).inflate(
-                    R.layout.hot_article_list_item_title_subitem, parent, false
-                )
+                val view =
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.hot_article_list_item_title_subitem,
+                        parent,
+                        false,
+                    )
                 return ViewHolderTitleSubitem(view)
             }
             TYPE_TITLE -> {
@@ -72,19 +77,22 @@ class HotArticleFilterAdapter(
         if (notNullString(data[position]["type"]).equals("title", ignoreCase = true)) {
             pos = TYPE_TITLE
         } else if (notNullString(data[position]["type"])
-            .equals("more", ignoreCase = true)
+                .equals("more", ignoreCase = true)
         ) {
             pos = TYPE_MORE
         }
         return pos
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         when (getItemViewType(position)) {
             TYPE_SUBITEM -> {
                 (holder as? ViewHolderTitleSubitem)?.apply {
                     textViewTitle.text = notNullString(data[position]["title"])
-                    TextViewAutoSplitFix(textViewTitle)
+                    textViewAutoSplitFix(textViewTitle)
                     if (data[position]["select"] as Boolean) {
                         val typedValue = TypedValue()
                         val theme = context.theme
@@ -121,7 +129,10 @@ class HotArticleFilterAdapter(
         }
     }
 
-    private fun setNumberColor(tv: TextView, sd: StringUtils.SortDecimal) {
+    private fun setNumberColor(
+        tv: TextView,
+        sd: StringUtils.SortDecimal,
+    ) {
         if (sd.isOverDecimal()) {
             val typedValue = TypedValue()
             val theme = context.theme
@@ -137,9 +148,7 @@ class HotArticleFilterAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
+    override fun getItemCount(): Int = data.size
 
     fun setMoreClickListen(moreClickListen: View.OnClickListener?) {
         this.moreClickListen = moreClickListen
@@ -157,7 +166,10 @@ class HotArticleFilterAdapter(
         mOnItemLongClickListener = listener
     }
 
-    private fun setImageView(imageView: ImageView, url: String) {
+    private fun setImageView(
+        imageView: ImageView,
+        url: String,
+    ) {
         if (imageView.tag != null) {
             if (imageView.tag.toString() == url) {
                 return
@@ -167,28 +179,40 @@ class HotArticleFilterAdapter(
         imageView.load(url)
     }
 
-    inner class ViewHolderTitleSubitem(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ViewHolderTitleSubitem(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.article_list_item_textView_title)
         val main: LinearLayout = v.findViewById(R.id.article_list_item_main)
     }
 
-    private inner class ViewHolderTitle(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolderTitle(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.article_list_item_textView_title)
         val main: LinearLayout = v.findViewById(R.id.article_list_item_main)
         val more: ImageButton = v.findViewById(R.id.article_list_item_imageButton_more)
     }
 
-    private inner class ViewHolderMore(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolderMore(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val main: LinearLayout = v.findViewById(R.id.article_list_item_main)
     }
 
     // define interface
     interface OnItemClickListener {
-        fun onItemClick(view: View?, position: Int)
+        fun onItemClick(
+            view: View?,
+            position: Int,
+        )
     }
 
     interface OnItemLongClickListener {
-        fun onItemClick(view: View?, position: Int)
+        fun onItemClick(
+            view: View?,
+            position: Int,
+        )
     }
 
     init {

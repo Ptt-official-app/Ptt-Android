@@ -17,9 +17,8 @@ import kotlinx.coroutines.launch
 
 class LoginPageViewModel constructor(
     private val userUseCase: UserUseCase,
-    private val resourcesProvider: ResourcesProvider
+    private val resourcesProvider: ResourcesProvider,
 ) : ViewModel() {
-
     private val _passwordMessage = MutableLiveData<String>()
     val passwordMessage: LiveData<String> = _passwordMessage
 
@@ -31,22 +30,28 @@ class LoginPageViewModel constructor(
 
     private var loginJob: Job? = null
 
-    fun checkLoginLegal(account: String, password: String) {
+    fun checkLoginLegal(
+        account: String,
+        password: String,
+    ) {
         if (!StringUtils.isAccount(account)) {
             _passwordMessage.value = resourcesProvider.getString(R.string.not_this_password)
             return
         }
         loginJob?.cancel()
-        loginJob = viewModelScope.launch {
-            userUseCase.login(account, password).catch { e ->
-                if (e is ApiException) {
-                    _errorMessage.value = Event(e.serverMsg.msg)
-                } else {
-                    _errorMessage.value = Event(resourcesProvider.getString(R.string.server_error))
-                }
-            }.collect {
-                _loginSuccess.value = Unit
+        loginJob =
+            viewModelScope.launch {
+                userUseCase
+                    .login(account, password)
+                    .catch { e ->
+                        if (e is ApiException) {
+                            _errorMessage.value = Event(e.serverMsg.msg)
+                        } else {
+                            _errorMessage.value = Event(resourcesProvider.getString(R.string.server_error))
+                        }
+                    }.collect {
+                        _loginSuccess.value = Unit
+                    }
             }
-        }
     }
 }

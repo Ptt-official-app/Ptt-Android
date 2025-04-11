@@ -14,8 +14,8 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
 import cc.ptt.android.common.StringUtils
-import cc.ptt.android.common.StringUtils.TextViewAutoSplitFix
 import cc.ptt.android.common.StringUtils.sortDecimal
+import cc.ptt.android.common.StringUtils.textViewAutoSplitFix
 import cc.ptt.android.common.stickyheader.StickyAdapter
 import cc.ptt.android.domain.model.ui.hotarticle.HotArticleUI
 import cc.ptt.android.domain.model.ui.hotarticle.HotArticleUIType
@@ -23,9 +23,8 @@ import coil.load
 
 class HotArticleListAdapter constructor(
     private val context: Context,
-    private val data: List<HotArticleUI>
+    private val data: List<HotArticleUI>,
 ) : StickyAdapter<RecyclerView.ViewHolder?, RecyclerView.ViewHolder?>() {
-
     private var ringColor = 0
     private var ringBackgroundColor = 0
     private var highLightUrl = ""
@@ -33,22 +32,25 @@ class HotArticleListAdapter constructor(
     private var mOnItemClickListener: OnItemClickListener? = null
     private var mOnItemLongClickListener: OnItemLongClickListener? = null
 
-    override fun getHeaderPositionForItem(itemPosition: Int): Int {
-        return 0
-    }
+    override fun getHeaderPositionForItem(itemPosition: Int): Int = 0
 
-    override fun onBindHeaderViewHolder(holder: RecyclerView.ViewHolder?, headerPosition: Int) {
+    override fun onBindHeaderViewHolder(
+        holder: RecyclerView.ViewHolder?,
+        headerPosition: Int,
+    ) {
         holder?.run {
             onBindViewHolder(this, headerPosition)
         }
     }
 
-    override fun onCreateHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return onCreateViewHolder(parent, HotArticleUIType.TITLE.value)
-    }
+    override fun onCreateHeaderViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
+        onCreateViewHolder(parent, HotArticleUIType.TITLE.value)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder =
+        when (viewType) {
             HotArticleUIType.NORMAL.value -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.hot_article_list_item, parent, false)
                 ViewHolder(view)
@@ -63,13 +65,13 @@ class HotArticleListAdapter constructor(
             }
             else -> throw IllegalStateException("illegal view type: $viewType")
         }
-    }
 
-    override fun getItemViewType(position: Int): Int {
-        return data[position].type.value
-    }
+    override fun getItemViewType(position: Int): Int = data[position].type.value
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         val item = data[position]
         when (getItemViewType(position)) {
             HotArticleUIType.NORMAL.value -> {
@@ -84,7 +86,10 @@ class HotArticleListAdapter constructor(
         }
     }
 
-    private fun setNumberColor(tv: TextView, sd: StringUtils.SortDecimal) {
+    private fun setNumberColor(
+        tv: TextView,
+        sd: StringUtils.SortDecimal,
+    ) {
         if (sd.isOverDecimal()) {
             val typedValue = TypedValue()
             val theme = context.theme
@@ -100,9 +105,7 @@ class HotArticleListAdapter constructor(
         }
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
+    override fun getItemCount(): Int = data.size
 
     fun setMoreClickListen(moreClickListen: View.OnClickListener?) {
         this.moreClickListen = moreClickListen
@@ -120,7 +123,10 @@ class HotArticleListAdapter constructor(
         mOnItemLongClickListener = listener
     }
 
-    private fun setImageView(imageView: ImageView, url: String) {
+    private fun setImageView(
+        imageView: ImageView,
+        url: String,
+    ) {
         if (imageView.tag != null) {
             if (imageView.tag.toString() == url) {
                 return
@@ -130,7 +136,9 @@ class HotArticleListAdapter constructor(
         imageView.load(url)
     }
 
-    inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    inner class ViewHolder(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.article_list_item_textView_title)
         val textViewClass: TextView = v.findViewById(R.id.article_list_item_textView_class)
         val textViewAuth: TextView = v.findViewById(R.id.article_list_item_textView_auth)
@@ -142,17 +150,17 @@ class HotArticleListAdapter constructor(
         val image: ImageView = v.findViewById(R.id.article_list_item_picture)
 
         fun update(data: HotArticleUI) {
-            TextViewAutoSplitFix(textViewTitle)
+            textViewAutoSplitFix(textViewTitle)
             textViewTitle.text = data.title ?: ""
             textViewDate.text = data.getDateText()
             textViewClass.text = data.getClassText()
             textViewAuth.text = data.auth
-            val commit_ = sortDecimal(data.commit)
-            val like_ = sortDecimal(data.like)
-            textViewCommit.text = commit_.toString()
-            setNumberColor(textViewCommit, commit_)
-            textViewLike.text = like_.toString()
-            setNumberColor(textViewLike, like_)
+            val commit = sortDecimal(data.commit)
+            val like = sortDecimal(data.like)
+            textViewCommit.text = commit.toString()
+            setNumberColor(textViewCommit, commit)
+            textViewLike.text = like.toString()
+            setNumberColor(textViewLike, like)
             if (data.url == highLightUrl) {
                 val typedValue = TypedValue()
                 val theme = context.theme
@@ -189,7 +197,9 @@ class HotArticleListAdapter constructor(
         }
     }
 
-    private inner class ViewHolderTitle(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolderTitle(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.article_list_item_textView_title)
         val main: LinearLayout = v.findViewById(R.id.article_list_item_main)
         val more: ImageButton = v.findViewById(R.id.article_list_item_imageButton_more)
@@ -205,7 +215,9 @@ class HotArticleListAdapter constructor(
         }
     }
 
-    private inner class ViewHolderMore(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolderMore(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val main: LinearLayout = v.findViewById(R.id.article_list_item_main)
 
         fun update(data: HotArticleUI) {
@@ -219,11 +231,19 @@ class HotArticleListAdapter constructor(
 
     // define interface
     interface OnItemClickListener {
-        fun onItemClick(view: View?, position: Int, data: HotArticleUI)
+        fun onItemClick(
+            view: View?,
+            position: Int,
+            data: HotArticleUI,
+        )
     }
 
     interface OnItemLongClickListener {
-        fun onItemClick(view: View?, position: Int, data: HotArticleUI)
+        fun onItemClick(
+            view: View?,
+            position: Int,
+            data: HotArticleUI,
+        )
     }
 
     init {

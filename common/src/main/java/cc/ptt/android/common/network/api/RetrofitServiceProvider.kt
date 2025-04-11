@@ -11,54 +11,58 @@ import java.util.concurrent.TimeUnit
 
 class RetrofitServiceProvider constructor(
     private val apiHelper: ApiHelper,
-    private val tokenInterceptor: TokenInterceptor
+    private val tokenInterceptor: TokenInterceptor,
 ) {
-
     companion object {
         const val TIMEOUT = 30L
     }
 
     fun <T> create(serviceClass: Class<T>): T {
-        val maxLogLevel: HttpLoggingInterceptor.Level = if (BuildConfig.DEBUG) {
-            when (
-                serviceClass.getAnnotation(
-                    ApiMaxLogLevel::class.java
-                )?.level
-            ) {
-                MaxLogLevel.NONE -> HttpLoggingInterceptor.Level.NONE
-                MaxLogLevel.BASIC -> HttpLoggingInterceptor.Level.BASIC
-                MaxLogLevel.HEADERS -> HttpLoggingInterceptor.Level.HEADERS
-                MaxLogLevel.BODY -> HttpLoggingInterceptor.Level.BODY
-                else -> HttpLoggingInterceptor.Level.BODY
+        val maxLogLevel: HttpLoggingInterceptor.Level =
+            if (BuildConfig.DEBUG) {
+                when (
+                    serviceClass
+                        .getAnnotation(
+                            ApiMaxLogLevel::class.java,
+                        )?.level
+                ) {
+                    MaxLogLevel.NONE -> HttpLoggingInterceptor.Level.NONE
+                    MaxLogLevel.BASIC -> HttpLoggingInterceptor.Level.BASIC
+                    MaxLogLevel.HEADERS -> HttpLoggingInterceptor.Level.HEADERS
+                    MaxLogLevel.BODY -> HttpLoggingInterceptor.Level.BODY
+                    else -> HttpLoggingInterceptor.Level.BODY
+                }
+            } else {
+                HttpLoggingInterceptor.Level.NONE
             }
-        } else {
-            HttpLoggingInterceptor.Level.NONE
-        }
         return createRetrofit(apiHelper.getHost(), maxLogLevel).create(serviceClass)
     }
 
-    private fun createRetrofit(host: String, level: HttpLoggingInterceptor.Level): Retrofit {
-        return Retrofit.Builder()
+    private fun createRetrofit(
+        host: String,
+        level: HttpLoggingInterceptor.Level,
+    ): Retrofit =
+        Retrofit
+            .Builder()
             .baseUrl(host)
             .client(createOkHttpClient(level))
             .addCallAdapterFactory(RetrofitFlowCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-    }
 
-    private fun createOkHttpClient(level: HttpLoggingInterceptor.Level): OkHttpClient {
-        return OkHttpClient.Builder().connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+    private fun createOkHttpClient(level: HttpLoggingInterceptor.Level): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT, TimeUnit.SECONDS)
             .addInterceptor(createLoggingInterceptor(level))
             .addInterceptor(tokenInterceptor)
             .addInterceptor(ApiResponseInterceptor())
             .build()
-    }
 
-    private fun createLoggingInterceptor(level: HttpLoggingInterceptor.Level): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
+    private fun createLoggingInterceptor(level: HttpLoggingInterceptor.Level): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
             this.level = level
         }
-    }
 }

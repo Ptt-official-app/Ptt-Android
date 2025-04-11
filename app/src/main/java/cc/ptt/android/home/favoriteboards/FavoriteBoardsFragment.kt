@@ -27,7 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteBoardsFragment : BaseFragment() {
     private var _binding: FavoriteBoardsFragmentLayoutBinding? = null
-    private val binding get() = _binding
+    val binding get() = _binding
     private val mClickFix = ClickFix()
     private var editMode = false
     private var mStartDragListener: StartDragListener? = null
@@ -38,31 +38,35 @@ class FavoriteBoardsFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return FavoriteBoardsFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
-    }
+        savedInstanceState: Bundle?,
+    ): View =
+        FavoriteBoardsFragmentLayoutBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         binding?.apply {
-
             hotBoardsFragmentSearch.setOnClickListener(
                 View.OnClickListener {
                     if (isEditMode()) {
-                        val mm: Toast = Toast.makeText(
-                            context,
-                            R.string.attion_close_edit_mode,
-                            Toast.LENGTH_SHORT
-                        )
+                        val mm: Toast =
+                            Toast.makeText(
+                                context,
+                                R.string.attion_close_edit_mode,
+                                Toast.LENGTH_SHORT,
+                            )
                         mm.setGravity(Gravity.CENTER, 0, 0)
                         mm.show()
                         return@OnClickListener
                     }
                     Navigation.switchToSearchBoardsPage(requireActivity())
-                }
+                },
             )
 
             hotBoardsFragmentEdit.setOnClickListener(
@@ -78,29 +82,31 @@ class FavoriteBoardsFragment : BaseFragment() {
                         hotBoardsFragmentEdit.setColorFilter(
                             requireActivity()
                                 .resources
-                                .getColor(cc.ptt.android.data.R.color.tangerine)
+                                .getColor(cc.ptt.android.data.R.color.tangerine),
                         )
                     } else {
                         hotBoardsFragmentEdit.setColorFilter(
                             requireActivity()
                                 .resources
-                                .getColor(cc.ptt.android.data.R.color.slateGrey)
+                                .getColor(cc.ptt.android.data.R.color.slateGrey),
                         )
                     }
-                }
+                },
             )
 
-            mStartDragListener = object : StartDragListener {
-                override fun requestDrag(viewHolder: RecyclerView.ViewHolder?) {
-                    touchHelper?.startDrag(viewHolder!!)
+            mStartDragListener =
+                object : StartDragListener {
+                    override fun requestDrag(viewHolder: RecyclerView.ViewHolder?) {
+                        touchHelper?.startDrag(viewHolder!!)
+                    }
                 }
-            }
 
             hotBoardsFragmentRecyclerView.apply {
-                adapter = FavoriteBoardsListAdapter(
-                    viewModel.data,
-                    this@FavoriteBoardsFragment.mStartDragListener!!
-                )
+                adapter =
+                    FavoriteBoardsListAdapter(
+                        viewModel.data,
+                        this@FavoriteBoardsFragment.mStartDragListener!!,
+                    )
 
                 val callback: ItemTouchHelper.Callback = ItemMoveCallback((adapter as FavoriteBoardsListAdapter))
                 touchHelper = ItemTouchHelper(callback)
@@ -112,7 +118,10 @@ class FavoriteBoardsFragment : BaseFragment() {
                 setLayoutManager(layoutManager)
                 (adapter as FavoriteBoardsListAdapter).setOnItemClickListener(
                     object : FavoriteBoardsListAdapter.OnItemClickListener {
-                        override fun onItemClick(view: View?, position: Int) {
+                        override fun onItemClick(
+                            view: View?,
+                            position: Int,
+                        ) {
                             if (mClickFix.isFastDoubleClick) return
                             if (!editMode) {
                                 viewModel.data[position].let {
@@ -120,7 +129,8 @@ class FavoriteBoardsFragment : BaseFragment() {
                                 }
                             }
                         }
-                    })
+                    },
+                )
 
                 (adapter as FavoriteBoardsListAdapter).setDislikeOnClickListener(
                     View.OnClickListener { v ->
@@ -130,19 +140,25 @@ class FavoriteBoardsFragment : BaseFragment() {
                                 viewModel.deleteBoard(data)
                             }
                         }
-                    }
+                    },
                 )
 
-                addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
-                        val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-                        val totalItemCount = layoutManager.itemCount
-                        if (lastVisibleItem >= totalItemCount - 30) {
-                            viewModel.loadNextData()
+                addOnScrollListener(
+                    object : RecyclerView.OnScrollListener() {
+                        override fun onScrolled(
+                            recyclerView: RecyclerView,
+                            dx: Int,
+                            dy: Int,
+                        ) {
+                            super.onScrolled(recyclerView, dx, dy)
+                            val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+                            val totalItemCount = layoutManager.itemCount
+                            if (lastVisibleItem >= totalItemCount - 30) {
+                                viewModel.loadNextData()
+                            }
                         }
-                    }
-                })
+                    },
+                )
             }
 
             hotBoardsFragmentRefreshLayout.apply {
@@ -150,14 +166,15 @@ class FavoriteBoardsFragment : BaseFragment() {
                     android.R.color.holo_red_light,
                     android.R.color.holo_blue_light,
                     android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light
+                    android.R.color.holo_orange_light,
                 )
                 setOnRefreshListener {
                     viewModel.loadData()
                 }
             }
 
-            LocalBroadcastManager.getInstance(requireContext())
+            LocalBroadcastManager
+                .getInstance(requireContext())
                 .registerReceiver(mMessageReceiver, IntentFilter("ptt-favorite-change"))
         }
 
@@ -172,16 +189,20 @@ class FavoriteBoardsFragment : BaseFragment() {
         }
     }
 
-    private val mMessageReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            // Get extra data included in the Intent
-            val message = intent.getStringExtra("message")
-            if (message == "change") {
-                viewModel.loadData()
+    private val mMessageReceiver: BroadcastReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(
+                context: Context,
+                intent: Intent,
+            ) {
+                // Get extra data included in the Intent
+                val message = intent.getStringExtra("message")
+                if (message == "change") {
+                    viewModel.loadData()
+                }
+                Log.d("receiver", "Got message: $message")
             }
-            Log.d("receiver", "Got message: $message")
         }
-    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -197,9 +218,7 @@ class FavoriteBoardsFragment : BaseFragment() {
         _binding = null
     }
 
-    fun isEditMode(): Boolean {
-        return editMode
-    }
+    fun isEditMode(): Boolean = editMode
 
     fun scrollToTop() {
         binding?.hotBoardsFragmentRecyclerView?.scrollToPosition(0)

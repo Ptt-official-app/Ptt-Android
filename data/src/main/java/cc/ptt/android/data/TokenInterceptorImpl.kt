@@ -6,9 +6,8 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 class TokenInterceptorImpl constructor(
-    private val loginLocalDataSource: LoginLocalDataSource
+    private val loginLocalDataSource: LoginLocalDataSource,
 ) : TokenInterceptor {
-
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
 

@@ -6,12 +6,13 @@ import kotlinx.coroutines.flow.Flow
 
 interface BoardRepository {
     fun getPopularBoards(): Flow<BoardList>
+
     fun getBoardArticles(
         boardId: String,
         title: String = "",
         startIndex: String = "",
         limit: Int = 200,
-        desc: Boolean = true
+        desc: Boolean = true,
     ): Flow<ArticleList>
 
     fun getFavoriteBoards(
@@ -19,6 +20,6 @@ interface BoardRepository {
         level_idx: String = "",
         startIndex: String = "",
         limit: Int = 200,
-        aces: Boolean = true
+        aces: Boolean = true,
     ): Flow<BoardList>
 }

@@ -16,31 +16,34 @@ import org.koin.test.mock.MockProviderRule
 @FlowPreview
 open class KoinTestBase : KoinTest {
     companion object {
+        @JvmStatic
+        val testAppModules =
+            module {
+                factory<AESKeyStoreHelper> { MockAESKeyStoreHelperImpl() }
+                factory<ApiHelper> { TestApiHelperImpl() }
+            }
 
         @JvmStatic
-        val testAppModules = module {
-            factory <AESKeyStoreHelper> { MockAESKeyStoreHelperImpl() }
-            factory <ApiHelper> { TestApiHelperImpl() }
-        }
+        val koinModules =
+            listOf(
+                apiModules,
+                testAppModules,
+                remoteDataSourceModules,
+                localDataSourceModules,
+                repositoryModules,
+            )
+    }
 
-        @JvmStatic
-        val koinModules = listOf(
-            apiModules,
-            testAppModules,
-            remoteDataSourceModules,
-            localDataSourceModules,
-            repositoryModules,
+    @get:Rule
+    val koinTestRule =
+        KoinTestRule(
+            modules = koinModules,
         )
-    }
 
     @get:Rule
-    val koinTestRule = KoinTestRule(
-        modules = koinModules
-    )
-
-    @get:Rule
-    val mockProvider = MockProviderRule.create { clazz ->
-        // Your way to build a Mock here
-        mockkClass(clazz)
-    }
+    val mockProvider =
+        MockProviderRule.create { clazz ->
+            // Your way to build a Mock here
+            mockkClass(clazz)
+        }
 }

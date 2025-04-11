@@ -8,29 +8,23 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 
 class BoardRepositoryImpl constructor(
-    private val boardRemoteDataSource: BoardRemoteDataSource
+    private val boardRemoteDataSource: BoardRemoteDataSource,
 ) : BoardRepository {
-    override fun getPopularBoards(): Flow<BoardList> {
-        return boardRemoteDataSource.getPopularBoards().flowOn(Dispatchers.IO)
-    }
+    override fun getPopularBoards(): Flow<BoardList> = boardRemoteDataSource.getPopularBoards().flowOn(Dispatchers.IO)
 
     override fun getBoardArticles(
         boardId: String,
         title: String,
         startIndex: String,
         limit: Int,
-        desc: Boolean
-    ): Flow<ArticleList> {
-        return boardRemoteDataSource.getBoardArticles(boardId, title, startIndex, limit, desc).flowOn(Dispatchers.IO)
-    }
+        desc: Boolean,
+    ): Flow<ArticleList> = boardRemoteDataSource.getBoardArticles(boardId, title, startIndex, limit, desc).flowOn(Dispatchers.IO)
 
     override fun getFavoriteBoards(
         userid: String,
         level_idx: String,
         startIndex: String,
         limit: Int,
-        aces: Boolean
-    ): Flow<BoardList> {
-        return boardRemoteDataSource.getFavoriteBoards(userid, level_idx, startIndex, limit, aces).flowOn(Dispatchers.IO)
-    }
+        aces: Boolean,
+    ): Flow<BoardList> = boardRemoteDataSource.getFavoriteBoards(userid, level_idx, startIndex, limit, aces).flowOn(Dispatchers.IO)
 }

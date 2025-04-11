@@ -7,20 +7,27 @@ import cc.ptt.android.data.model.remote.article.ArticleRank
 import kotlinx.coroutines.flow.Flow
 
 interface ArticleRemoteDataSource {
-
-    fun getArticleDetail(boardId: String, articleId: String): Flow<ArticleDetail>
+    fun getArticleDetail(
+        boardId: String,
+        articleId: String,
+    ): Flow<ArticleDetail>
 
     fun getArticleComments(
         boardId: String,
         articleId: String,
-        desc: Boolean = false
+        desc: Boolean = false,
     ): Flow<ArticleCommentsList>
 
     fun postArticleRank(
         rank: Int,
         boardId: String,
-        articleId: String
+        articleId: String,
     ): Flow<ArticleRank>
 
-    fun createArticleComment(bid: String, aid: String, type: Int, content: String): Flow<ArticleComment>
+    fun createArticleComment(
+        bid: String,
+        aid: String,
+        type: Int,
+        content: String,
+    ): Flow<ArticleComment>
 }

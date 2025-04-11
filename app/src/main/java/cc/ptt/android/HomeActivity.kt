@@ -14,11 +14,9 @@ import cc.ptt.android.common.KeyboardUtils
 import cc.ptt.android.common.StaticValue
 import cc.ptt.android.data.preference.MainPreferences
 import org.koin.android.ext.android.inject
-import java.util.*
 import kotlin.math.abs
 
 class HomeActivity : BaseActivity() {
-
     private val mainPreferences: MainPreferences by inject()
     private var themeType = 0
     private var timeTemp: Long = 0
@@ -28,7 +26,7 @@ class HomeActivity : BaseActivity() {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         themeType = mainPreferences.getThemeType()
-        StaticValue.ThemMode = themeType
+        StaticValue.themMode = themeType
         when (themeType) {
             1 -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -56,7 +54,7 @@ class HomeActivity : BaseActivity() {
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
         StaticValue.densityDpi = metrics.densityDpi.toDouble()
-        StaticValue.ScreenDensity = metrics.density.toDouble()
+        StaticValue.screenDensity = metrics.density.toDouble()
         StaticValue.widthPixels = metrics.widthPixels.toDouble()
         StaticValue.highPixels = metrics.heightPixels.toDouble()
         StaticValue.backgroundColor = ContextCompat.getColor(this, cc.ptt.android.data.R.color.darkGreyTwo)
@@ -69,20 +67,21 @@ class HomeActivity : BaseActivity() {
         KeyboardUtils.hideSoftInput(this)
     }
 
-    private val backPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            if (Navigation.isRoot(this@HomeActivity)) {
-                Navigation.popup(this@HomeActivity)
-            } else {
-                val currentTime = System.currentTimeMillis()
-                if (abs(timeTemp - currentTime) > 1500) {
-                    Toast.makeText(this@HomeActivity, getString(R.string.press_again_to_leave), Toast.LENGTH_SHORT).show()
-                    timeTemp = currentTime
+    private val backPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (Navigation.isRoot(this@HomeActivity)) {
+                    Navigation.popup(this@HomeActivity)
                 } else {
-                    finish()
-                    System.gc()
+                    val currentTime = System.currentTimeMillis()
+                    if (abs(timeTemp - currentTime) > 1500) {
+                        Toast.makeText(this@HomeActivity, getString(R.string.press_again_to_leave), Toast.LENGTH_SHORT).show()
+                        timeTemp = currentTime
+                    } else {
+                        finish()
+                        System.gc()
+                    }
                 }
             }
         }
-    }
 }

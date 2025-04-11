@@ -10,40 +10,50 @@ import cc.ptt.android.common.extension.navigateForward
 import cc.ptt.android.data.model.remote.board.article.Article
 
 object Navigation {
-
     fun switchToLoginPage(activity: FragmentActivity) {
         getNavController(activity)?.navigateForward(
             R.id.include_login,
             Bundle(),
             isSingleTop = false,
-            useDefaultAnim = true
+            useDefaultAnim = true,
         )
     }
 
-    fun switchToArticleListPage(activity: FragmentActivity, title: String, subtitle: String, boardId: String) {
-        val args = Bundle().apply {
-            putString(ArticleListFragment.KEY_TITLE, title)
-            putString(ArticleListFragment.KEY_SUBTITLE, subtitle)
-            putString(ArticleListFragment.KEY_BOARD_ID, boardId)
-        }
+    fun switchToArticleListPage(
+        activity: FragmentActivity,
+        title: String,
+        subtitle: String,
+        boardId: String,
+    ) {
+        val args =
+            Bundle().apply {
+                putString(ArticleListFragment.KEY_TITLE, title)
+                putString(ArticleListFragment.KEY_SUBTITLE, subtitle)
+                putString(ArticleListFragment.KEY_BOARD_ID, boardId)
+            }
         getNavController(activity)?.navigateForward(
             R.id.articleListFragment,
             args,
             isSingleTop = false,
-            useDefaultAnim = true
+            useDefaultAnim = true,
         )
     }
 
-    fun switchToArticleReadPage(activity: FragmentActivity, article: Article?, boardName: String) {
-        val args = Bundle().apply {
-            putParcelable(ArticleReadFragment.KEY_ARTICLE, article)
-            putString(ArticleReadFragment.KEY_BOARD_NAME, boardName)
-        }
+    fun switchToArticleReadPage(
+        activity: FragmentActivity,
+        article: Article?,
+        boardName: String,
+    ) {
+        val args =
+            Bundle().apply {
+                putParcelable(ArticleReadFragment.KEY_ARTICLE, article)
+                putString(ArticleReadFragment.KEY_BOARD_NAME, boardName)
+            }
         getNavController(activity)?.navigateForward(
             R.id.articleReadFragment,
             args,
             isSingleTop = false,
-            useDefaultAnim = true
+            useDefaultAnim = true,
         )
     }
 
@@ -52,7 +62,7 @@ object Navigation {
             R.id.articleListSearchFragment,
             Bundle(),
             isSingleTop = false,
-            useDefaultAnim = true
+            useDefaultAnim = true,
         )
     }
 
@@ -61,7 +71,7 @@ object Navigation {
             R.id.postArticleFragment,
             Bundle(),
             isSingleTop = false,
-            useDefaultAnim = true
+            useDefaultAnim = true,
         )
     }
 
@@ -70,7 +80,7 @@ object Navigation {
             R.id.searchBoardsFragment,
             Bundle(),
             isSingleTop = false,
-            useDefaultAnim = false
+            useDefaultAnim = false,
         )
     }
 
@@ -79,7 +89,7 @@ object Navigation {
             R.id.hotArticleFilterFragment,
             Bundle(),
             isSingleTop = false,
-            useDefaultAnim = false
+            useDefaultAnim = false,
         )
     }
 
@@ -87,11 +97,13 @@ object Navigation {
         getNavController(activity)?.popBackStack()
     }
 
-    fun isRoot(activity: FragmentActivity): Boolean {
-        return activity.supportFragmentManager.findFragmentById(R.id.nav_host_fragment)?.childFragmentManager?.fragments.isNullOrEmpty()
-    }
+    fun isRoot(activity: FragmentActivity): Boolean =
+        activity.supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment)
+            ?.childFragmentManager
+            ?.fragments
+            .isNullOrEmpty()
 
-    private fun getNavController(activity: FragmentActivity): NavController? {
-        return (activity.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment)?.navController
-    }
+    private fun getNavController(activity: FragmentActivity): NavController? =
+        (activity.supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment)?.navController
 }

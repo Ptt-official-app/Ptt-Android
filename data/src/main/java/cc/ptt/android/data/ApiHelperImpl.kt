@@ -6,24 +6,16 @@ import cc.ptt.android.common.network.api.apihelper.ApiHelper.Companion.CLIENT_SE
 import cc.ptt.android.data.preference.MainPreferences
 
 class ApiHelperImpl constructor(
-    private val mainPreferences: MainPreferences
+    private val mainPreferences: MainPreferences,
 ) : ApiHelper {
+    override fun getHost(): String = mainPreferences.getApiDomain().ifBlank { defaultHost() }
 
-    override fun getHost(): String {
-        return mainPreferences.getApiDomain().ifBlank { defaultHost() }
-    }
+    override fun getClientId(): String = CLIENT_ID
 
-    override fun getClientId(): String {
-        return CLIENT_ID
-    }
+    override fun getClientSecret(): String = CLIENT_SECRET
 
-    override fun getClientSecret(): String {
-        return CLIENT_SECRET
-    }
-
-    private fun defaultHost(): String {
-        return BuildConfig.API_HOST.ifBlank {
+    private fun defaultHost(): String =
+        BuildConfig.API_HOST.ifBlank {
             ApiHelper.API_HOST
         }
-    }
 }

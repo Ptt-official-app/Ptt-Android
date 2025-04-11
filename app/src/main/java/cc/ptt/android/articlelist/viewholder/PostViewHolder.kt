@@ -10,17 +10,20 @@ import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.databinding.ArticleListItemBinding
 
 class PostViewHolder constructor(
-    private val binding: ArticleListItemBinding
+    private val binding: ArticleListItemBinding,
 ) : RecyclerView.ViewHolder(binding.root) {
-
-    fun onBind(data: Article, selected: Boolean) {
+    fun onBind(
+        data: Article,
+        selected: Boolean,
+    ) {
         binding.apply {
             val context = itemView.context
-            val dateTime = DateFormatUtils.secondsToDateTime(
-                data.createTime.toLong(),
-                DatePatternConstants.articleDateTime
-            )
-            StringUtils.TextViewAutoSplitFix(articleListItemTextViewTitle)
+            val dateTime =
+                DateFormatUtils.secondsToDateTime(
+                    data.createTime.toLong(),
+                    DatePatternConstants.ARTICLE_DATE_TIME,
+                )
+            StringUtils.textViewAutoSplitFix(articleListItemTextViewTitle)
             articleListItemTextViewTitle.text = data.title
             articleListItemTextViewDate.text = dateTime
             articleListItemTextViewClass.text = data.classX

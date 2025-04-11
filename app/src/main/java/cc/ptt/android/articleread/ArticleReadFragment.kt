@@ -23,14 +23,15 @@ import cc.ptt.android.common.extension.bundleDelegate
 import cc.ptt.android.data.model.remote.board.article.Article
 import cc.ptt.android.databinding.ArticleReadFragmentLayoutBinding
 import cc.ptt.android.domain.model.ui.article.PostRankMark
-import cc.ptt.android.utils.*
+import cc.ptt.android.utils.observeNotNull
+import cc.ptt.android.utils.shareTo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ArticleReadFragment : BaseFragment() {
     private var _binding: ArticleReadFragmentLayoutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private var adapter: ArticleReadAdapter? = null
 
     private val article by bundleDelegate<Article>()
@@ -43,12 +44,13 @@ class ArticleReadFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ArticleReadFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
-    }
+        savedInstanceState: Bundle?,
+    ): View =
+        ArticleReadFragmentLayoutBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
     private fun showEditMode(isEdit: Boolean) {
         with(binding) {
@@ -68,7 +70,11 @@ class ArticleReadFragment : BaseFragment() {
             }
         }
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
             articleReadItemEditTextReply.setOnFocusChangeListener { v, hasFocus ->
@@ -86,10 +92,10 @@ class ArticleReadFragment : BaseFragment() {
                     requireContext(),
                     viewModel.originalTitle(article.classX, article.title),
                     """
-                                ${viewModel.originalTitle(article.classX, article.title)}
-                                ${article.url}
+                    ${viewModel.originalTitle(article.classX, article.title)}
+                    ${article.url}
                     """.trimIndent(),
-                    "分享文章"
+                    "分享文章",
                 )
             }
             articleReadItemImageButtonReplySend.setOnClickListener {
@@ -108,7 +114,7 @@ class ArticleReadFragment : BaseFragment() {
                     android.R.color.holo_red_light,
                     android.R.color.holo_blue_light,
                     android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light
+                    android.R.color.holo_orange_light,
                 )
                 setOnRefreshListener {
                     viewModel.loadData(article)
@@ -136,7 +142,11 @@ class ArticleReadFragment : BaseFragment() {
 
         // 取得Bundle
         viewModel.createDefaultHeader(
-            article.title, article.owner, article.createTime, article.classX, boardName
+            article.title,
+            article.owner,
+            article.createTime,
+            article.classX,
+            boardName,
         )
         viewModel.putDefaultHeader()
 
@@ -159,31 +169,35 @@ class ArticleReadFragment : BaseFragment() {
         viewModel.loadData(article)
     }
 
-    private fun chooseCommentType() = lifecycleScope.launch(Dispatchers.Main) {
-        if (!viewModel.isLogin()) {
-            Navigation.switchToLoginPage(requireActivity())
-            return@launch
-        }
-        val popupMenu = PopupMenu(requireContext(), binding.articleReadItemImageButtonReplySend)
-        popupMenu.menuInflater.inflate(R.menu.carete_article_comment_type_menu, popupMenu.menu)
-        popupMenu.setOnMenuItemClickListener { item ->
-            val type = when (item.itemId) {
-                R.id.create_article_comment_type_push -> cc.ptt.android.data.model.remote.article.ArticleCommentType.PUSH
-                R.id.create_article_comment_type_hush -> cc.ptt.android.data.model.remote.article.ArticleCommentType.HUSH
-                else -> cc.ptt.android.data.model.remote.article.ArticleCommentType.COMMENT
+    private fun chooseCommentType() =
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (!viewModel.isLogin()) {
+                Navigation.switchToLoginPage(requireActivity())
+                return@launch
             }
-            progressDialog = ProgressDialog.show(
-                requireContext(),
-                "",
-                "Please wait."
-            ).apply {
-                window?.setBackgroundDrawableResource(R.drawable.dialog_background)
-                viewModel.createComment(article, binding.articleReadItemEditTextReply.text.toString(), type)
+            val popupMenu = PopupMenu(requireContext(), binding.articleReadItemImageButtonReplySend)
+            popupMenu.menuInflater.inflate(R.menu.carete_article_comment_type_menu, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { item ->
+                val type =
+                    when (item.itemId) {
+                        R.id.create_article_comment_type_push -> cc.ptt.android.data.model.remote.article.ArticleCommentType.PUSH
+                        R.id.create_article_comment_type_hush -> cc.ptt.android.data.model.remote.article.ArticleCommentType.HUSH
+                        else -> cc.ptt.android.data.model.remote.article.ArticleCommentType.COMMENT
+                    }
+                progressDialog =
+                    ProgressDialog
+                        .show(
+                            requireContext(),
+                            "",
+                            "Please wait.",
+                        ).apply {
+                            window?.setBackgroundDrawableResource(R.drawable.dialog_background)
+                            viewModel.createComment(article, binding.articleReadItemEditTextReply.text.toString(), type)
+                        }
+                true
             }
-            true
+            popupMenu.show()
         }
-        popupMenu.show()
-    }
 
     private fun setRankMenu(view: View) {
         if (!viewModel.isLogin()) {
@@ -193,20 +207,23 @@ class ArticleReadFragment : BaseFragment() {
         val popupMenu = PopupMenu(requireContext(), view)
         popupMenu.menuInflater.inflate(R.menu.post_article_rank_menu, popupMenu.menu)
         popupMenu.setOnMenuItemClickListener { item ->
-            val rank = when (item.itemId) {
-                R.id.post_article_rank_like -> PostRankMark.Like
-                R.id.post_article_rank_dislike -> PostRankMark.Dislike
-                R.id.post_article_rank_non -> PostRankMark.None
-                else -> PostRankMark.None
-            }
-            progressDialog = ProgressDialog.show(
-                requireContext(),
-                "",
-                "Please wait."
-            ).apply {
-                window?.setBackgroundDrawableResource(R.drawable.dialog_background)
-                viewModel.setRank(article, rank)
-            }
+            val rank =
+                when (item.itemId) {
+                    R.id.post_article_rank_like -> PostRankMark.Like
+                    R.id.post_article_rank_dislike -> PostRankMark.Dislike
+                    R.id.post_article_rank_non -> PostRankMark.None
+                    else -> PostRankMark.None
+                }
+            progressDialog =
+                ProgressDialog
+                    .show(
+                        requireContext(),
+                        "",
+                        "Please wait.",
+                    ).apply {
+                        window?.setBackgroundDrawableResource(R.drawable.dialog_background)
+                        viewModel.setRank(article, rank)
+                    }
             true
         }
         popupMenu.show()

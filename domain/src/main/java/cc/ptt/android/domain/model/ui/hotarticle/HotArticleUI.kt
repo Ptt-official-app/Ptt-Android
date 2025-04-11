@@ -2,7 +2,7 @@ package cc.ptt.android.domain.model.ui.hotarticle
 
 import cc.ptt.android.data.model.remote.article.hotarticle.HotArticle
 import cc.ptt.android.data.model.remote.board.article.Article
-import java.util.*
+import java.util.Date
 import kotlin.math.abs
 
 data class HotArticleUI(
@@ -17,31 +17,30 @@ data class HotArticleUI(
     val url: String,
     var readed: Boolean,
     val image: String,
-    val originData: HotArticle?
+    val originData: HotArticle?,
 ) {
     fun getDateText(): String {
         val timeL = date
         val nowTime = Date().time / 1000
         var showT = ""
-        showT = if (abs(nowTime - timeL) < 60 * 60) {
-            (abs(nowTime - timeL) / 60).toString() + "分鐘前"
-        } else if (abs(nowTime - timeL) < 60 * 60 * 24) {
-            (abs(nowTime - timeL) / 60 / 60).toString() + "小時前"
-        } else {
-            " " + abs(nowTime - timeL) / 60 / 24 / 60 + "天前"
-        }
+        showT =
+            if (abs(nowTime - timeL) < 60 * 60) {
+                (abs(nowTime - timeL) / 60).toString() + "分鐘前"
+            } else if (abs(nowTime - timeL) < 60 * 60 * 24) {
+                (abs(nowTime - timeL) / 60 / 60).toString() + "小時前"
+            } else {
+                " " + abs(nowTime - timeL) / 60 / 24 / 60 + "天前"
+            }
         if (showT.length <= 4) {
             showT = " $showT"
         }
         return showT
     }
 
-    fun getClassText(): String {
-        return "$board / $`class`"
-    }
+    fun getClassText(): String = "$board / $`class`"
 
-    fun toArticle(): Article? {
-        return originData?.let {
+    fun toArticle(): Article? =
+        originData?.let {
             Article(
                 articleId = it.aid,
                 boardId = it.bid,
@@ -57,14 +56,15 @@ data class HotArticleUI(
                 read = it.read,
                 recommend = it.recommend,
                 title = it.title,
-                url = it.url
+                url = it.url,
             )
         }
-    }
 }
 
-enum class HotArticleUIType(val value: Int) {
+enum class HotArticleUIType(
+    val value: Int,
+) {
     NORMAL(0),
     TITLE(1),
-    MORE(2)
+    MORE(2),
 }

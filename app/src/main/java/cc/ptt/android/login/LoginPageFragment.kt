@@ -4,8 +4,10 @@ import android.content.res.ColorStateList
 import android.graphics.Paint
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -19,8 +21,9 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.absoluteValue
 
-class LoginPageFragment : BaseFragment(), View.OnClickListener {
-
+class LoginPageFragment :
+    BaseFragment(),
+    View.OnClickListener {
     private val viewModel: LoginPageViewModel by viewModel()
     private val userInfoPreferences: UserInfoPreferences by inject()
     private lateinit var binding: LoginPageFragmentBinding
@@ -29,13 +32,16 @@ class LoginPageFragment : BaseFragment(), View.OnClickListener {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         binding = LoginPageFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         val bundle = arguments // 取得Bundle
         val id = userInfoPreferences.getLogin()?.userId.orEmpty()
@@ -63,7 +69,7 @@ class LoginPageFragment : BaseFragment(), View.OnClickListener {
                     val haveAccount = char?.isNotEmpty() == true && password.isNotBlank()
                     loginButtonEnable(haveAccount)
                 },
-                afterTextChanged = {}
+                afterTextChanged = {},
             )
             editLoginPagePassword.addTextChangedListener(
                 beforeTextChanged = { char: CharSequence?, start: Int, count: Int, after: Int ->
@@ -75,22 +81,22 @@ class LoginPageFragment : BaseFragment(), View.OnClickListener {
                     val havePassword = char?.isNotEmpty() == true && account.isNotBlank()
                     loginButtonEnable(havePassword)
                 },
-                afterTextChanged = {}
+                afterTextChanged = {},
             )
 
             if (!isShowPassword) {
                 btnLoginPageShowPassword.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext(),
-                        R.drawable.ic_baseline_visibility_off_24
-                    )
+                        R.drawable.ic_baseline_visibility_off_24,
+                    ),
                 )
             } else {
                 btnLoginPageShowPassword.setImageDrawable(
                     ContextCompat.getDrawable(
                         requireContext(),
-                        R.drawable.ic_baseline_visibility_24
-                    )
+                        R.drawable.ic_baseline_visibility_24,
+                    ),
                 )
             }
 
@@ -112,14 +118,16 @@ class LoginPageFragment : BaseFragment(), View.OnClickListener {
 
     private fun loginButtonEnable(isEnable: Boolean) {
         if (isEnable) {
-            binding.btnLoginPageLogin.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(requireContext(), cc.ptt.android.data.R.color.tangerine)
-            )
+            binding.btnLoginPageLogin.backgroundTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), cc.ptt.android.data.R.color.tangerine),
+                )
             binding.btnLoginPageLogin.setTextColor(ContextCompat.getColor(requireContext(), cc.ptt.android.data.R.color.black))
         } else {
-            binding.btnLoginPageLogin.backgroundTintList = ColorStateList.valueOf(
-                ContextCompat.getColor(requireContext(), cc.ptt.android.data.R.color.black)
-            )
+            binding.btnLoginPageLogin.backgroundTintList =
+                ColorStateList.valueOf(
+                    ContextCompat.getColor(requireContext(), cc.ptt.android.data.R.color.black),
+                )
             binding.btnLoginPageLogin.setTextColor(ContextCompat.getColor(requireContext(), cc.ptt.android.data.R.color.tangerine))
         }
         binding.btnLoginPageLogin.isEnabled = isEnable
@@ -144,16 +152,16 @@ class LoginPageFragment : BaseFragment(), View.OnClickListener {
                     binding.btnLoginPageShowPassword.setImageDrawable(
                         ContextCompat.getDrawable(
                             requireContext(),
-                            R.drawable.ic_baseline_visibility_off_24
-                        )
+                            R.drawable.ic_baseline_visibility_off_24,
+                        ),
                     )
                     binding.editLoginPagePassword.transformationMethod = PasswordTransformationMethod.getInstance()
                 } else {
                     binding.btnLoginPageShowPassword.setImageDrawable(
                         ContextCompat.getDrawable(
                             requireContext(),
-                            R.drawable.ic_baseline_visibility_24
-                        )
+                            R.drawable.ic_baseline_visibility_24,
+                        ),
                     )
                     binding.editLoginPagePassword.transformationMethod = null
                 }

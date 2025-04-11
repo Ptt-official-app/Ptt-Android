@@ -5,7 +5,6 @@ import cc.ptt.android.data.model.remote.board.hotboard.BoardList
 import kotlinx.coroutines.flow.Flow
 
 interface BoardRemoteDataSource {
-
     fun getPopularBoards(): Flow<BoardList>
 
     fun getBoardArticles(
@@ -13,7 +12,7 @@ interface BoardRemoteDataSource {
         title: String = "",
         startIndex: String = "",
         limit: Int = 200,
-        desc: Boolean = true
+        desc: Boolean = true,
     ): Flow<ArticleList>
 
     fun getFavoriteBoards(
@@ -21,6 +20,6 @@ interface BoardRemoteDataSource {
         level_idx: String = "",
         startIndex: String = "",
         limit: Int = 200,
-        aces: Boolean = true
+        aces: Boolean = true,
     ): Flow<BoardList>
 }

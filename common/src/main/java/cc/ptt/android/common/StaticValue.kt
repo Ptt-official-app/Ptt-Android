@@ -4,18 +4,22 @@ import android.graphics.Color
 import androidx.annotation.ColorInt
 
 object StaticValue {
-    var ScreenDensity = 3.0
+    var screenDensity = 3.0
+
     @JvmField
     var widthPixels = 1080.0
+
     @JvmField
     var highPixels = 1920.0
     var densityDpi = 400.0
+
     @JvmField
-    var ThemMode = 0
+    var themMode = 0
+
     @JvmField
     var userDebugMode = true
     val densityRate: Double
-        get() = densityDpi / ScreenDensity
+        get() = densityDpi / screenDensity
 
     var backgroundColor: Int = 0
 

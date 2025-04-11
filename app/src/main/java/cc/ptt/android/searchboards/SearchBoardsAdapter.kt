@@ -8,8 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.recyclerview.widget.RecyclerView
 import cc.ptt.android.R
-import cc.ptt.android.common.StringUtils.TextViewAutoSplitFix
 import cc.ptt.android.common.StringUtils.notNullString
+import cc.ptt.android.common.StringUtils.textViewAutoSplitFix
 import cc.ptt.android.data.model.remote.board.searchboard.SearchBoardsItem
 import cc.ptt.android.data.preference.MainPreferences
 import org.koin.core.component.KoinComponent
@@ -18,12 +18,16 @@ import org.koin.core.component.inject
 class SearchBoardsAdapter(
     private val data: List<SearchBoardsItem>,
     private val mOnItemClickListener: OnItemClickListener,
-) : RecyclerView.Adapter<RecyclerView.ViewHolder?>(), KoinComponent {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder?>(),
+    KoinComponent {
     private var ctx: Context? = null
     private var likeOnClickListener: View.OnClickListener? = null
     private val mainPreferences: MainPreferences by inject()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): RecyclerView.ViewHolder {
         ctx = parent.context
         return when (viewType) {
             TYPE0 -> {
@@ -38,16 +42,17 @@ class SearchBoardsAdapter(
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return mainPreferences.getSearchStyle()
-    }
+    override fun getItemViewType(position: Int): Int = mainPreferences.getSearchStyle()
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+    ) {
         when (getItemViewType(position)) {
             TYPE0 -> {
                 (holder as? ViewHolder)?.apply {
                     textViewTitle.text = notNullString(data[position].title)
-                    TextViewAutoSplitFix(holder.textViewTitle)
+                    textViewAutoSplitFix(holder.textViewTitle)
                     like.tag = position
                     ctx?.apply {
                         (data[position].like as? Boolean)?.let {
@@ -70,7 +75,7 @@ class SearchBoardsAdapter(
                 (holder as? ViewHolder2)?.apply {
                     textViewTitle.text = notNullString(data[position].title)
                     holder.textViewSubtitle.text = notNullString(data[position].subtitle)
-                    TextViewAutoSplitFix(holder.textViewTitle)
+                    textViewAutoSplitFix(holder.textViewTitle)
                     holder.like.tag = position
                     ctx?.apply {
                         (data[position].like as? Boolean)?.let {
@@ -92,20 +97,22 @@ class SearchBoardsAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return data.size
-    }
+    override fun getItemCount(): Int = data.size
 
     fun setLikeOnClickListener(likeOnClickListener: View.OnClickListener?) {
         this.likeOnClickListener = likeOnClickListener
     }
 
-    private inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolder(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.search_boards_item_textView_title)
         val like: AppCompatImageButton = v.findViewById(R.id.search_boards_item_imageView_like)
     }
 
-    private inner class ViewHolder2(v: View) : RecyclerView.ViewHolder(v) {
+    private inner class ViewHolder2(
+        v: View,
+    ) : RecyclerView.ViewHolder(v) {
         val textViewTitle: TextView = v.findViewById(R.id.textView_hot_boards_title)
         val textViewSubtitle: TextView = v.findViewById(R.id.textView_hot_boards_subtitle)
         val like: AppCompatImageButton = v.findViewById(R.id.search_boards_item_imageView_like)

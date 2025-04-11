@@ -1,4 +1,4 @@
-package cc.ptt.android.data.model.remote.user.exist_user
+package cc.ptt.android.data.model.remote.user.existuser
 
 import com.google.gson.annotations.SerializedName
 
@@ -8,5 +8,5 @@ data class ExistUserRequest(
     @SerializedName("client_secret")
     val clientSecret: String,
     @SerializedName("username")
-    val userName: String
+    val userName: String,
 )

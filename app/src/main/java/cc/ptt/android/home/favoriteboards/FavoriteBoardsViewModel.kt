@@ -1,15 +1,18 @@
 package cc.ptt.android.home.favoriteboards
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import cc.ptt.android.common.logger.PttLogger
 import cc.ptt.android.data.model.remote.board.hotboard.HotBoardsItem
 import cc.ptt.android.domain.usecase.board.BoardUseCase
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
 
 class FavoriteBoardsViewModel constructor(
     private val boardUseCase: BoardUseCase,
-    private val logger: PttLogger
+    private val logger: PttLogger,
 ) : ViewModel() {
     val data: MutableList<HotBoardsItem> = mutableListOf()
 
@@ -40,24 +43,27 @@ class FavoriteBoardsViewModel constructor(
     private fun fetchData(nextIndex: String) {
         viewModelScope.launch {
             _loadingState.value = true
-            boardUseCase.getFavoriteBoards("", nextIndex, 200, false).catch { e ->
-                _loadingState.value = false
-                _errorMessage.postValue("Error: $e")
-                logger.e(TAG, "fetchData error: $e")
-            }.collect { hotBoard ->
-                val boardData = hotBoard.list.map {
-                    HotBoardsItem(
-                        it.boardId,
-                        it.boardName,
-                        it.title,
-                        it.onlineUser.toString(),
-                        "7"
-                    )
+            boardUseCase
+                .getFavoriteBoards("", nextIndex, 200, false)
+                .catch { e ->
+                    _loadingState.value = false
+                    _errorMessage.postValue("Error: $e")
+                    logger.e(TAG, "fetchData error: $e")
+                }.collect { hotBoard ->
+                    val boardData =
+                        hotBoard.list.map {
+                            HotBoardsItem(
+                                it.boardId,
+                                it.boardName,
+                                it.title,
+                                it.onlineUser.toString(),
+                                "7",
+                            )
+                        }
+                    data.addAll(boardData)
+                    startIndex.value = hotBoard.nextId
+                    _loadingState.value = false
                 }
-                data.addAll(boardData)
-                startIndex.value = hotBoard.nextId
-                _loadingState.value = false
-            }
         }
     }
 

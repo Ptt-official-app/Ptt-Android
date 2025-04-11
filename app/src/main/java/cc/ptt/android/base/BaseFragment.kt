@@ -7,16 +7,13 @@ import cc.ptt.android.common.logger.PttLogger
 import org.koin.android.ext.android.inject
 
 open class BaseFragment : Fragment() {
-
     protected val TAG get() = this::class.java.simpleName
 
     private var isFirstStart = false
     protected val logger: PttLogger by inject()
 
     @Deprecated("", ReplaceWith("", ""))
-    fun <T : View?> findViewById(id: Int): T? {
-        return view?.findViewById<View>(id) as T
-    }
+    fun <T : View?> findViewById(id: Int): T? = view?.findViewById<View>(id) as T
 
     protected open fun onAnimFinished() {
         logger.d(TAG, "onAnimOver")

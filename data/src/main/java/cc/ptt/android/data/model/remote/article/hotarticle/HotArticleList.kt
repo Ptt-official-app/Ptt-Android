@@ -6,5 +6,5 @@ data class HotArticleList(
     @SerializedName("list")
     var list: ArrayList<HotArticle>,
     @SerializedName("next_idx")
-    var nextIdx: String
+    var nextIdx: String,
 )

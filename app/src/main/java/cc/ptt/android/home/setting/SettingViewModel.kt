@@ -10,18 +10,16 @@ import kotlinx.coroutines.launch
 class SettingViewModel constructor(
     private val userRepository: UserRepository,
     private val userUseCase: UserUseCase,
-    private val logger: PttLogger
+    private val logger: PttLogger,
 ) : ViewModel() {
-
     val loginState get() = userUseCase.userType
 
-    fun isLogin(): Boolean {
-        return userRepository.isLogin()
-    }
+    fun isLogin(): Boolean = userRepository.isLogin()
 
-    fun logout() = viewModelScope.launch {
-        userUseCase.logout().collect {
-            logger.d("SettingViewModel", "logout success")
+    fun logout() =
+        viewModelScope.launch {
+            userUseCase.logout().collect {
+                logger.d("SettingViewModel", "logout success")
+            }
         }
-    }
 }

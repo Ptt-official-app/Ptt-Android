@@ -1,10 +1,11 @@
 package cc.ptt.android.common
 
-import java.util.*
+import java.util.Date
 import kotlin.math.abs
 
-class ClickFix(private var defaultTime: Long = 500L) {
-
+class ClickFix(
+    private var defaultTime: Long = 500L,
+) {
     private var lastClickTime: Long = 0
     val isFastDoubleClick: Boolean
         get() = isFastDoubleClick(defaultTime)

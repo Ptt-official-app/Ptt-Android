@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
 class StickyHeaderItemDecorator(
-    private val adapter: StickyAdapter<RecyclerView.ViewHolder?, RecyclerView.ViewHolder?>
+    private val adapter: StickyAdapter<RecyclerView.ViewHolder?, RecyclerView.ViewHolder?>,
 ) : ItemDecoration() {
-
     private var currentStickyPosition = RecyclerView.NO_POSITION
     private var recyclerView: RecyclerView? = null
     private var currentStickyHolder: RecyclerView.ViewHolder? = null
@@ -42,7 +41,11 @@ class StickyHeaderItemDecorator(
         recyclerView?.removeItemDecoration(this)
     }
 
-    override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+    override fun onDrawOver(
+        c: Canvas,
+        parent: RecyclerView,
+        state: RecyclerView.State,
+    ) {
         super.onDrawOver(c, parent, state)
         val layoutManager = parent.layoutManager ?: return
         var topChildPosition = RecyclerView.NO_POSITION
@@ -85,16 +88,15 @@ class StickyHeaderItemDecorator(
 
     // shouldMoveHeader returns the sticky header should move or not.
     // This method is for avoiding sinking/departing the sticky header into/from top of screen
-    private fun shouldMoveHeader(viewOverlappedByHeader: View?): Boolean {
-        return viewOverlappedByHeader?.let {
+    private fun shouldMoveHeader(viewOverlappedByHeader: View?): Boolean =
+        viewOverlappedByHeader?.let {
             val dy = it.top - it.height
             it.top >= 0 && dy <= 0
         } ?: false
-    }
 
     private fun updateStickyHeader(
         topChildPosition: Int,
-        @Suppress("UNUSED_PARAMETER") contactChildPosition: Int
+        @Suppress("UNUSED_PARAMETER") contactChildPosition: Int,
     ) {
         val headerPositionForItem = adapter.getHeaderPositionForItem(topChildPosition)
         if (headerPositionForItem != currentStickyPosition && headerPositionForItem != RecyclerView.NO_POSITION) {
@@ -114,7 +116,10 @@ class StickyHeaderItemDecorator(
         }
     }
 
-    private fun moveHeader(c: Canvas, nextHeader: View) {
+    private fun moveHeader(
+        c: Canvas,
+        nextHeader: View,
+    ) {
         currentStickyHolder?.let { viewHolder ->
             c.save()
             c.translate(0f, (nextHeader.top - nextHeader.height).toFloat())
@@ -123,7 +128,10 @@ class StickyHeaderItemDecorator(
         }
     }
 
-    private fun getChildInContact(parent: RecyclerView, contactPoint: Int): View? {
+    private fun getChildInContact(
+        parent: RecyclerView,
+        contactPoint: Int,
+    ): View? {
         var childInContact: View? = null
         for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
@@ -148,38 +156,45 @@ class StickyHeaderItemDecorator(
                             .viewTreeObserver
                             .removeOnGlobalLayoutListener(this)
                         // Specs for parent (RecyclerView)
-                        val widthSpec = View.MeasureSpec.makeMeasureSpec(
-                            recyclerView!!.width, View.MeasureSpec.EXACTLY
-                        )
-                        val heightSpec = View.MeasureSpec.makeMeasureSpec(
-                            recyclerView!!.height,
-                            View.MeasureSpec.UNSPECIFIED
-                        )
+                        val widthSpec =
+                            View.MeasureSpec.makeMeasureSpec(
+                                recyclerView!!.width,
+                                View.MeasureSpec.EXACTLY,
+                            )
+                        val heightSpec =
+                            View.MeasureSpec.makeMeasureSpec(
+                                recyclerView!!.height,
+                                View.MeasureSpec.UNSPECIFIED,
+                            )
 
                         // Specs for children (headers)
-                        val childWidthSpec = ViewGroup.getChildMeasureSpec(
-                            widthSpec,
-                            recyclerView!!.paddingLeft +
-                                recyclerView!!.paddingRight,
-                            currentStickyHolder!!.itemView.layoutParams.width
-                        )
-                        val childHeightSpec = ViewGroup.getChildMeasureSpec(
-                            heightSpec,
-                            recyclerView!!.paddingTop +
-                                recyclerView!!.paddingBottom,
-                            currentStickyHolder!!.itemView.layoutParams.height
-                        )
+                        val childWidthSpec =
+                            ViewGroup.getChildMeasureSpec(
+                                widthSpec,
+                                recyclerView!!.paddingLeft +
+                                    recyclerView!!.paddingRight,
+                                currentStickyHolder!!.itemView.layoutParams.width,
+                            )
+                        val childHeightSpec =
+                            ViewGroup.getChildMeasureSpec(
+                                heightSpec,
+                                recyclerView!!.paddingTop +
+                                    recyclerView!!.paddingBottom,
+                                currentStickyHolder!!.itemView.layoutParams.height,
+                            )
                         currentStickyHolder!!.itemView.measure(
-                            childWidthSpec, childHeightSpec
+                            childWidthSpec,
+                            childHeightSpec,
                         )
                         currentStickyHolder!!.itemView.layout(
                             0,
                             0,
                             currentStickyHolder!!.itemView.measuredWidth,
-                            currentStickyHolder!!.itemView.measuredHeight
+                            currentStickyHolder!!.itemView.measuredHeight,
                         )
                         stickyHolderHeight = currentStickyHolder!!.itemView.measuredHeight
                     }
-                })
+                },
+            )
     }
 }

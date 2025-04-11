@@ -12,5 +12,5 @@ data class ArticleList(
     @SerializedName("next_idx")
     val nextIndex: String,
     @SerializedName("start_num_idx")
-    val startNumIndex: Int
+    val startNumIndex: Int,
 )

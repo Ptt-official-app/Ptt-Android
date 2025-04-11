@@ -11,42 +11,45 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 
-class ArticleRemoteDataSourceImpl constructor (
-    private val articleApi: ArticleApi
+class ArticleRemoteDataSourceImpl constructor(
+    private val articleApi: ArticleApi,
 ) : ArticleRemoteDataSource {
-
     override fun getArticleDetail(
         boardId: String,
-        articleId: String
-    ): Flow<ArticleDetail> {
-        return articleApi.getArticleDetail(boardId, articleId)
-    }
+        articleId: String,
+    ): Flow<ArticleDetail> = articleApi.getArticleDetail(boardId, articleId)
 
     override fun getArticleComments(
         boardId: String,
         articleId: String,
-        desc: Boolean
-    ): Flow<ArticleCommentsList> {
-        return articleApi.getArticleComments(boardId, articleId, desc)
-    }
+        desc: Boolean,
+    ): Flow<ArticleCommentsList> = articleApi.getArticleComments(boardId, articleId, desc)
 
     override fun postArticleRank(
         rank: Int,
         boardId: String,
-        articleId: String
+        articleId: String,
     ): Flow<ArticleRank> {
-        val param: String = Gson().toJson(
-            ArticleRank(rank)
-        )
+        val param: String =
+            Gson().toJson(
+                ArticleRank(rank),
+            )
         val body = param.toRequestBody("text/plain; charset=utf-8".toMediaType())
         return articleApi.postArticleRank(boardId, articleId, body)
     }
 
-    override fun createArticleComment(bid: String, aid: String, type: Int, content: String): Flow<ArticleComment> {
-        val param: String = JsonObject().apply {
-            addProperty("type", type)
-            addProperty("content", content)
-        }.toString()
+    override fun createArticleComment(
+        bid: String,
+        aid: String,
+        type: Int,
+        content: String,
+    ): Flow<ArticleComment> {
+        val param: String =
+            JsonObject()
+                .apply {
+                    addProperty("type", type)
+                    addProperty("content", content)
+                }.toString()
         val body = param.toRequestBody("text/plain; charset=utf-8".toMediaType())
         return articleApi.createArticleComment(bid, aid, body)
     }

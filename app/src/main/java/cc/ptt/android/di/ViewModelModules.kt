@@ -13,13 +13,14 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 @FlowPreview
-val viewModelModules = module {
-    viewModel { ArticleListViewModel(get(), get()) }
-    viewModel { ArticleReadViewModel(get(), get(), get(), get(), get()) }
-    viewModel { FavoriteBoardsViewModel(get(), get()) }
-    viewModel { HotArticleListViewModel(get()) }
-    viewModel { HotBoardsViewModel(get()) }
-    viewModel { SettingViewModel(get(), get(), get()) }
-    viewModel { LoginPageViewModel(get(), get()) }
-    viewModel { SearchBoardsModel(get()) }
-}
+val viewModelModules =
+    module {
+        viewModel { ArticleListViewModel(get(), get()) }
+        viewModel { ArticleReadViewModel(get(), get(), get(), get(), get()) }
+        viewModel { FavoriteBoardsViewModel(get(), get()) }
+        viewModel { HotArticleListViewModel(get()) }
+        viewModel { HotBoardsViewModel(get()) }
+        viewModel { SettingViewModel(get(), get(), get()) }
+        viewModel { LoginPageViewModel(get(), get()) }
+        viewModel { SearchBoardsModel(get()) }
+    }

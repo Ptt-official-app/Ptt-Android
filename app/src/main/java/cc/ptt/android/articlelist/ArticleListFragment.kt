@@ -19,9 +19,8 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ArticleListFragment : BaseFragment() {
-
     private var _binding: ArticleListFragmentLayoutBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private lateinit var articleListAdapter: ArticleListAdapter
 
     private var boardName = ""
@@ -42,14 +41,18 @@ class ArticleListFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ArticleListFragmentLayoutBinding.inflate(inflater, container, false).apply {
-            _binding = this
-        }.root
-    }
+        savedInstanceState: Bundle?,
+    ): View =
+        ArticleListFragmentLayoutBinding
+            .inflate(inflater, container, false)
+            .apply {
+                _binding = this
+            }.root
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         initView()
         initObserver()
     }
@@ -80,7 +83,7 @@ class ArticleListFragment : BaseFragment() {
             }
         }
 
-        viewModel.loadingStateLiveData.observe(viewLifecycleOwner) {
+        viewModel.loadingState.observe(viewLifecycleOwner) {
             binding.articleListFragmentRefreshLayout.isRefreshing = it
         }
     }
@@ -92,31 +95,39 @@ class ArticleListFragment : BaseFragment() {
 
             articleListFragmentRecyclerView.apply {
                 setHasFixedSize(true)
-                val layoutManager = CustomLinearLayoutManager(context).apply {
-                    orientation = RecyclerView.VERTICAL
-                }
-                setLayoutManager(layoutManager)
-                articleListAdapter = ArticleListAdapter(
-                    mutableListOf(),
-                    object : ArticleListAdapter.OnItemClickListener {
-                        override fun onItemClick(article: Article) {
-                            if (mClickFix.isFastDoubleClick) return
-                            viewModel.switchToArticleReadPage(article)
-                        }
+                val layoutManager =
+                    CustomLinearLayoutManager(context).apply {
+                        orientation = RecyclerView.VERTICAL
                     }
-                )
+                setLayoutManager(layoutManager)
+                articleListAdapter =
+                    ArticleListAdapter(
+                        mutableListOf(),
+                        object : ArticleListAdapter.OnItemClickListener {
+                            override fun onItemClick(article: Article) {
+                                if (mClickFix.isFastDoubleClick) return
+                                viewModel.switchToArticleReadPage(article)
+                            }
+                        },
+                    )
                 adapter = articleListAdapter
 
-                addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
-                        val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-                        val totalItemCount = layoutManager.itemCount
-                        if (lastVisibleItem >= totalItemCount - 30) {
-                            viewModel.loadNextData(boardId)
+                addOnScrollListener(
+                    object : RecyclerView.OnScrollListener() {
+                        override fun onScrolled(
+                            recyclerView: RecyclerView,
+                            dx: Int,
+                            dy: Int,
+                        ) {
+                            super.onScrolled(recyclerView, dx, dy)
+                            val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+                            val totalItemCount = layoutManager.itemCount
+                            if (lastVisibleItem >= totalItemCount - 30) {
+                                viewModel.loadNextData(boardId)
+                            }
                         }
-                    }
-                })
+                    },
+                )
             }
 
             articleListFragmentRefreshLayout.apply {
@@ -124,7 +135,7 @@ class ArticleListFragment : BaseFragment() {
                     android.R.color.holo_red_light,
                     android.R.color.holo_blue_light,
                     android.R.color.holo_green_light,
-                    android.R.color.holo_orange_light
+                    android.R.color.holo_orange_light,
                 )
                 setOnRefreshListener {
                     viewModel.loadData(boardId)

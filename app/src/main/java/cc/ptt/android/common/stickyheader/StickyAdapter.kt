@@ -21,7 +21,10 @@ abstract class StickyAdapter<SVH : RecyclerView.ViewHolder?, VH : RecyclerView.V
      * @param holder RecyclerView.ViewHolder. Holder to bind the data on.
      * @param headerPosition int. Position of the header item in the adapter.
      */
-    abstract fun onBindHeaderViewHolder(holder: SVH, headerPosition: Int)
+    abstract fun onBindHeaderViewHolder(
+        holder: SVH,
+        headerPosition: Int,
+    )
 
     /**
      * Called only twice when [StickyHeaderItemDecorator] needs a new [ ] to represent a sticky header item. Those two instances will be

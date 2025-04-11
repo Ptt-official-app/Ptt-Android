@@ -9,8 +9,11 @@ import java.lang.reflect.Type
 
 // Ref: https://github.com/MohammadSianaki/Retrofit2-Flow-Call-Adapter/blob/master/FlowAdapter/src/main/java/me/sianaki/flowretrofitadapter/FlowCallAdapterFactory.kt
 class RetrofitFlowCallAdapterFactory : CallAdapter.Factory() {
-
-    override fun get(returnType: Type, annotations: Array<Annotation>, retrofit: Retrofit): CallAdapter<*, *>? {
+    override fun get(
+        returnType: Type,
+        annotations: Array<Annotation>,
+        retrofit: Retrofit,
+    ): CallAdapter<*, *>? {
         if (getRawType(returnType) != Flow::class.java) {
             return null
         }

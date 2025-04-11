@@ -30,5 +30,5 @@ data class Article(
     var read: Boolean,
     val recommend: Int,
     val title: String,
-    val url: String
+    val url: String,
 ) : Parcelable

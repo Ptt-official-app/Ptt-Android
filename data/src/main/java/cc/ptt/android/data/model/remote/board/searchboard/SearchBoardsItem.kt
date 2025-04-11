@@ -10,5 +10,5 @@ data class SearchBoardsItem(
     val moderators: String = "",
     val _class: String = "",
     val online: Int = 0,
-    val onlineColor: Int = 7
+    val onlineColor: Int = 7,
 )
