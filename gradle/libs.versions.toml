@@ -1,15 +1,12 @@
 [versions]
-androidGradle = "8.9.0"
-kotlin = "1.9.20"
 androidXAppCompat = "1.7.0"
 androidXArch = "2.2.0"
 androidXBrowser = "1.8.0"
 androidXConstraintLayout = "2.2.0"
 androidXCore = "1.15.0"
-androidXLegacy = "1.0.0"
 androidXLifecycle = "2.8.7"
+androidx-lifecycle = "2.8.4"
 androidXLocalBroadcastManager = "1.1.0"
-androidXMultidex = "2.0.1"
 androidXNavigation = "2.8.5"
 androidXSwipeRefreshLayout = "1.1.0"
 androidXTestCore = "1.6.1"
@@ -31,10 +28,17 @@ koinCore = "4.0.0"
 koinAndroid = "4.0.0"
 spotless = "6.22.0"
 
-[libraries]
-android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradle" }
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+agp = "8.9.1"
+kotlin = "2.1.10"
+kotlinStdlib = "2.1.10"
+kotlinTest = "2.1.10"
+runner = "1.6.2"
+core = "1.6.1"
+composeMultiplatform = "1.7.3"
+kotlinAndroid = "2.1.0"
+androidx-activityCompose = "1.10.1"
 
+[libraries]
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidXAppCompat"}
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidXBrowser"}
 androidx-arch = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidXArch"}
@@ -82,5 +86,21 @@ koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koinC
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koinCore" }
 koin-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koinCore" }
 koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koinAndroid" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+core = { group = "androidx.test", name = "core", version.ref = "core" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 
 [plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlinAndroid"}
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
