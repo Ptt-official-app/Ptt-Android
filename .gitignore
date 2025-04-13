@@ -80,3 +80,4 @@ lint/tmp/
 
 # Mac OX X
 *.DS_Store
+.kotlin/
