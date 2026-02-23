@@ -3,7 +3,7 @@ import org.gradle.api.JavaVersion
 object Versions {
     const val majorVersion = 0
     const val minorVersion = 18
-    const val patchVersion = 4
+    const val patchVersion = 5
     const val spotless = "6.22.0"
 }
 
